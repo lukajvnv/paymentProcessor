@@ -1,0 +1,66 @@
+server:
+  port: ${PORT:8762}
+
+spring:
+  application:
+    name: zuul
+
+ribbon:
+  ReadTimeout: 60000
+
+zuul:
+  routes:
+    requestHandler:
+      path: /requestHandler/**
+      serviceId: requestHandler
+    bitcoinHandler:
+      path: /bitcoinHandler/**
+      serviceId: bitcoinHandler
+    cardPaymentHandler:
+      path: /cardPaymentHandler/**
+      serviceId: cardPaymentHandler
+    payPalHandler:
+      path: /payPalHandler/**
+      serviceId: payPalHandler
+  ribbon:
+    eureka:
+      enable: true
+    eager-load:
+      enabled: true
+    isSecure: false
+    readTimeout: 60000
+    connectTimeout: 60000
+  host:
+    socket-timeout-millis: 300000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      # Docker
+      # defaultZone: http://host.docker.internal:8761/eureka/
+      # Normal
+      defaultZone: http://localhost:8761/eureka/
+  instance: 
+    # Docker
+    # hostname: host.docker.internal
+    # Normal
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 600000
+    gateway:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 600000
