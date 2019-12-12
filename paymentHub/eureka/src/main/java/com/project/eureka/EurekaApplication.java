@@ -9,7 +9,12 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 public class EurekaApplication {
 
 	public static void main(String[] args) {
+		configSystemParams();
 		SpringApplication.run(EurekaApplication.class, args);
+	}
+	
+	private static void configSystemParams() {
+		// System.setProperty("KEYSTOREPATH", "src/main/resources/kp_sep_keystore");
 	}
 
 }
