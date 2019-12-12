@@ -1,13 +1,47 @@
-server:
-  port: ${PORT:8762}
-
 spring:
   application:
     name: zuul
 
-ribbon:
-  ReadTimeout: 60000
+server:
+  port: ${PORT:8762}
+  ssl:
+    enabled: true
+    protocol: TLS
+    key-store: classpath:kp_zuul_keystore.jks
+    key-store-password: sepstore
+    key-store-type: JKS
+    key-alias: zuul
+#    key-password: proxy
+#    trust-store: classpath:sep_kp_truststore.jks
+#    trust-store-password: sepstore 
+#    trust-store-type: JKS
+#    client-auth: want
 
+security:
+  require-ssl: true
+
+eureka:
+  instance: 
+    # Docker
+    # hostname: host.docker.internal
+    # Normal
+    hostname: localhost
+    prefer-ip-address: true
+    nonSecurePortEnabled: false
+    securePortEnabled: true
+    securePort: ${server.port}
+#    leaseRenewalIntervalInSeconds: 1
+#    leaseExpirationDurationInSeconds: 2
+  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+    securePortEnabled: true
+    serviceUrl:
+      defaultZone: https://localhost:8761/eureka/
+      # Docker
+      # defaultZone: http://host.docker.internal:8761/eureka/
+      # Normal
+       
 zuul:
   routes:
     requestHandler:
@@ -22,45 +56,40 @@ zuul:
     payPalHandler:
       path: /payPalHandler/**
       serviceId: payPalHandler
-  ribbon:
-    eureka:
-      enable: true
-    eager-load:
-      enabled: true
-    isSecure: false
-    readTimeout: 60000
-    connectTimeout: 60000
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+#  ribbon:
+#    eureka:
+#      enable: true
+#    eager-load:
+#      enabled: true
+#    isSecure: false
+#    readTimeout: 60000
+#    connectTimeout: 60000
   host:
     socket-timeout-millis: 300000
+  sslHostnameValidationEnabled: false
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      # Docker
-      # defaultZone: http://host.docker.internal:8761/eureka/
-      # Normal
-      defaultZone: http://localhost:8761/eureka/
-  instance: 
-    # Docker
-    # hostname: host.docker.internal
-    # Normal
-    hostname: localhost
-    leaseRenewalIntervalInSeconds: 1
-    leaseExpirationDurationInSeconds: 2
+ribbon:
+  IsSecured: true
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+  eureka:
+    enabled: true
+#  TrustStore: classpath:kp_zuul_trustore.jks
+#  TrustStorePassword: sepstore
+  IsHostnameValidationRequired: false
 
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          strategy: THREAD
-          thread:
-            timeoutInMilliseconds: 600000
-    gateway:
-      execution:
-        isolation:
-          strategy: THREAD
-          thread:
-            timeoutInMilliseconds: 600000
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          strategy: THREAD
+#          thread:
+#            timeoutInMilliseconds: 600000
+#    gateway:
+#      execution:
+#        isolation:
+#          strategy: THREAD
+#          thread:
+#            timeoutInMilliseconds: 600000
