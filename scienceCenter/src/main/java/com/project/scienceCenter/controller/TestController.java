@@ -22,7 +22,17 @@ public class TestController {
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> test() {
 		System.out.println(testService.callPaymentHub());
-		return new ResponseEntity<>(new String("Okej NC radi"), HttpStatus.OK);
+		return new ResponseEntity<>(new String("Okej NC radi poziv KP kako treba"), HttpStatus.OK);
 	}
 	
+	@RequestMapping(path="/service", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> testService() {
+		System.out.println(testService.callPaymentHubServices());
+		return new ResponseEntity<>(new String("Okej NC radi poziv KP kako treba"), HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/plain", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> testNC() {
+		return new ResponseEntity<>(new String("Okej NC radi"), HttpStatus.OK);
+	}
 }

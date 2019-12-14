@@ -12,8 +12,36 @@ public class TestService {
 	private RestTemplate restTemplate;
 	
 	public String callPaymentHub() {
-		ResponseEntity<String> response =  restTemplate.getForEntity("http://localhost:8762/requestHandler/test", String.class);
-		return response.getBody();
+		RestTemplate restTemplate = new RestTemplate();
+
+		String[] paths = new String[] {"", "/card", "/bitcoin", "/payPal"};
+		
+		
+		for(String path : paths) {
+			ResponseEntity<String> res =  restTemplate.getForEntity("https://localhost:8762/requestHandler/test" + path, String.class);
+			System.out.println("#####################################33");
+			System.out.println(res.getBody());
+			System.out.println("#####################################33");
+
+		}
+		
+		return "RESI";
+	}
+	
+	public String callPaymentHubServices() {
+		RestTemplate restTemplate = new RestTemplate();
+
+		String[] paths = new String[] {"", "/card", "/bitcoin", "/payPal"};
+		
+		
+		for(String path : paths) {
+			ResponseEntity<String> res =  restTemplate.getForEntity("https://localhost:8762/requestHandler/service" + path, String.class);
+			System.out.println("#####################################33");
+			System.out.println(res.getBody());
+			System.out.println("#####################################33");
+		}
+		
+		return "RESI";
 	}
 
 }
