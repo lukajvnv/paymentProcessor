@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.payPalService.model;
 
 import java.util.Date;
 

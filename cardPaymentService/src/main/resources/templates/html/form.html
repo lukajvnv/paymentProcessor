@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <p th:text="'Hello, ' + ${name} + '!'" />
+    <form name="myRedirectForm" onSubmit="send()" method="post">
+    <input name="name"  value="xyz" />
+    <input name="phone"  value="9898989898" />
+    
+        <input type="submit" value="Click here to continue" />
+    
+</form>
+    <script type="text/javascript">
+
+        function send(){
+        	alert("The form is submitted");
+        }
+
+    </script>
+</body>
+</html>

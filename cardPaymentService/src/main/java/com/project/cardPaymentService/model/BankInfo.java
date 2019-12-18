@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.cardPaymentService.model;
 
 public class BankInfo {
 

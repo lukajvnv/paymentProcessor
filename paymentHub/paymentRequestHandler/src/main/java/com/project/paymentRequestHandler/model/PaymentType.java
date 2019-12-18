@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.paymentRequestHandler.model;
 
 public class PaymentType {
 	

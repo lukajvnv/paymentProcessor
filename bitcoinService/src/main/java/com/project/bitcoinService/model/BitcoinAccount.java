@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.bitcoinService.model;
 
 import java.util.Set;
 

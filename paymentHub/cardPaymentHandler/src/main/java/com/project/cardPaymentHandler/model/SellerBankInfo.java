@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.cardPaymentHandler.model;
 
 public class SellerBankInfo {
 	

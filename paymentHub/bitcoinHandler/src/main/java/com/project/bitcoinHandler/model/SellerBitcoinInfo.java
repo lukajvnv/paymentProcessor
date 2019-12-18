@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.bitcoinHandler.model;
 
 public class SellerBitcoinInfo {
 	

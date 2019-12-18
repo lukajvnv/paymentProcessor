@@ -1,4 +1,4 @@
-package com.project.scienceCenter.model;
+package com.project.cardPaymentService.model;
 
 public class BankAccount {
 	
@@ -11,6 +11,7 @@ public class BankAccount {
 	private String salt;
 	
 	private Float balance;
+	private Float reservedAmount;
 	
 	private CardAccount cardAccount;
 
