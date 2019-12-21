@@ -1,0 +1,5 @@
+Auth token:
+ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS
+
+Give it a test go with 
+$ curl -H "Authorization: Bearer ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS" https://api-sandbox.coingate.com/v2/auth/test

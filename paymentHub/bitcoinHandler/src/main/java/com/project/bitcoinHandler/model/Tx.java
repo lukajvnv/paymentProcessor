@@ -16,21 +16,19 @@ public class Tx {
 	@Column
 	private Date date;
 	@Column
-	private boolean status;
+	private boolean status;  //ovo mozda da bude enum {pending,confirm}...
 	
 	@Column
 	private Float amountOfMoney;
 	@Column
-	private String txDescription;
+	private String txDescription; //mislim da nece trebati
 	
 	@Column
-	private Long txNumber;
+	private Long txNumber;  //mislim da nece trebati
+	
 	@Column
-	private String senderName;
+	private String senderAddress; //mozda neki senderID
 	@Column
-	private String senderAccountNum;
-	@Column
-	private String recieverName;
-	@Column
-	private String recieverAccountNum;
+	private String recieverAddress; //ovo neka ostane adresa bitcoin servisa na koji je uplacen
+
 }
