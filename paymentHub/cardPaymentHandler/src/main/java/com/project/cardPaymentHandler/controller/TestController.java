@@ -14,7 +14,6 @@ import com.project.cardPaymentHandler.Proba;
 
 @RestController
 @RequestMapping("/test")
-@CrossOrigin
 public class TestController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

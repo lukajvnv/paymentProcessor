@@ -1,0 +1,81 @@
+<p>pay works!</p>
+<button (click)="proba()">Klikli</button>
+<button (click)="probaPost()">Klikli post</button>
+
+<!-- <form action="#" th:action="@{https://localhost:8841/card/pay}" th:object="${request}" method="post">
+    <table>
+            <tr>
+                <td>PAN:</td>
+                <td><input type="text" name="pan" id="pan" /></td>
+             </tr>
+            <tr>
+                <td>SSC:</td>
+                <td><input type="text" name="securityCode" id="securityCode" /></td>
+               </tr>
+            <tr>
+                <td>Cardholder name:</td>
+                <td><input type="text" name="cardHolderName" id="cardHolderName" /></td>
+               </tr>
+            <tr>
+                <td>Valid until:</td>
+                <td><input type="date" name="validUntil" id="validUntil" /></td>
+               </tr>
+            <tr>
+                <td><button type="submit" value="Click here to continue">Submit</button></td>
+            </tr>
+    </table>
+        <input name="merchantUsername" type="hidden"  th:value="${merchantId}" />
+        <input name="paymentId" type="hidden"  th:value="${paymentId}"/>
+    
+</form> -->
+
+<form role="form" [formGroup]="cardFormGroup" (ngSubmit)="add()" #myform="ngForm">
+            <div >
+                <div class="form-group">
+                    <label for="pan">Pan:</label>
+                    <input type="text" id="pan" name="pan" class="form-control input-underline input-lg"  placeholder="pan" formControlName="pan" >
+                </div>
+                <p class="bg-danger" *ngIf="pan.errors?.required && pan.touched">Pan is required</p>
+                
+                <div class="bg-danger" *ngIf="myform.submitted && pan.errors?.required">Pan is required</div>
+            </div>
+             <div >
+                <div class="form-group">
+                    <label for="cardHolderName">Card holder:</label>
+                    <input type="text" id="cardHolderName" name="cardHolderName" class="form-control input-underline input-lg" placeholder="cardHolderName"  formControlName="cardHolderName">
+                </div>
+                <p class="bg-danger" *ngIf="cardHolderName.errors?.required && cardHolderName.touched">Cardholder is required</p>
+                <div class="bg-danger" *ngIf="myform.submitted && cardHolderName.errors?.required">Cardholder is required</div>
+
+            </div>
+            <div >
+                <div class="form-group">
+                    <label for="securityCode">Security code:</label>
+                    <input type="text" id="securityCode" name="securityCode" class="form-control input-underline input-lg"   formControlName="securityCode">
+                </div>
+                <p class="bg-danger" *ngIf="securityCode.errors?.required && securityCode.touched">SecurityCode is required</p>
+                <div class="bg-danger" *ngIf="myform.submitted && securityCode.errors?.required">SecurityCode is required</div>
+
+            </div>
+             <div >
+                <div class="form-group">
+                    <label for="validUntil">Valid until:</label>
+                    <input type="date" id="validUntil" name="validUntil" class="form-control input-underline input-lg" placeholder="validUntil"  formControlName="validUntil">
+                </div>
+                <p class="bg-danger" *ngIf="validUntil.errors?.required && validUntil.touched">Date is required</p>
+                <div class="bg-danger" *ngIf="myform.submitted && validUntil.errors?.required">Date is required</div>
+
+            </div>
+            <!-- <div >
+                <div class="form-group">
+                    <input type="text" id="pan"   name="pan" class="form-control input-underline input-lg"  placeholder="pan" formControlName="pan">
+                </div>
+                <p class="bg-danger" *ngIf="pan.errors?.minLength && pan.touched">Pan is required</p>
+            </div> -->
+
+        
+        <!-- <p class="bg-danger" *ngIf="passwordFormGroup.controls.confirmPassword.errors?.required && passwordFormGroup.controls.confirmPassword.touched">Repeat password is required</p>
+        <p class="bg-danger" *ngIf="passwordFormGroup.errors?.doesMatchPassword">Password does not match</p> -->
+
+    <button class="btn-lg btn-block btn-primary">Confirm</button>
+</form>

@@ -12,8 +12,6 @@ public class UnityOfWork {
 	@Autowired
 	private CardAccountRepository cardAccountRepository;
 	
-	@Autowired
-	private BankInfoRepository bankInfoRepository;
 	
 	@Autowired
 	private PaymentRequestRepository paymentRequestRepository;
@@ -25,9 +23,6 @@ public class UnityOfWork {
 		return bankAccountRepository;
 	}
 
-	public BankInfoRepository getBankInfoRepository() {
-		return bankInfoRepository;
-	}
 	
 	public PaymentRequestRepository getPaymentRequestRepository() {
 		return paymentRequestRepository;

@@ -25,6 +25,7 @@ import com.project.cardPaymentService.dto.PaymentValidationResponseDTO;
 import com.project.cardPaymentService.exception.AuthentificationException;
 import com.project.cardPaymentService.exception.NotEnoughMoney;
 import com.project.cardPaymentService.model.PaymentRequest;
+import com.project.cardPaymentService.model.TxStatus;
 import com.project.cardPaymentService.service.TransactionService;
 import com.project.cardPaymentService.service.ValidationService;
 
@@ -43,35 +44,68 @@ public class CardController {
 	
 	private Logger logger = LoggerFactory.getLogger(CardController.class);
 	
-	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
+//	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<String> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
+//			PaymentValidationResponseDTO response;
+//			logger.info("PaymentRequest initialized");
+//			try {
+//				if (result.hasErrors()) {
+//					logger.error("PaymentRequest failed: invalid input");
+//					  return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+//					}
+//				response = validationService.validateRequest(request);
+//				
+//				 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
+//				 ctx.setVariable("paymentId", response.getPaymentId());
+//				 ctx.setVariable("merchantId", request.getMerchantId());
+//				 // Rendered template in String, You can now return in a JSON property
+//				 String htmlContent = this.htmlTemplateEngine.process("html/card_info_form.html", ctx);
+//
+//				 logger.info("PaymentRequest finished successfully");
+//				 return new ResponseEntity<String>(htmlContent, HttpStatus.OK);
+//			} catch (ValidationException e) {
+//				logger.error("PaymentRequest failed due to invalid input data", e);
+//				
+//			} catch (AuthentificationException e) {
+//				 logger.error("PaymentRequest failed due to unsucessful authentification", e);
+//			} catch (Exception e) {
+//				 logger.error("PaymentRequest failed due to unknown error", e);
+//			}
+//		
+//			return new ResponseEntity<String>("Greska",HttpStatus.INTERNAL_SERVER_ERROR);
+//	}
+	
+	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PaymentValidationResponseDTO> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
 			PaymentValidationResponseDTO response;
 			logger.info("PaymentRequest initialized");
 			try {
 				if (result.hasErrors()) {
 					logger.error("PaymentRequest failed: invalid input");
-					  return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+					response = new PaymentValidationResponseDTO(TxStatus.FAILED);
+					  return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 					}
 				response = validationService.validateRequest(request);
 				
-				 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
-				 ctx.setVariable("paymentId", response.getPaymentId());
-				 ctx.setVariable("merchantId", request.getMerchantId());
-				 // Rendered template in String, You can now return in a JSON property
-				 String htmlContent = this.htmlTemplateEngine.process("html/card_info_form.html", ctx);
-
-				 logger.info("PaymentRequest finished successfully");
-				 return new ResponseEntity<String>(htmlContent, HttpStatus.OK);
+				 
+				 return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 			} catch (ValidationException e) {
 				logger.error("PaymentRequest failed due to invalid input data", e);
-				
+				 //response = new PaymentValidationResponseDTO(TxStatus.FAILED)
+				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
+
 			} catch (AuthentificationException e) {
-				 logger.error("PaymentRequest failed due to unsucessful authentification", e);
+				 //logger.error("PaymentRequest failed due to unsucessful authentification", e);
+				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
+
 			} catch (Exception e) {
-				 logger.error("PaymentRequest failed due to unknown error", e);
+				 //logger.error("PaymentRequest failed due to unknown error", e);
+				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
+
 			}
+			response = new PaymentValidationResponseDTO(TxStatus.FAILED);
+			return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 		
-			return new ResponseEntity<String>("Greska",HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	/*
