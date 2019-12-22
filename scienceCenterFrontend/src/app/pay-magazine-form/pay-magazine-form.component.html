@@ -1,0 +1,25 @@
+<p>
+  About magazine
+</p>
+
+<table border="2">
+  <thead>
+    <th>Id</th>
+    <th>Issn</th>
+    <th>Name</th>
+    <th>Price</th>
+  </thead>
+  <tr>
+    <td>{{magazine.id}}</td>
+    <td>{{magazine.issn}}</td>
+    <td>{{magazine.name}}</td>
+    <td>{{magazine.price}}din</td>
+  </tr>
+</table>
+
+<p>Provided payment types</p>
+<select [(ngModel)]="selectedPaymentType" name="paymentType" id="paymentType" class="custom-select d-block" required>
+  <option *ngFor="let type of paymentTypeResponse?.paymentTypes;" [ngValue]="type">{{type.paymentTypeName}}</option>
+</select>
+
+<button (click)="buy()">Buy</button>

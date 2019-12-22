@@ -89,10 +89,10 @@ public class DataLoader implements ApplicationRunner {
 		
 		String check1 = new String( crypthoService.decrypt(Base64Utility.decode(pass1)));
 		
-		
-		SellerBankInfo sellerBankInfo1 = new SellerBankInfo(1L, "7457897912345", pass1, pass1, "as", "as", "as");
-		SellerBankInfo sellerBankInfo2 = new SellerBankInfo(2l, "7455632178954", pass2, pass2, "as", "as", "as");
-		SellerBankInfo sellerBankInfo3 = new SellerBankInfo(3l, "4565635558954", pass3, pass3, "as", "as", "as");
+		// VAZNO: cardPaymentSHandler.SellerBankInfo.sellerIdentifier -> requestPaymentHandler.SellerInfo.sellerDBId
+		SellerBankInfo sellerBankInfo1 = new SellerBankInfo(1L, "7457897912345", pass1, pass1, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
+		SellerBankInfo sellerBankInfo2 = new SellerBankInfo(2l, "7455632178954", pass2, pass2, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
+		SellerBankInfo sellerBankInfo3 = new SellerBankInfo(3l, "4565635558954", pass3, pass3, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
 
 		unityOfWork.getSellerBankInfoRepository().save(sellerBankInfo1);
 		unityOfWork.getSellerBankInfoRepository().save(sellerBankInfo2);

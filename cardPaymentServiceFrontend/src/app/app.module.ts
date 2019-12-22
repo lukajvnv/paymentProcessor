@@ -21,13 +21,16 @@ const routes = [
     path: 'pay', component: PayComponent
   },
   {
+    path: 'pay/:paymentId', component: PayComponent
+  },
+  {
     path: 'externalRedirect',
     resolve: {
         url: externalUrlProvider,
     },
     // We need a component here because we cannot define the route otherwise
     component: PayComponent,
-},
+  },
 ];
 @NgModule({
   declarations: [
