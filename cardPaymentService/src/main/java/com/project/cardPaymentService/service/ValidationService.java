@@ -18,6 +18,7 @@ import com.project.cardPaymentService.exception.AuthentificationException;
 import com.project.cardPaymentService.exception.PaymentRequestException;
 import com.project.cardPaymentService.model.BankAccount;
 import com.project.cardPaymentService.model.PaymentRequest;
+import com.project.cardPaymentService.model.TxStatus;
 import com.project.cardPaymentService.repository.UnityOfWork;
 
 @Service
@@ -49,7 +50,8 @@ public class ValidationService {
 	}
 	
 	public PaymentValidationResponseDTO returnValidationResponseAnswer() {
-		return new PaymentValidationResponseDTO(url, generatePaymentId());
+		int paymentId = generatePaymentId();
+		return new PaymentValidationResponseDTO(url + '/' + paymentId, paymentId, TxStatus.SUCCESS);
 	}
 	
 	private int generatePaymentId() {
@@ -78,8 +80,16 @@ public class ValidationService {
 		unityOfWork.getPaymentRequestRepository().save(request);
 	}
 	
+//	public PaymentRequest getPaymentRequest(PaymentCardRequestDTO request) throws PaymentRequestException {
+//		PaymentRequest req = unityOfWork.getPaymentRequestRepository().findByPaymentIdAndMerchantUsername(request.getPaymentId(), request.getMerchantUsername());
+//		if(req == null) {
+//			throw new PaymentRequestException();
+//		}
+//		return req;
+//	}
+	
 	public PaymentRequest getPaymentRequest(PaymentCardRequestDTO request) throws PaymentRequestException {
-		PaymentRequest req = unityOfWork.getPaymentRequestRepository().findByPaymentIdAndMerchantUsername(request.getPaymentId(), request.getMerchantUsername());
+		PaymentRequest req = unityOfWork.getPaymentRequestRepository().findByPaymentId(request.getPaymentId());
 		if(req == null) {
 			throw new PaymentRequestException();
 		}

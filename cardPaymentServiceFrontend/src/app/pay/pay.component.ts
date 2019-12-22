@@ -3,8 +3,9 @@ import { PaymentService } from '../service/payment.service';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CardRequest } from '../model/card-request.model';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { error } from 'util';
+import { CardResponse } from '../model/card-response.model';
 
 @Component({
   selector: 'app-pay',
@@ -15,8 +16,10 @@ export class PayComponent implements OnInit {
 
   cardFormGroup : FormGroup;
   cardPaymentRequest: CardRequest = new CardRequest();
+  cardPaymentResponse: CardResponse = new CardResponse();
 
-  constructor(private payService: PaymentService, private formBuilder: FormBuilder, private toastr: ToastrService, private router: Router) { 
+  constructor(private payService: PaymentService, private formBuilder: FormBuilder, private toastr: ToastrService, private router: Router,
+    private activatedRoute: ActivatedRoute) { 
    // this.cardFormGroup = this.formBuilder.group();
    this.cardFormGroup = this.formBuilder.group({
       pan: new FormControl('', [Validators.required/*, Validators.minLength(10), Validators.maxLength(16)*/] ),
@@ -33,6 +36,12 @@ export class PayComponent implements OnInit {
     this.cardPaymentRequest.paymentId = '799806098';
     this.cardPaymentRequest.merchantUsername = 'casopisA';
   
+    this.activatedRoute.paramMap.subscribe(data => {
+      const paymentId = data.get("paymentId");
+      if(paymentId){
+        this.cardPaymentRequest.paymentId = paymentId;
+      }
+    });
 
   }
 
@@ -81,6 +90,10 @@ export class PayComponent implements OnInit {
 
     this.payService.initPayment(this.cardPaymentRequest).subscribe(data => {
       console.log('resi');
+      this.cardPaymentResponse = data;
+      this.router.navigate(['/externalRedirect', { externalUrl: this.cardPaymentResponse.redirectUrl }], {
+      skipLocationChange: true,
+    });
     }, (error: Response) => {
       console.log(error.json);
     });

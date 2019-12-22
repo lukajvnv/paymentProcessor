@@ -7,5 +7,7 @@ import com.project.cardPaymentService.model.PaymentRequest;
 public interface PaymentRequestRepository extends JpaRepository<PaymentRequest, Long> {
 	
 	PaymentRequest findByPaymentIdAndMerchantUsername(long paymentId, String merchantUsername);
+	PaymentRequest findByPaymentId(long paymentId);
+
 
 }

@@ -82,7 +82,7 @@ public class TransactionService {
 			}
 			
 			
-			response.setOutcome(req.getSuccessUrl());
+			response.setRedirectUrl(req.getSuccessUrl());
 			response.setOutcome(TxStatus.SUCCESS.toString());
 			return response;
 		} catch (NotEnoughMoney e) {

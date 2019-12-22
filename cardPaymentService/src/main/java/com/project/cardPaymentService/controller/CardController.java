@@ -95,11 +95,11 @@ public class CardController {
 				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 
 			} catch (AuthentificationException e) {
-				 //logger.error("PaymentRequest failed due to unsucessful authentification", e);
+				 logger.error("PaymentRequest failed due to unsucessful authentification", e);
 				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 
 			} catch (Exception e) {
-				 //logger.error("PaymentRequest failed due to unknown error", e);
+				 logger.error("PaymentRequest failed due to unknown error", e);
 				 //return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 
 			}
@@ -148,7 +148,7 @@ public class CardController {
 	
 	
 	@PostMapping("/pay")
-	  public String checkPersonInfo(@Valid @RequestBody PaymentCardRequestDTO request, BindingResult bindingResult) {
+	  public ResponseEntity<PaymentCardResponseDTO> pay(@Valid @RequestBody PaymentCardRequestDTO request, BindingResult bindingResult) {
 
 	    try {
 	    	PaymentRequest paymentReq = validationService.getPaymentRequest(request);
@@ -156,19 +156,21 @@ public class CardController {
 	    	logger.info("Payment action has been initialized");
 			if (bindingResult.hasErrors()) {
 			  logger.error("Payment action failed due to invalid input");
-			  return "error";
+			  
 			}
 			response = transactionService.tX(request, paymentReq, response);
+			logger.info("Payment action finished successfully");
+		    return new ResponseEntity<PaymentCardResponseDTO>(response, HttpStatus.OK);
 		} catch (NotEnoughMoney e) {
 			logger.error("Payment action failed due to not enough money at buyer's account", e);
-			return "";
+			
 		} catch (Exception e) {
 			logger.error("Payment action failed due to unknown error", e);
-			return "";
+			
 		}
 	    
-		logger.info("Payment action finished successfully");
-	    return "Uspeh";
+	    return new ResponseEntity<PaymentCardResponseDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    
 	  }
 	
 	

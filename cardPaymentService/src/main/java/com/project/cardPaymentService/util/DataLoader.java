@@ -34,7 +34,7 @@ public class DataLoader implements ApplicationRunner {
 		req1.setPaymentId(799806098L);
 		
 		
-		unityOfWork.getPaymentRequestRepository().save(req1);
+		//unityOfWork.getPaymentRequestRepository().save(req1);
 	}
 	
 	private void createCardAccount() {
