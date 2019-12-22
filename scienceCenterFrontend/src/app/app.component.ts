@@ -1,3 +1,4 @@
+import { TestService } from './services/test.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +7,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'scienceCenterFrontend';
+  title = 'scienceCenterFrontend'; 
+
+  constructor(private testService: TestService) {
+
+  }
+
+  
+
+  testna() {
+    alert("USO!");
+    this.testService.test();
+  }
 }

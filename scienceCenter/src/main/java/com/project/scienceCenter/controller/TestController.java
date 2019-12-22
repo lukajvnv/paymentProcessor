@@ -21,6 +21,7 @@ public class TestController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> test() {
+		System.out.println("Uso");
 		System.out.println(testService.callPaymentHub());
 		return new ResponseEntity<>(new String("Okej NC radi poziv KP kako treba"), HttpStatus.OK);
 	}

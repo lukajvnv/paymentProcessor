@@ -1,9 +1,8 @@
 package com.project.bitcoinHandler.dto;
 
-public class BitCoinRequestDTO {
+public class CreateOrderRequestDTO {
 	
 	private String order_id;
-	
 
 	private double price_amount;
 	
@@ -23,13 +22,13 @@ public class BitCoinRequestDTO {
 
 	private String token;
 	
-	public BitCoinRequestDTO() {
+	public CreateOrderRequestDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
 
-	public BitCoinRequestDTO(double price_amount, String price_currency, String receive_currency) {
+	public CreateOrderRequestDTO(double price_amount, String price_currency, String receive_currency) {
 		super();
 		this.price_amount = price_amount;
 		this.price_currency = price_currency;
@@ -37,7 +36,7 @@ public class BitCoinRequestDTO {
 	}
 
 
-	public BitCoinRequestDTO(double price_amount, String price_currency, String receive_currency, String token) {
+	public CreateOrderRequestDTO(double price_amount, String price_currency, String receive_currency, String token) {
 		super();
 		this.price_amount = price_amount;
 		this.price_currency = price_currency;
@@ -47,7 +46,7 @@ public class BitCoinRequestDTO {
 
 	
 
-	public BitCoinRequestDTO(String order_id, double price_amount, String price_currency, String receive_currency,
+	public CreateOrderRequestDTO(String order_id, double price_amount, String price_currency, String receive_currency,
 			String title, String descripton, String callback_url, String cancel_url, String success_url, String token) {
 		super();
 		this.order_id = order_id;
