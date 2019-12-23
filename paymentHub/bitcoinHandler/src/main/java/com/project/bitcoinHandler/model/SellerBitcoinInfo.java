@@ -32,12 +32,6 @@ public class SellerBitcoinInfo {
 
 
 
-	public SellerBitcoinInfo(Long idMagazine, String bitcoinAddress) {
-		super();
-		this.idMagazine = idMagazine;
-		this.bitcoinAddress = bitcoinAddress;
-	}
-
 
 	
 	public SellerBitcoinInfo(Long idMagazine, String bitcoinAddress, String order_id) {

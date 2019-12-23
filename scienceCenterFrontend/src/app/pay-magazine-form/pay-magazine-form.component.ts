@@ -49,6 +49,10 @@ export class PayMagazineFormComponent implements OnInit {
     payRequest.amount = this.magazine.price;
     payRequest.url = this.selectedPaymentType.paymentTypeHandlerUrl;
 
+    alert("Sta je jebeni sellerID:??? " + payRequest.sellerId)
+
+    //if(this.paymentTypeResponse.paymentTypes.)
+
     this.payService.buyMagazine(payRequest).subscribe(data => {
       this.payResponse = data;
       

@@ -10,7 +10,6 @@ import { PayMagazineFormComponent } from './pay-magazine-form/pay-magazine-form.
 import { SuccesPageComponent } from './succes-page/succes-page.component';
 import { FailedPageComponent } from './failed-page/failed-page.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
-import { HttpClientModule } from '@angular/common/http'
 import { RouterModule, ActivatedRouteSnapshot } from '@angular/router';
 import { PayService } from './service/pay.service';
 import { FormsModule } from '@angular/forms';

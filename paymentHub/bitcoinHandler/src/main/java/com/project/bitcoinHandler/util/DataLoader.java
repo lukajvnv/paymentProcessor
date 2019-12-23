@@ -27,7 +27,7 @@ public class DataLoader implements ApplicationRunner {
 	
 
 	private void createSellerBitcoinInfo() {
-		SellerBitcoinInfo sbi = new SellerBitcoinInfo(4l,"ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS","223783");
+		SellerBitcoinInfo sbi = new SellerBitcoinInfo(1l,"ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS","223783");
 		repo.save(sbi);
 	}
 

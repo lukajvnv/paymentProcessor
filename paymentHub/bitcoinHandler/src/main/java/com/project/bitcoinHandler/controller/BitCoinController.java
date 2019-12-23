@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.bitcoinHandler.dto.CreateOrderRequestDTO;
 import com.project.bitcoinHandler.dto.GetOrderResponseDTO;
+import com.project.bitcoinHandler.dto.PaymentRequestDTO;
+import com.project.bitcoinHandler.dto.PaymentResponseDTO;
 import com.project.bitcoinHandler.dto.BitCoinResponseDTO;
 import com.project.bitcoinHandler.dto.CheckoutResponseDTO;
 import com.project.bitcoinHandler.model.SellerBitcoinInfo;
@@ -75,11 +77,11 @@ public class BitCoinController {
 	/**
 	 * Metoda koja gadja Create Order na coingate-u
 	 * */
-	@RequestMapping(path="/createOrder/{idMagazine}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> createOrder(@RequestBody CreateOrderRequestDTO btcDTO, @PathVariable Long idMagazine) { 
+	@RequestMapping(path="/createOrder", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<PaymentResponseDTO> createOrder(@RequestBody PaymentRequestDTO btcDTO) { 
 		logger.info("Init payment");
 		
-		SellerBitcoinInfo sbi = bitcoinRepo.findByidMagazine(idMagazine);
+		SellerBitcoinInfo sbi = bitcoinRepo.findByidMagazine(btcDTO.getSellerId());
 		
 		System.out.println("ADDRESS  " + sbi.getBitcoinAddress());
 		
@@ -95,10 +97,12 @@ public class BitCoinController {
 		//restTemplate.getForEntity("https://api.coingate.com/v2/ping", String.class);
 		
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", authToken);	   
+		headers.add("Authorization", authToken);	 
+		
+		CreateOrderRequestDTO order = new CreateOrderRequestDTO("1111", 0.0001, "BTC", "DO_NOT_CONVERT", "Title", "Description", "https://localhost:4200/success", "https://localhost:4200/success", "https://localhost:4200/success", "token");
 		
 		ResponseEntity<Object> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders", HttpMethod.POST,
-				new HttpEntity<Object>(btcDTO, headers), Object.class);
+				new HttpEntity<Object>(order, headers), Object.class);
 		
 		logger.info(responseEntity.getBody().toString());
 		
@@ -123,7 +127,11 @@ public class BitCoinController {
 		//restTemplate.exchange
 		//ResponseEntity<String> response =  restTemplate.postForEntity("https://api-sandbox.coingate.com/v2/orders", btcDTO, String.class);
 		
-		return new ResponseEntity<Object>(responseEntity,HttpStatus.OK);
+		PaymentResponseDTO responseDTO = new PaymentResponseDTO();
+		responseDTO.setPaymentUrl(paymentUrl);
+		responseDTO.setPaymentId(1l);
+		
+		return new ResponseEntity<PaymentResponseDTO>(responseDTO,HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/getOrder/{order_id}/{idMagazine}", method = RequestMethod.GET)
@@ -179,7 +187,7 @@ public class BitCoinController {
 	 * Metoda za konkretno placanje, to be implemented
 	 * */
 	@RequestMapping(path="/checkout/{order_id}/{idMagazine}", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> createOrder(@PathVariable Integer order_id,  @PathVariable Long idMagazine) { 
+	public ResponseEntity<Object> checkout(@PathVariable Integer order_id,  @PathVariable Long idMagazine) { 
 		logger.info("Init checkout");
 		
 		CheckoutResponseDTO checkoutDTO = new CheckoutResponseDTO();
