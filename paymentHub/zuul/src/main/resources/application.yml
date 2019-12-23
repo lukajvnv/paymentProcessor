@@ -7,7 +7,7 @@ server:
   ssl:
     enabled: true
     protocol: TLS
-    key-store: classpath:zuul_keystore.jks
+    key-store: classpath:kp_zuul_keystore.jks
     key-store-password: sepstore
     key-store-type: JKS
     key-alias: zuul
@@ -81,7 +81,7 @@ ribbon:
 # vrednost true -> Caused by: javax.net.ssl.SSLPeerUnverifiedException: Certificate for <192.168.1.3> doesn't match any of the subject alternative names: []
 #    mozda false -> (ni ne stigne do zuul)Caused by: com.netflix.client.ClientException: Load balancer does not have available server for client: cardPaymentHandler
 
-  TrustStore: classpath:zuul_trustore.jks
+  TrustStore: classpath:kp_zuul_trustore.jks
   TrustStorePassword: sepstore
   IsHostnameValidationRequired: false
   # vrednost true -> Caused by: javax.net.ssl.SSLPeerUnverifiedException: Certificate for <192.168.1.3> doesn't match any of the subject alternative names: []

@@ -21,8 +21,8 @@ import com.project.cardPaymentHandler.util.KeyStoreHelper;
 @Configuration
 public class SecurityConfig {
 	
-	private static final String KEYSTOREFILEPATH = "src/main/resources/card_handler_keystore.jks";
-	private static final String TRUSTSTOREFILEPATH = "src/main/resources/card_handler_truststore.jks";
+	private static final String KEYSTOREFILEPATH = "src/main/resources/kp_card_handler_keystore.jks";
+	private static final String TRUSTSTOREFILEPATH = "src/main/resources/kp_card_handler_truststore.jks";
 	
 	private static final String CRYPTOFILEPATH = "src/main/resources/cardHandler.jks";
 	private static final String PROPERTIESPATH = "src/main/resources/application.properties";
