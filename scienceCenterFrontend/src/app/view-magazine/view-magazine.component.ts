@@ -14,7 +14,7 @@ export class ViewMagazineComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500);
+    this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500, 0.0001);
   }
 
   buy(){

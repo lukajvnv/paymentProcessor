@@ -25,7 +25,7 @@ export class PayMagazineFormComponent implements OnInit {
   constructor(private payService: PayService, private router: Router) { }
 
   ngOnInit() {
-    this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500);
+    this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500, 0.0001);
     let request : PaymentTypeRequest = new PaymentTypeRequest(this.magazine.id);
     this.payService.getPaymentTypes(request).subscribe(data => {
       this.paymentTypeResponse = data;
@@ -46,12 +46,24 @@ export class PayMagazineFormComponent implements OnInit {
   buy() {
     let payRequest: PayRequest = new PayRequest();
     payRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
-    payRequest.amount = this.magazine.price;
+    //payRequest.amount = this.magazine.price;
     payRequest.url = this.selectedPaymentType.paymentTypeHandlerUrl;
 
-    alert("Sta je jebeni sellerID:??? " + payRequest.sellerId)
+    //alert("Sta je jebeni sellerID:??? " + payRequest.sellerId)
 
-    //if(this.paymentTypeResponse.paymentTypes.)
+    //alert(this.selectedPaymentType.paymentTypeName);
+
+    if(this.selectedPaymentType.paymentTypeName == "BITCOIN") {
+      //alert("Usao u bitcoin");
+      payRequest.amount = this.magazine.priceInBitcoin;
+     
+    } else if(this.selectedPaymentType.paymentTypeName == "PAYPALL") {
+      //alert("Usao u pphandler");
+    } else {
+      //za placanje karticom
+     // alert("Usao u cardPay");
+      payRequest.amount = this.magazine.price;
+    }
 
     this.payService.buyMagazine(payRequest).subscribe(data => {
       this.payResponse = data;
@@ -65,6 +77,9 @@ export class PayMagazineFormComponent implements OnInit {
       console.log(error.text);
       
     });
+    
+
+    
   }
 
 }

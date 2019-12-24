@@ -99,7 +99,9 @@ public class BitCoinController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", authToken);	 
 		
-		CreateOrderRequestDTO order = new CreateOrderRequestDTO("1111", 0.0001, "BTC", "DO_NOT_CONVERT", "Title", "Description", "https://localhost:4200/success", "https://localhost:4200/success", "https://localhost:4200/success", "token");
+		System.out.println("Amount: " + btcDTO.getAmount());
+		
+		CreateOrderRequestDTO order = new CreateOrderRequestDTO("1111", btcDTO.getAmount(), "BTC", "DO_NOT_CONVERT", "Title", "Description", "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/success", "token");
 		
 		ResponseEntity<Object> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders", HttpMethod.POST,
 				new HttpEntity<Object>(order, headers), Object.class);
