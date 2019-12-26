@@ -80,7 +80,7 @@ public class AuthorizationService {
 	}
 	
 	public void generateSensitiveData() {
-		String[] passs = new String[] {"casopisA", "casopisB", "casopisC", "casopisD"};
+		String[] passs = new String[] {"casopisA", "casopisB", "casopisC", "casopisD", "kupacA"};
 		for(String pass: passs) {
 			String salt = generateSalt();
 			String hash = hashPassword(pass, salt);

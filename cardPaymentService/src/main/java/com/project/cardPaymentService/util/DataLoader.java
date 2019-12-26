@@ -12,6 +12,7 @@ import com.project.cardPaymentService.model.BankAccount;
 import com.project.cardPaymentService.model.CardAccount;
 import com.project.cardPaymentService.model.PaymentRequest;
 import com.project.cardPaymentService.repository.UnityOfWork;
+import com.project.cardPaymentService.service.AuthorizationService;
 
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -25,6 +26,9 @@ public class DataLoader implements ApplicationRunner {
 		createInitialPaymentRequest();
 		// createCardAccount();
 		createBankAccount();
+		
+//		AuthorizationService s = new AuthorizationService();
+//		s.generateSensitiveData();
 	}
 	
 	private void createInitialPaymentRequest() {
@@ -52,6 +56,10 @@ public class DataLoader implements ApplicationRunner {
 		BankAccount bank3 = new BankAccount("785-23545121-66", "Casopis C", "casopisC", "SDLcsfaocMjMgueNJ9BckoXNqYHWE9Lr5GdbZGVAcLc=", "fVEo7X9RaBCTomdT/wYf1g==", 555f);
 		unityOfWork.getBankAccountRepository().save(bank3);
 		
+		BankAccount bank4 = new BankAccount("785-23544458-88", "kupac A", "kupacA", "q4N1VDks+NhaTUEkTHUeBuR/eXp9tLFV+XEaUY0joA4=", "BdIDr4w0iTugtZzP7ET9kQ==", 450f);
+		unityOfWork.getBankAccountRepository().save(bank4);
+
+		
 		@SuppressWarnings("deprecation")
 		CardAccount acc1 = new CardAccount("4512365653214568", "123", "Casopis A", new Date(122, 11, 3), bank1);
 		unityOfWork.getCardAccountRepository().save(acc1);
@@ -59,6 +67,10 @@ public class DataLoader implements ApplicationRunner {
 		@SuppressWarnings("deprecation")
 		CardAccount acc2 = new CardAccount("5512365555555", "4444", "Casopis B", new Date(121, 11, 19), bank2);
 		unityOfWork.getCardAccountRepository().save(acc2);
+		
+		@SuppressWarnings("deprecation")
+		CardAccount acc3 = new CardAccount("5512365444555", "3333", "kupac A", new Date(121, 11, 19), bank4);
+		unityOfWork.getCardAccountRepository().save(acc3);
 	}
 
 }

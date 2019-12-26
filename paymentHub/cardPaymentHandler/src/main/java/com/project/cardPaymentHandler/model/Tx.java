@@ -20,7 +20,7 @@ public class Tx {
 	private Timestamp timestamp;
 	
 	@Column
-	private boolean status;
+	private TxStatus status;
 	
 	@Column
 	private Float amountOfMoney;
@@ -48,7 +48,7 @@ public class Tx {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Tx(Timestamp timestamp, boolean status, Float amountOfMoney, String txDescription, String senderName,
+	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription, String senderName,
 			String senderAccountNum, String recieverName, String recieverAccountNum) {
 		super();
 		this.timestamp = timestamp;
@@ -77,11 +77,11 @@ public class Tx {
 		this.timestamp = timestamp;
 	}
 
-	public boolean isStatus() {
+	public TxStatus isStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(TxStatus status) {
 		this.status = status;
 	}
 

@@ -7,7 +7,7 @@ server:
   ssl:
     enabled: true
     protocol: TLS
-    key-store: classpath:kp_zuul_keystore.jks
+    key-store: classpath:kps_zuul_keystore.jks
     key-store-password: sepstore
     key-store-type: JKS
     key-alias: zuul

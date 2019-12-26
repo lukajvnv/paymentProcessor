@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.cardPaymentHandler.dto.PaymentRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
+import com.project.cardPaymentHandler.model.Tx;
 import com.project.cardPaymentHandler.service.CardService;
 
 @RestController
@@ -53,5 +54,13 @@ public class CardController {
 		
 		logger.error("Pay initialized ended with errors");
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path="/saveTx",  method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Tx> saveTx(@RequestBody Tx request) {
+		logger.info("saved tx");
+		request = cardService.saveTx(request);
+	
+		return new ResponseEntity<>(new Tx(), HttpStatus.OK);
 	}
 }

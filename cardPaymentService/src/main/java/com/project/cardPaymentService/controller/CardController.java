@@ -78,6 +78,7 @@ public class CardController {
 	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PaymentValidationResponseDTO> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
 			PaymentValidationResponseDTO response;
+			
 			logger.info("PaymentRequest initialized");
 			try {
 				if (result.hasErrors()) {
