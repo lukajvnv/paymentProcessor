@@ -7,6 +7,7 @@ import { PaymentType } from '../model/payment-type.model';
 import { PayRequest } from '../model/pay-request.model';
 import { PayResponse } from '../model/pay-response.model';
 import { Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-pay-magazine-form',
@@ -48,7 +49,7 @@ export class PayMagazineFormComponent implements OnInit {
     payRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
     //payRequest.amount = this.magazine.price;
     payRequest.url = this.selectedPaymentType.paymentTypeHandlerUrl;
-
+    console.log(payRequest);
     //alert("Sta je jebeni sellerID:??? " + payRequest.sellerId)
 
     //alert(this.selectedPaymentType.paymentTypeName);
@@ -59,27 +60,40 @@ export class PayMagazineFormComponent implements OnInit {
      
     } else if(this.selectedPaymentType.paymentTypeName == "PAYPALL") {
       //alert("Usao u pphandler");
+      payRequest.amount = this.magazine.price;
     } else {
       //za placanje karticom
      // alert("Usao u cardPay");
       payRequest.amount = this.magazine.price;
     }
-
+    
     this.payService.buyMagazine(payRequest).subscribe(data => {
+      console.log(data);
       this.payResponse = data;
-      
-      this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
-      skipLocationChange: true,
-    });
-
+      console.log(this.payResponse.paymentUrl)
+      window.location.href =data.paymentUrl as string;
+      // if (this.selectedPaymentType.paymentTypeName == "PAYPALL") {
+      //   alert(1)
+      //   const tempResponse = data;
+      //   let url = `${payRequest.url}/execute`;
+      //   let executeRequest = {
+      //     url: url,
+      //     payerId: this.paymentTypeResponse.sellerInfoDbId,
+      //     amount: payRequest.amount,
+      //     paymentId: tempResponse.paymentId
+      //   }
+      //   this.payService.executePayment(executeRequest).toPromise().then(data => {
+      //     console.log(data);
+      //   })
+      // } else {
+      //   // this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
+        // skipLocationChange: true,
+        // });
+      // }
       console.log('uspeh');
-    }, (error: Response) => {
-      console.log(error.text);
-      
-    });
-    
+    }, error => console.log(error));
 
-    
+  
   }
 
 }

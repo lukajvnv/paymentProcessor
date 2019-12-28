@@ -1,4 +1,4 @@
-package com.project.scienceCenter.dto;
+package com.project.payPalHandler.dto;
 
 public class PaymentResponseDTO {
 

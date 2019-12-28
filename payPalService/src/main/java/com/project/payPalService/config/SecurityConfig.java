@@ -11,8 +11,8 @@ import com.netflix.discovery.shared.transport.jersey.EurekaJerseyClientImpl.Eure
 @Configuration
 public class SecurityConfig {
 	
-	private static final String KEYSTOREFILEPATH = "src/main/resources/kp_paypal_service_keystore.jks";
-	private static final String TRUSTSTOREFILEPATH = "src/main/resources/kp_paypal_service_truststore.jks";
+	private static final String KEYSTOREFILEPATH = "src/main/resources/kps_paypal_service_keystore.jks";
+	private static final String TRUSTSTOREFILEPATH = "src/main/resources/kps_paypal_service_truststore.jks";
 	
 	@Bean 
 	public DiscoveryClientOptionalArgs discoveryClientOptionalArgs() throws NoSuchAlgorithmException {

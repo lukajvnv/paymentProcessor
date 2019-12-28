@@ -1,4 +1,4 @@
-package com.project.payPalService.util;
+package com.project.payPalHandler.util;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import com.project.payPalService.model.Seller;
-import com.project.payPalService.repository.ISellerRepository;
+import com.project.payPalHandler.model.Seller;
+import com.project.payPalHandler.repository.ISellerRepository;
 
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -26,3 +26,4 @@ public class DataLoader implements ApplicationRunner {
 	}
 	
 }
+
