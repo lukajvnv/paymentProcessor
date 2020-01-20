@@ -1,21 +1,58 @@
+<!--
+
 <p>
   About magazine
 </p>
 
+<div>
 
-<table border="2">
-  <thead>
-    <th>Id</th>
-    <th>Issn</th>
-    <th>Name</th>
-    <th>Price</th>
-  </thead>
-  <tr>
-    <td>{{magazine.id}}</td>
-    <td>{{magazine.issn}}</td>
-    <td>{{magazine.name}}</td>
-    <td>{{magazine.price}}din</td>
-  </tr>
-</table>
+  <table border="2">
+    <thead>
+      <th>Id</th>
+      <th>Issn</th>
+      <th>Name</th>
+      <th>Price</th>
+    </thead>
+    <tr>
+      <td>{{magazine.id}}</td>
+      <td>{{magazine.issn}}</td>
+      <td>{{magazine.name}}</td>
+      <td>{{magazine.price}}din</td>
+    </tr>
+  </table>
+
+</div>
+-->
+
+
+<h2>Spisak Magazina</h2>
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>ISSN</th>
+        <th>Way of payment</th>
+        <th>Seller ID</th>
+        <th>Price in €</th>
+        <th>Buy</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let mag of magazines">
+          <td>{{mag.magazineId}}</td>
+          <td>{{mag.name}}</td>
+          <td>{{mag.issn}}</td>
+          <td>{{mag.wayOfPayment}}</td>
+          <td>{{mag.sellerIdentifier}}</td>
+          <td>{{mag.price}}</td>
+          <td><button (click)="buyMagazine(mag.magazineId,mag.sellerIdentifier)">Buy</button></td>
+       </tr>
+    </tbody>
+  </table>
+</div>
+
 
 <button (click)="buy()">Buy</button>
+<button (click)="registrate()">Registrate</button>

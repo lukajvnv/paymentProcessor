@@ -29,7 +29,8 @@ public class RequestService {
 			
 		}
 		ArrayList<PaymentTypeDTO> paymentTypesDTO = createPaymentTypeDTOList(sellerInfo);
-		PaymentTypeResponseDTO response = new PaymentTypeResponseDTO(sellerInfo.getSellerDBId(), paymentTypesDTO);
+		PaymentTypeResponseDTO response = new PaymentTypeResponseDTO(sellerInfo.getSellerDBId(), 
+				paymentTypesDTO, "https://localhost:4666/pay/" + request.getSellerId());
 		
 		return response;
 	}

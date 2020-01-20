@@ -4,8 +4,21 @@ public class PaymentResponseDTO {
 
 	private String paymentUrl;
 	private long paymentId;
+	
+	private String url;//url kp-ovog fronta
 
 	
+	public PaymentResponseDTO(String paymentUrl, long paymentId, String url) {
+		super();
+		this.paymentUrl = paymentUrl;
+		this.paymentId = paymentId;
+		this.url = url;
+	}
+
+
+
+
+
 	public PaymentResponseDTO(String paymentUrl, int paymentId) {
 		super();
 		this.paymentUrl = paymentUrl;
@@ -16,6 +29,22 @@ public class PaymentResponseDTO {
 	
 	
 	
+	public String getUrl() {
+		return url;
+	}
+
+
+
+
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+
+
+
 	public PaymentResponseDTO() {
 		// TODO Auto-generated constructor stub
 	}

@@ -14,4 +14,9 @@ export class TestService {
     alert("USO! 2");
     return this.http.get('https://localhost:8836/test');
   }
+
+  getAll(): Observable<any> {
+    return this.http.get('https://localhost:8836/test/getAll');
+  }
+
 }
