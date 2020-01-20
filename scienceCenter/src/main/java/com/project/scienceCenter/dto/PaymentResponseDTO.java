@@ -6,6 +6,7 @@ public class PaymentResponseDTO {
 	private long paymentId;
 	
 	private String url;//url kp-ovog fronta
+	private String paypalId;
 
 	
 	public PaymentResponseDTO(String paymentUrl, long paymentId, String url) {
@@ -59,6 +60,22 @@ public class PaymentResponseDTO {
 	}
 	public void setPaymentId(long paymentId) {
 		this.paymentId = paymentId;
+	}
+
+
+
+
+
+	public String getPaypalId() {
+		return paypalId;
+	}
+
+
+
+
+
+	public void setPaypalId(String paypalId) {
+		this.paypalId = paypalId;
 	}
 
 	

@@ -4,25 +4,25 @@ package com.project.payPalService.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-import com.project.payPalService.model.Client;
-import com.project.payPalService.repository.IClientRepository;
+import com.project.payPalService.model.Seller;
+import com.project.payPalService.repository.ISellerRepository;
 
+@Component
 public class DataLoader implements ApplicationRunner {
 
 	@Autowired
-	private IClientRepository clientRepository;
+	private ISellerRepository sellerRepository;
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		seedClient();
+		seedSeller();
 	}
 
-	public void seedClient() {
-		Client client = new Client(1L,
-				"AcI4uBHVrHz3OFAt5OTzoBcz68-gU6rR4x0UM6GfgFLEufIwsfYBvjeEMDL2tz6eT0BiXSiO--BTcf_Z",
-				"EOR-cyCwpmFHd2Ut53JKCGFE6s7eehXdja-fEQuH1qsbtqBI5YdSsJyQHResoghimdINQbKOlzXFI3JZ");
-		clientRepository.save(client);
+	public void seedSeller() {
+		Seller seller = new Seller(1L, "srdjan.popovic@gmail.com");
+		sellerRepository.save(seller);
 	}
 	
 }

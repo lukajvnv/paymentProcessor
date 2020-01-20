@@ -44,6 +44,11 @@ export class PayService {
     .pipe(retry(1), catchError(this.handlerError));
   }
 
+  executePayment(request: any): Observable<any> {
+    // workaround
+    return this.http.post(this.SCIENCE_CENTER_API + 'buy', request);
+  }
+
   private handlerError(error: Response) {
     return Observable.throw(error);
   }

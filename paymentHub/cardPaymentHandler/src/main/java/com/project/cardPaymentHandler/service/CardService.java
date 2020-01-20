@@ -16,6 +16,7 @@ import com.project.cardPaymentHandler.dto.PaymentValidationRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
 import com.project.cardPaymentHandler.model.BankInfo;
 import com.project.cardPaymentHandler.model.SellerBankInfo;
+import com.project.cardPaymentHandler.model.Tx;
 import com.project.cardPaymentHandler.util.DateConverter;
 
 @Service
@@ -26,6 +27,8 @@ public class CardService {
 	
 	@Autowired
 	private SymetricCryptography cryptoService;
+	
+	
 	
 	private Logger logger = LoggerFactory.getLogger(CardService.class);
 
@@ -51,24 +54,30 @@ public class CardService {
 		
 		switch (responseObject.getTxStatus()) {
 			case SUCCESS:
-				logger.info("pay service ended successfully");
+				logger.info("pay init service ended successfully");
 
 				break;
 			case ERROR:
-				logger.error("pay service ended with errors");
+				logger.error("pay init service ended with errors");
 
 				break;	
 			case FAILED:
-				logger.error("pay service operations failed");
+				logger.error("pay init service operations failed");
 
 				break;
 		default:
 			break;
 		}
 		
-		logger.info("pay ended successfully");
+		logger.info("pay init ended successfully");
 
 		return responseObject;
+	}
+	
+	public Tx saveTx(Tx tx) {
+		tx.setTxId(-1l);
+		Tx txSaved = this.unityOfWork.getTxRepository().save(tx);
+		return txSaved;
 	}
 	
 	public SellerBankInfo getAccount(long id) {

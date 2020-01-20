@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.project.cardPaymentService.dto.PaymentCardRequestDTO;
 import com.project.cardPaymentService.dto.PaymentCardResponseDTO;
@@ -43,19 +45,22 @@ public class TransactionService {
 		boolean canReserve = canReserveMoney(buyerAccount, request.getAmount());
 		if(!canReserve) {
 			logger.error("Tx at buyer's account failed: not enough money at the account");
-			saveTxLog(TxStatus.FAILED, request.getAmount(), "Not enough money at the account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
+			Tx failedTx = saveTxLog(TxStatus.FAILED, request.getAmount(), "Not enough money at the account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
+			sendTxToKp(failedTx);
 			throw new NotEnoughMoney();
 		}
 		
 		buyerAccount.setBalance(buyerAccount.getBalance() - request.getAmount());
 		saveAccount(buyerAccount);
-		saveTxLog(TxStatus.SUCCESS, request.getAmount(), "Money taken from buyer account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
+		Tx buyerTx = saveTxLog(TxStatus.SUCCESS, request.getAmount(), "Money taken from buyer account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
 		logger.info("Money taken from buyer account");
 		
 		sellerAccount.setBalance(sellerAccount.getBalance() + request.getAmount());
 		saveAccount(sellerAccount);
-		saveTxLog(TxStatus.SUCCESS, request.getAmount(), "Money added to the seler account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
+		Tx sellerTx = saveTxLog(TxStatus.SUCCESS, request.getAmount(), "Money added to the seler account", buyerAccount.getBankAccountName(), buyerAccount.getBankAccountNumber(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
 		logger.info("Money added to the seler account");
+		sendTxToKp(sellerTx);
+
 		
 		return null;
 	}
@@ -103,7 +108,17 @@ public class TransactionService {
 	
 	private Tx saveTxLog(TxStatus status, Float amountOfMoney, String txDescription, String senderName, String senderAccountNum, String recieverName, String recieverAccountNum) {
 		Tx tx = new Tx(new Timestamp(System.currentTimeMillis()), status, amountOfMoney, txDescription, senderName, senderAccountNum, recieverName, recieverAccountNum);
-		return unityOfWork.getTxRepository().save(tx);
+		tx = unityOfWork.getTxRepository().save(tx);
+		
+				
+		return tx;
+	}
+	
+	private Tx sendTxToKp(Tx tx) {
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Tx> response =  restTemplate.postForEntity("https://localhost:8763/card/saveTx", tx, Tx.class);
+	
+		return response.getBody();
 	}
 	
 	private BankAccount saveAccount(BankAccount account) {
