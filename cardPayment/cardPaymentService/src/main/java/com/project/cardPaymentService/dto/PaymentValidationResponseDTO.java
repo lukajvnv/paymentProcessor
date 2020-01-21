@@ -1,13 +1,13 @@
-package com.project.cardPaymentHandler.dto;
+package com.project.cardPaymentService.dto;
 
-import com.project.cardPaymentHandler.model.TxStatus;
+import com.project.cardPaymentService.model.TxStatus;
 
 public class PaymentValidationResponseDTO {
-
+	
 	private String paymentUrl;
 	private long paymentId;
+	
 	private TxStatus txStatus;
-
 	
 	public PaymentValidationResponseDTO(String paymentUrl, long paymentId) {
 		super();
@@ -47,4 +47,6 @@ public class PaymentValidationResponseDTO {
 	public void setTxStatus(TxStatus txStatus) {
 		this.txStatus = txStatus;
 	}
+	
+	
 }

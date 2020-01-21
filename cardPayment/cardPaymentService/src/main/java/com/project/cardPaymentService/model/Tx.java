@@ -1,4 +1,4 @@
-package com.project.cardPaymentHandler.model;
+package com.project.cardPaymentService.model;
 
 import java.sql.Timestamp;
 
@@ -68,8 +68,8 @@ public class Tx {
 	}
 	
 	
-	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription, long paymentId,
-			String senderName, String senderAccountNum, String recieverName, String recieverAccountNum) {
+	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription,
+			String senderName, String senderAccountNum, String recieverName, String recieverAccountNum, long paymentId) {
 		super();
 		this.timestamp = timestamp;
 		this.status = status;
@@ -209,9 +209,8 @@ public class Tx {
 
 
 	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription,
-			long paymentId, String senderName, String senderAccountNum, String recieverName, 
-			String recieverAccountNum, Timestamp merchantTimestamp, long merchantOrderId, 
-			Timestamp acquirerTimestamp, long acquirerOrderId) {
+			Long paymentId, String senderName, String senderAccountNum, String recieverName, String recieverAccountNum,
+			Timestamp merchantTimestamp, Long merchantOrderId, Timestamp acquirerTimestamp, Long acquirerOrderId) {
 		super();
 		this.timestamp = timestamp;
 		this.status = status;
