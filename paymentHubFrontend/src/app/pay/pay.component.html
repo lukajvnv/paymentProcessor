@@ -1,0 +1,11 @@
+<p>
+  pay works!
+</p>
+
+<p>Provided payment types</p>
+<select [(ngModel)]="selectedPaymentType" name="paymentType" id="paymentType" class="custom-select d-block" required>
+  <option *ngFor="let type of paymentTypeResponse?.paymentTypes;" [ngValue]="type">{{type.paymentTypeName}}</option>
+</select>
+
+<button (click)="buy()">Buy</button>
+

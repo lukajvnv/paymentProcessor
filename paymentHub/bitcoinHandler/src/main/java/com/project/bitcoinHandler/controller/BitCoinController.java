@@ -3,6 +3,7 @@ package com.project.bitcoinHandler.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.GsonJsonParser;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,7 @@ import com.project.bitcoinHandler.util.TxStatus;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import javax.websocket.server.PathParam;
 
@@ -42,12 +46,19 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.project.bitcoinHandler.*;
 
 @RestController
 @RequestMapping("/bitCoin")
 public class BitCoinController {
 
 	private Logger logger = LoggerFactory.getLogger(BitCoinController.class);
+	
+	public static String CREATE_ORDER_API = "https://api-sandbox.coingate.com/v2/orders";
+	
+	public static Integer STATIC_ID = 224652;
+	public static String STATIC_TOKEN = "ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS";
+	public static Boolean IS_CREATE = false;
 	
 	@Autowired
 	private BitcoinRepository bitcoinRepo;
@@ -64,7 +75,7 @@ public class BitCoinController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "ab7fzPdN49-xBVoY_LdSifCZiVrqCbdcfjWdweJS");
-		ResponseEntity<String> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders", HttpMethod.GET,
+		ResponseEntity<String> responseEntity = new RestTemplate().exchange(CREATE_ORDER_API, HttpMethod.GET,
 				new HttpEntity<String>(pom, headers), String.class);
 
 		//restTemplate.getForEntity("https://google.rs", String.class);
@@ -118,7 +129,7 @@ public class BitCoinController {
 		
 		logger.info(paymentUrl);
 		
-		Tx tx = createTransaction(btcResponse);
+		Tx tx = createTransaction(btcResponse,sbi);
 		txRepo.save(tx);
 		//BitCoinResponseDTO response = parser.parseList(responseEntity.getBody().toString());
 		
@@ -132,6 +143,13 @@ public class BitCoinController {
 		PaymentResponseDTO responseDTO = new PaymentResponseDTO();
 		responseDTO.setPaymentUrl(paymentUrl);
 		responseDTO.setPaymentId(1l);
+
+		STATIC_ID =  btcResponse.getId();
+		STATIC_TOKEN = authToken;
+		IS_CREATE = true;
+		
+		//scheduleFixedDelayTask();
+		//scheduleFixedDelayTask(btcResponse.getId(), authToken);
 		
 		return new ResponseEntity<PaymentResponseDTO>(responseDTO,HttpStatus.OK);
 	}
@@ -166,7 +184,7 @@ public class BitCoinController {
 	
 	
 	
-	public Tx createTransaction(BitCoinResponseDTO btcDTO) {
+	public Tx createTransaction(BitCoinResponseDTO btcDTO, SellerBitcoinInfo sbi) {
 		
 		Tx tx = new Tx();
 		
@@ -176,6 +194,8 @@ public class BitCoinController {
 		tx.setStatus(TxStatus.PENDING);
 		tx.setRecieverAddress(btcDTO.getPayment_url());
 		tx.setorder_id(btcDTO.getId()); //ovaj id je na coin gate-u i moram ga cuvati u transakciji
+		tx.setTxDescription("Porudzbina je kreirana od strane korisnika");
+		tx.setSbi(sbi);
 		
 		//trebace ovde jos da se setuje id korisnika koji je kreirao porudzbinu kako bi kasnije mogao da getuje sve
 		//njegove transakcije
@@ -238,6 +258,130 @@ public class BitCoinController {
 		//ResponseEntity<String> response =  restTemplate.postForEntity("https://api-sandbox.coingate.com/v2/orders", btcDTO, String.class);
 		
 		return new ResponseEntity<Object>(responseEntity,HttpStatus.OK);
+	}
+	
+	@Scheduled(fixedDelay = 15000)
+	public void scheduleFixedDelayTask() {
+		
+		List<Tx> listaTx = txRepo.findAll();
+		
+		for (Tx tx : listaTx) {
+			if(tx.getStatus().equals(TxStatus.PENDING)) {
+				System.out.println(
+					      "Fixed delay task - " + System.currentTimeMillis() / 20000);
+				//to be implemented
+				
+				String auth = "Bearer " + tx.getSbi().getBitcoinAddress();
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Authorization", auth);
+				
+				Integer orderId = tx.getorder_id();
+				
+				GetOrderResponseDTO getOrderDTO = new GetOrderResponseDTO();
+				
+			    ResponseEntity<Object> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders/" + orderId, HttpMethod.GET,
+						new HttpEntity<Object>(getOrderDTO, headers), Object.class);
+			    
+			    
+			    ObjectMapper mapper = new ObjectMapper();
+				mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+				GetOrderResponseDTO gorResponse = new GetOrderResponseDTO();
+		
+				gorResponse = mapper.convertValue(responseEntity.getBody(), GetOrderResponseDTO.class);
+		
+			    
+			    System.out.println("Order status: " + gorResponse.getStatus());
+				
+			    if(gorResponse.getStatus().equals("paid") || gorResponse.getStatus().equals("invalid") || gorResponse.getStatus().equals("expired")) {
+			    	
+			    	
+			    	Tx tx2 = new Tx();
+		    		tx2 = txRepo.findByusername(gorResponse.getId());
+		    		System.out.println("TX: " + tx2.getorder_id());
+			    	
+			    	if(gorResponse.getStatus().equals("paid")) {
+			    		//promenimo u bazi
+			    		//txRepo.getOne((Integer)gorResponse.getId()); 
+			    		tx.setStatus(TxStatus.PAID);
+			    		
+			    	} else if(gorResponse.getStatus().equals("invalid")) {
+			    		tx.setStatus(TxStatus.FAILED);
+			    	} else {
+			    		tx.setStatus(TxStatus.EXPIRED);
+			    	}
+			    	
+			    	txRepo.save(tx);
+			    	
+			    }
+				
+				
+				
+				
+				
+			} else {
+				System.out.println("Nikom nista");
+				logger.info("Scheduled is working...");
+			}
+		}
+		
+		System.out.println("Nema transakcija :(");
+		
+	/*	if(IS_CREATE) {
+			System.out.println(
+				      "Fixed delay task - " + System.currentTimeMillis() / 20000);
+						    	
+		    String authToken = STATIC_TOKEN;
+		    
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Authorization", authToken);
+			
+			System.out.println("authtoken : " + authToken);
+		    
+			GetOrderResponseDTO getOrderDTO = new GetOrderResponseDTO();
+			
+		    ResponseEntity<Object> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders/" + STATIC_ID, HttpMethod.GET,
+					new HttpEntity<Object>(getOrderDTO, headers), Object.class);
+		    
+		    
+		    ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+			GetOrderResponseDTO gorResponse = new GetOrderResponseDTO();
+	
+			gorResponse = mapper.convertValue(responseEntity.getBody(), GetOrderResponseDTO.class);
+	
+		    
+		    System.out.println("Order status: " + gorResponse.getStatus());
+		    
+		    if(gorResponse.getStatus().equals("paid") || gorResponse.getStatus().equals("invalid") || gorResponse.getStatus().equals("expired")) {
+		    	
+		    	/*Tx tx = new Tx();
+	    		tx = txRepo.findByOrder_Id(gorResponse.getId());
+	    		System.out.println("TX: " + tx.getorder_id());
+		    	
+		    	if(gorResponse.getStatus().equals("paid")) {
+		    		//promenimo u bazi
+		    		//txRepo.getOne((Integer)gorResponse.getId());
+		    		tx.setStatus(TxStatus.PAID);
+		    		
+		    	} else if(gorResponse.getStatus().equals("invalid")) {
+		    		tx.setStatus(TxStatus.FAILED);
+		    	} else {
+		    		tx.setStatus(TxStatus.EXPIRED);
+		    	}
+		    	
+		    	txRepo.save(tx);*/
+		    /*	
+		    	IS_CREATE = false;
+		    }
+					    
+				    
+		} else {
+			System.out.println("Nikom nista");
+			logger.info("Scheduled is working...");
+		}*/
+		
+	    
+	    
 	}
 	
 }

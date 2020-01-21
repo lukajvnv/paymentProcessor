@@ -31,7 +31,7 @@ public class RequestController {
 	
 	@RequestMapping(path = "/paymentTypes", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PaymentTypeResponseDTO> cardHandlerPost(@RequestBody PaymentTypeRequestDTO request) {
-		
+		System.out.println("Usao, nece debug da radi nesto");
 		PaymentTypeResponseDTO response = requestService.getSupportedPaymentTypes(request);
 		
 		return new ResponseEntity<PaymentTypeResponseDTO>(response, HttpStatus.OK);

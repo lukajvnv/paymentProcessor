@@ -26,8 +26,8 @@ export class PayMagazineFormComponent implements OnInit {
   constructor(private payService: PayService, private router: Router) { }
 
   ngOnInit() {
-    this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500, 0.0001);
-    let request : PaymentTypeRequest = new PaymentTypeRequest(this.magazine.id);
+   // this.magazine = new Magazine(1, '4563-1235', 'Inzenjerski glasnik', 500, 0.0001);
+    let request : PaymentTypeRequest = new PaymentTypeRequest(this.magazine.magazineId);
     this.payService.getPaymentTypes(request).subscribe(data => {
       this.paymentTypeResponse = data;
       console.log('uspeh');
@@ -54,7 +54,7 @@ export class PayMagazineFormComponent implements OnInit {
 
     //alert(this.selectedPaymentType.paymentTypeName);
 
-    if(this.selectedPaymentType.paymentTypeName == "BITCOIN") {
+   /* if(this.selectedPaymentType.paymentTypeName == "BITCOIN") {
       //alert("Usao u bitcoin");
       payRequest.amount = this.magazine.priceInBitcoin;
      
@@ -65,8 +65,8 @@ export class PayMagazineFormComponent implements OnInit {
       //za placanje karticom
      // alert("Usao u cardPay");
       payRequest.amount = this.magazine.price;
-    }
-    
+    }*/
+
     this.payService.buyMagazine(payRequest).subscribe(data => {
       console.log(data);
       this.payResponse = data;

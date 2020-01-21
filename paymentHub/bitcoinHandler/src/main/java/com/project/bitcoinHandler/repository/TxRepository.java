@@ -7,5 +7,5 @@ import com.project.bitcoinHandler.model.Tx;
 
 @Repository
 public interface TxRepository extends JpaRepository<Tx, Long> {
-
+	Tx findByusername(Integer username);
 }
