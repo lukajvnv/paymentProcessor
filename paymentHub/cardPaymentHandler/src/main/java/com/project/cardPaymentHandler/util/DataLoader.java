@@ -3,6 +3,7 @@ package com.project.cardPaymentHandler.util;
 import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
+import java.sql.Timestamp;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.project.cardPaymentHandler.model.BankInfo;
 import com.project.cardPaymentHandler.model.SellerBankInfo;
+import com.project.cardPaymentHandler.model.Tx;
+import com.project.cardPaymentHandler.model.TxStatus;
 import com.project.cardPaymentHandler.service.SymetricCryptography;
 import com.project.cardPaymentHandler.service.UnityOfWork;
 
@@ -34,6 +37,8 @@ public class DataLoader implements ApplicationRunner {
 		// TODO Auto-generated method stub
 		createBankInfoAccount();
 		createSellerInfoAccount();
+		
+		createTx();
 		
 		// proba();
 	}
@@ -90,9 +95,9 @@ public class DataLoader implements ApplicationRunner {
 		String check1 = new String( crypthoService.decrypt(Base64Utility.decode(pass1)));
 		
 		// VAZNO: cardPaymentSHandler.SellerBankInfo.sellerIdentifier -> requestPaymentHandler.SellerInfo.sellerDBId
-		SellerBankInfo sellerBankInfo1 = new SellerBankInfo(1L, "7457897912345", pass1, pass1, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
-		SellerBankInfo sellerBankInfo2 = new SellerBankInfo(2l, "7455632178954", pass2, pass2, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
-		SellerBankInfo sellerBankInfo3 = new SellerBankInfo(3l, "4565635558954", pass3, pass3, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error");
+		SellerBankInfo sellerBankInfo1 = new SellerBankInfo(1L, "7457897912345", pass1, pass1, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error", "Casopis A");
+		SellerBankInfo sellerBankInfo2 = new SellerBankInfo(2l, "7455632178954", pass2, pass2, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error", "Casopis B");
+		SellerBankInfo sellerBankInfo3 = new SellerBankInfo(3l, "4565635558954", pass3, pass3, "https://localhost:4200/success", "https://localhost:4200/failed", "https://localhost:4200/error", "Casopis C");
 
 		unityOfWork.getSellerBankInfoRepository().save(sellerBankInfo1);
 		unityOfWork.getSellerBankInfoRepository().save(sellerBankInfo2);
@@ -104,11 +109,43 @@ public class DataLoader implements ApplicationRunner {
 
 	
 	private void createBankInfoAccount() {
-		BankInfo bankInfo1 = new BankInfo("Banka Intesa", "745", "https://localhost:8841/card/initPayment");
-		BankInfo bankInfo2 = new BankInfo("Raifeissen banka", "456", "https://localhost:8851/card/initPayment");
+		BankInfo bankInfo1 = new BankInfo("Banka Intesa", "745", "https://localhost:8841/card");
+		BankInfo bankInfo2 = new BankInfo("Raifeissen banka", "456", "https://localhost:8851/card");
 		
 		unityOfWork.getBankInfoRepository().save(bankInfo1);
 		unityOfWork.getBankInfoRepository().save(bankInfo2);
+	}
+	
+	private void createTx() {
+		@SuppressWarnings("deprecation")
+		Timestamp timestamp1 = new Timestamp(120, 11, 19, 1, 20, 8, 1);
+		long paymentId1 = 1234567896l;
+		long merchantOrderId1 = 4561230258l;
+		
+		@SuppressWarnings("deprecation")
+		Timestamp timestamp2 = new Timestamp(120, 0, 21, 1, 43, 8, 1);
+		long paymentId2 = 1536987452l;
+		long merchantOrderId2 = 3698527530l;
+		
+		@SuppressWarnings("deprecation")
+		Timestamp timestamp3 = new Timestamp(120, 0, 21, 1, 47, 4, 1);
+		long paymentId3 = 1237414582l;
+		long merchantOrderId3 = 4522230258l;
+		
+		@SuppressWarnings("deprecation")
+		Timestamp timestamp4 = new Timestamp(120, 0, 20, 19, 20, 4, 1);
+		long paymentId4 = 4234567896l;
+		long merchantOrderId4 = 4563330258l;
+		
+		Tx tx1 = new Tx(new Timestamp(System.currentTimeMillis()), TxStatus.UNKNOWN, 500f, "txDescription", paymentId1, "senderName", "senderAccountNum", "recieverName", "recieverAccountNum", timestamp1, merchantOrderId1, timestamp1, merchantOrderId1);
+		Tx tx2 = new Tx(new Timestamp(System.currentTimeMillis()), TxStatus.ERROR, 500f, "txDescription", paymentId2, "senderName", "senderAccountNum", "recieverName", "recieverAccountNum", timestamp2, merchantOrderId2, timestamp2, merchantOrderId2);
+		Tx tx3 = new Tx(new Timestamp(System.currentTimeMillis()), TxStatus.SUCCESS, 500f, "txDescription", paymentId3, "senderName", "senderAccountNum", "recieverName", "recieverAccountNum", timestamp3, merchantOrderId3, timestamp3, merchantOrderId3);
+		Tx tx4 = new Tx(new Timestamp(System.currentTimeMillis()), TxStatus.UNKNOWN, 500f, "txDescription", paymentId4, "senderName", "senderAccountNum", "recieverName", "recieverAccountNum", timestamp4, merchantOrderId4, timestamp4, merchantOrderId4);
+	
+		unityOfWork.getTxRepository().save(tx1);
+		unityOfWork.getTxRepository().save(tx2);
+		unityOfWork.getTxRepository().save(tx3);
+		unityOfWork.getTxRepository().save(tx4);	
 	}
 
 }

@@ -9,13 +9,13 @@ public class PaymentValidationResponseDTO {
 	private TxStatus txStatus;
 
 	
-	public PaymentValidationResponseDTO(String paymentUrl, int paymentId) {
+	public PaymentValidationResponseDTO(String paymentUrl, long paymentId) {
 		super();
 		this.paymentUrl = paymentUrl;
 		this.paymentId = paymentId;
 	}
 	
-	public PaymentValidationResponseDTO(String paymentUrl, int paymentId, TxStatus status) {
+	public PaymentValidationResponseDTO(String paymentUrl, long paymentId, TxStatus status) {
 		this(paymentUrl, paymentId);
 		this.txStatus = status;
 	}

@@ -2,22 +2,26 @@ package com.project.cardPaymentHandler.service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Random;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.cardPaymentHandler.dto.PaymentRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
+import com.project.cardPaymentHandler.dto.TxCheckDto;
 import com.project.cardPaymentHandler.model.BankInfo;
 import com.project.cardPaymentHandler.model.SellerBankInfo;
 import com.project.cardPaymentHandler.model.Tx;
+import com.project.cardPaymentHandler.model.TxStatus;
 import com.project.cardPaymentHandler.util.DateConverter;
+import com.project.cardPaymentHandler.util.Generator;
 
 @Service
 public class CardService {
@@ -44,40 +48,114 @@ public class CardService {
 		String bankNum= getBankFromSellerAccount(account.getSellerBankAccountNumber());
 		BankInfo bank = findBank(bankNum);
 		
+		
 		PaymentValidationRequestDTO newRequest = createServiceRequest(request, account);
+		//cuvanje inicijalnog tx
+		Tx tx = createTx(TxStatus.UNKNOWN, newRequest.getAmount(), account.getSellerClientName(), account.getSellerBankAccountNumber(), 0L, DateConverter.decodeT(newRequest.getMerchantTimeStamp()), newRequest.getMerchantOrderId(), DateConverter.decodeT(newRequest.getMerchantTimeStamp()), -1l);
+		saveTx(tx);
 		
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<PaymentValidationResponseDTO> validationResponse =  restTemplate.postForEntity("https://localhost:8841/card/initPayment", newRequest, PaymentValidationResponseDTO.class);
-		
-		PaymentValidationResponseDTO responseObject;
-		responseObject =  validationResponse.getBody();
-		
-		switch (responseObject.getTxStatus()) {
-			case SUCCESS:
-				logger.info("pay init service ended successfully");
+		ResponseEntity<PaymentValidationResponseDTO> validationResponse;
+		try {
+			validationResponse = restTemplate.postForEntity(bank.getServiceUrl() + "/initPayment", newRequest, PaymentValidationResponseDTO.class);
+			PaymentValidationResponseDTO responseObject =  validationResponse.getBody();
+			
+			switch (responseObject.getTxStatus()) {
+				case SUCCESS:
+					logger.info("pay init service ended successfully");
+					//cuvanje sa error statusom
+					Tx txS = unityOfWork.getTxRepository().findByMerchantOrderId(newRequest.getMerchantOrderId());
+					txS.setPaymentId(responseObject.getPaymentId());
+					saveTx(txS);
+					break;
+				case FAILED:
+					logger.error("pay init service operations failed in bank service");
+					//cuvanje sa error statusom
+					Tx txSErr = unityOfWork.getTxRepository().findByMerchantOrderId(newRequest.getMerchantOrderId());
+					txSErr.setStatus(TxStatus.ERROR);
+					saveTx(txSErr);
+					responseObject.setPaymentUrl(newRequest.getErrorUrl());
+					responseObject.setTxStatus(TxStatus.ERROR);
+					break;
+				default:
+					throw new RestClientException("");
+			}
+			
+			logger.info("pay init ended successfully");
+			
+			return responseObject;
 
-				break;
-			case ERROR:
-				logger.error("pay init service ended with errors");
-
-				break;	
-			case FAILED:
-				logger.error("pay init service operations failed");
-
-				break;
-		default:
-			break;
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			PaymentValidationResponseDTO errorResponse = new PaymentValidationResponseDTO(newRequest.getErrorUrl(), 0, TxStatus.ERROR);
+			//cuvanje sa sve payment id-jem
+			Tx txSErr = unityOfWork.getTxRepository().findByMerchantOrderId(newRequest.getMerchantOrderId());
+			txSErr.setStatus(TxStatus.ERROR);
+			saveTx(txSErr);
+			return errorResponse;
 		}
 		
-		logger.info("pay init ended successfully");
+		
 
-		return responseObject;
+	}
+	
+	public void checkTx(long paymentId, long merchantOrderId) {
+		Tx tx = getTx(merchantOrderId, paymentId);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		TxCheckDto request = new TxCheckDto(paymentId, merchantOrderId);
+		//TODO: TX VEZA KA PRODAVCU->KLIJENT,BANKA->SERVIS BANKE
+		ResponseEntity<Tx> txFromServiceResponse;
+		try {
+			txFromServiceResponse = restTemplate.postForEntity("https://localhost:8841/card/checkTx", request, Tx.class);
+			Tx txFromService = txFromServiceResponse.getBody();
+			
+			tx.setStatus(txFromService.getStatus());
+			tx.setTxDescription(txFromService.getTxDescription());
+			tx.setAcquirerOrderId(txFromService.getAcquirerOrderId());
+			tx.setAcquirerTimestamp(txFromService.getAcquirerTimestamp());
+			tx.setSenderName(txFromService.getSenderName());
+			tx.setSenderAccountNum(txFromService.getSenderAccountNum());
+			
+			saveTx(tx);
+			sendToSC(tx);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			tx.setStatus(TxStatus.ERROR);
+			saveTx(tx);
+			sendToSC(tx);
+		}
+		
+	}
+	
+	public void checkTxs() {
+		List<Tx> unknownStatusTxs = unityOfWork.getTxRepository().findByStatus(TxStatus.UNKNOWN);
+		for(Tx unknownTx: unknownStatusTxs) {
+			checkTx(unknownTx.getPaymentId(), unknownTx.getMerchantOrderId());
+		}
+	}
+	
+	
+	public void sendToSC(Tx tx) {
+		
 	}
 	
 	public Tx saveTx(Tx tx) {
-		tx.setTxId(-1l);
+		//tx.setTxId(-1l);
 		Tx txSaved = this.unityOfWork.getTxRepository().save(tx);
 		return txSaved;
+	}
+	
+	public Tx createTx(TxStatus status, Float amount, String receiverName, String receiverAccountNum, long paymentId, Timestamp merchantTimestamp, Long merchantOrderId,  Timestamp acquirerTimestamp, Long acquirerOrderId) {
+		Tx txxs = new Tx(new Timestamp(System.currentTimeMillis()), status, amount, "", paymentId, "", "", receiverName, receiverAccountNum, merchantTimestamp, merchantOrderId, acquirerTimestamp, acquirerOrderId);
+		return txxs;
+	}
+	
+	public Tx getTx(Long merchantOrderId, Long paymentId) {
+		return unityOfWork.getTxRepository().findByMerchantOrderIdAndPaymentId(merchantOrderId, paymentId);
 	}
 	
 	public SellerBankInfo getAccount(long id) {
@@ -98,16 +176,18 @@ public class CardService {
 		String merchantPassword = cryptoService.findInfo(account.getSellerPassword());
 		Timestamp merchantTimeStamp = new Timestamp(System.currentTimeMillis());
 		String merchantTimeStampS =  DateConverter.encodeT(merchantTimeStamp);
-		Long merchantOrderId = generatePaymentId();
+		Long merchantOrderId = generateMerchantOrderId();
 		
 		PaymentValidationRequestDTO validationRequest = new PaymentValidationRequestDTO(merchantId, merchantPassword, request.getAmount(), merchantOrderId, merchantTimeStampS, account.getTxSuccessUrl(), account.getTxFailedUrl(), account.getTxErrorUrl());
 
 		return validationRequest;
 	}
 	
-	private long generatePaymentId() {
-		Random random = new Random(System.nanoTime());
-		long randomInt = random.nextLong();
-		return randomInt;
+	private long generateMerchantOrderId() {
+//		Random random = new Random(System.nanoTime());
+//		long number = random.nextLong();
+		Generator g = unityOfWork.getIdGeneratorRepository().save(new Generator());
+		long number = g.getGeneratedId();
+		return number;
 	}
 }

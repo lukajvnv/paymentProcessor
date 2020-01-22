@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { retry, catchError } from 'rxjs/operators';
+import { PayRequest } from '../model/pay-request.model';
 
 
 @Injectable({
@@ -20,6 +21,11 @@ export class PayServiceService {
     //alert("Service?")
     return this.http.post(this.REQUEST_HANDLER_API + 'paymentTypes', request)
   //  .pipe(retry(1), catchError(this.handlerError));
+  }
+
+  buyMagazine(request: PayRequest) : Observable<any> {
+    return this.http.post(request.url, request)
+    .pipe(retry(1), catchError(this.handlerError));
   }
 
   private handlerError(error: Response) {

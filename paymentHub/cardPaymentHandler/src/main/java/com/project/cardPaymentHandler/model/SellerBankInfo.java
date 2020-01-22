@@ -23,6 +23,9 @@ public class SellerBankInfo {
 	private String sellerBankAccountNumber;
 	
 	@Column
+	private String sellerClientName;
+	
+	@Column
 	private String sellerUsername;
 	
 	@Column
@@ -45,7 +48,7 @@ public class SellerBankInfo {
 	}
 
 	public SellerBankInfo(Long sellefIdentifier, String sellerBankAccountNumber, String sellerUsername,
-			String sellerPassword, String txSuccessUrl, String txFailedUrl, String txErrorUrl) {
+			String sellerPassword, String txSuccessUrl, String txFailedUrl, String txErrorUrl, String clientName) {
 		super();
 		this.sellerIdentifier = sellefIdentifier;
 		this.sellerBankAccountNumber = sellerBankAccountNumber;
@@ -54,6 +57,7 @@ public class SellerBankInfo {
 		this.txSuccessUrl = txSuccessUrl;
 		this.txFailedUrl = txFailedUrl;
 		this.txErrorUrl = txErrorUrl;
+		this.sellerClientName = clientName;
 	}
 
 	public Long getBankInfoId() {
@@ -118,6 +122,22 @@ public class SellerBankInfo {
 
 	public void setTxErrorUrl(String txErrorUrl) {
 		this.txErrorUrl = txErrorUrl;
+	}
+
+	public Long getSellerIdentifier() {
+		return sellerIdentifier;
+	}
+
+	public void setSellerIdentifier(Long sellerIdentifier) {
+		this.sellerIdentifier = sellerIdentifier;
+	}
+
+	public String getSellerClientName() {
+		return sellerClientName;
+	}
+
+	public void setSellerClientName(String sellerClientName) {
+		this.sellerClientName = sellerClientName;
 	}
 	
 	

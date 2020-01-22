@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +22,7 @@ public class Tx {
 	private Timestamp timestamp;
 	
 	@Column
+	@Enumerated(EnumType.STRING)
 	private TxStatus status;
 	
 	@Column
@@ -28,8 +31,10 @@ public class Tx {
 	@Column
 	private String txDescription;
 	
-//	@Column
-//	private Long txNumber;
+	
+	@Column 
+	private Long paymentId;
+	 
 	
 	@Column
 	private String senderName;
@@ -42,14 +47,29 @@ public class Tx {
 	
 	@Column
 	private String recieverAccountNum;
+	
+	@Column
+	private Timestamp merchantTimestamp;
+	
+	@Column
+	private Long merchantOrderId;
+	
+	@Column
+	private Timestamp acquirerTimestamp;
+	
+	@Column
+	private Long acquirerOrderId;
+	
+	//casopis?
 
 	public Tx() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription, String senderName,
-			String senderAccountNum, String recieverName, String recieverAccountNum) {
+	
+	
+	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription, long paymentId,
+			String senderName, String senderAccountNum, String recieverName, String recieverAccountNum) {
 		super();
 		this.timestamp = timestamp;
 		this.status = status;
@@ -59,7 +79,11 @@ public class Tx {
 		this.senderAccountNum = senderAccountNum;
 		this.recieverName = recieverName;
 		this.recieverAccountNum = recieverAccountNum;
+		
+		this.paymentId = paymentId;
 	}
+
+    	
 
 	public Long getTxId() {
 		return txId;
@@ -77,7 +101,7 @@ public class Tx {
 		this.timestamp = timestamp;
 	}
 
-	public TxStatus isStatus() {
+	public TxStatus getStatus() {
 		return status;
 	}
 
@@ -132,6 +156,75 @@ public class Tx {
 	public void setRecieverAccountNum(String recieverAccountNum) {
 		this.recieverAccountNum = recieverAccountNum;
 	}
-	
-	
+
+
+	public Long getPaymentId() {
+		return paymentId;
+	}
+
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
+	}
+
+
+	public Timestamp getMerchantTimestamp() {
+		return merchantTimestamp;
+	}
+
+
+	public void setMerchantTimestamp(Timestamp merchantTimestamp) {
+		this.merchantTimestamp = merchantTimestamp;
+	}
+
+
+	public Long getMerchantOrderId() {
+		return merchantOrderId;
+	}
+
+
+	public void setMerchantOrderId(Long merchantOrderId) {
+		this.merchantOrderId = merchantOrderId;
+	}
+
+
+	public Timestamp getAcquirerTimestamp() {
+		return acquirerTimestamp;
+	}
+
+
+	public void setAcquirerTimestamp(Timestamp acquirerTimestamp) {
+		this.acquirerTimestamp = acquirerTimestamp;
+	}
+
+
+	public Long getAcquirerOrderId() {
+		return acquirerOrderId;
+	}
+
+
+	public void setAcquirerOrderId(Long acquirerOrderId) {
+		this.acquirerOrderId = acquirerOrderId;
+	}
+
+
+	public Tx(Timestamp timestamp, TxStatus status, Float amountOfMoney, String txDescription,
+			long paymentId, String senderName, String senderAccountNum, String recieverName, 
+			String recieverAccountNum, Timestamp merchantTimestamp, long merchantOrderId, 
+			Timestamp acquirerTimestamp, long acquirerOrderId) {
+		super();
+		this.timestamp = timestamp;
+		this.status = status;
+		this.amountOfMoney = amountOfMoney;
+		this.txDescription = txDescription;
+		this.paymentId = paymentId;
+		this.senderName = senderName;
+		this.senderAccountNum = senderAccountNum;
+		this.recieverName = recieverName;
+		this.recieverAccountNum = recieverAccountNum;
+		this.merchantTimestamp = merchantTimestamp;
+		this.merchantOrderId = merchantOrderId;
+		this.acquirerTimestamp = acquirerTimestamp;
+		this.acquirerOrderId = acquirerOrderId;
+	}
 }

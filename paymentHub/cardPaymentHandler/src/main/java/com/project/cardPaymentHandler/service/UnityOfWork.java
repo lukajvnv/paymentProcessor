@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.cardPaymentHandler.repository.BankInfoRepository;
+import com.project.cardPaymentHandler.repository.IdGeneratorRepository;
 import com.project.cardPaymentHandler.repository.SellerBankInfoRepository;
 import com.project.cardPaymentHandler.repository.TxRepository;
 
@@ -18,6 +19,9 @@ public class UnityOfWork {
 	
 	@Autowired
 	private TxRepository txRepository;
+	
+	@Autowired
+	private IdGeneratorRepository idGeneratorRepository;
 
 	public BankInfoRepository getBankInfoRepository() {
 		return bankInfoRepository;
@@ -30,6 +34,9 @@ public class UnityOfWork {
 	public TxRepository getTxRepository() {
 		return txRepository;
 	}
-	
+
+	public IdGeneratorRepository getIdGeneratorRepository() {
+		return idGeneratorRepository;
+	}
 	
 }
