@@ -68,13 +68,13 @@ const routes = [
 
   ],
   providers: [PayService,
-    // {
-      // provide: externalUrlProvider,
-      // useValue: (route: ActivatedRouteSnapshot) => {
-      //     const externalUrl = route.paramMap.get('externalUrl');
-      //     window.open(externalUrl, '_self');
-      // }
-    // }
+     {
+       provide: externalUrlProvider,
+       useValue: (route: ActivatedRouteSnapshot) => {
+           const externalUrl = route.paramMap.get('externalUrl');
+           window.open(externalUrl, '_self');
+       }
+     }
     ],
   bootstrap: [AppComponent]
 })
