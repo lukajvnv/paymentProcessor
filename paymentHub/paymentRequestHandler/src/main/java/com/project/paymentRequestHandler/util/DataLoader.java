@@ -59,7 +59,8 @@ public class DataLoader implements ApplicationRunner {
 //		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764");
 //		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8765");
 
-		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8762/cardPaymentHandler/card/pay");
+		//PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8762/cardPaymentHandler/card/pay");
+		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8763/card/pay");
 		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764/bitCoin/createOrder");
 		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8762/payPalHandler/payPal");
 		

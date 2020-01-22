@@ -26,7 +26,7 @@ export class PayComponent implements OnInit {
   ngOnInit() {
     this.param = this.route.snapshot.params.id;
     let request : PaymentTypeRequest = new PaymentTypeRequest(this.param);
-    alert("Ide gas: " + request.sellerId);
+    //alert("Ide gas: " + request.sellerId);
     this.payService.getPaymentTypes(request).subscribe(data => {
       //alert("Ide gas");
       this.paymentTypeResponse = data;
@@ -34,5 +34,23 @@ export class PayComponent implements OnInit {
     })
 
   }
+
+  // buy(){
+  //   let payRequest: PayRequest = new PayRequest();
+  //   payRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
+  //   // za karticu puca ako nema iznos
+  //   payRequest.amount = 500;
+  //   payRequest.url = this.selectedPaymentType.paymentTypeHandlerUrl;
+  //   this.payService.buyMagazine(payRequest).subscribe(data => {
+  //     this.payResponse = data;
+
+  //     this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
+  //       skipLocationChange: true,
+  //     });
+
+  //   }, err => {
+
+  //   });
+  // }
 
 }
