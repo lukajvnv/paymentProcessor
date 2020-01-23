@@ -1,0 +1,66 @@
+
+<div class="jumbotron">
+  <h2 class="text-center">New magazine</h2>
+  <div class="container">
+      
+    <form #f="ngForm" (ngSubmit)="f.form.valid && onSubmit(f.value, f)" novalidate>
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="name">Name:</label></div>
+          <div class="col-lg-3"><input type="text" class="form-control" name="name" [(ngModel)]="request.name" #name="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && name.invalid }" required /></div>
+          <div  *ngIf="f.submitted && name.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="name.errors.required">Name is required</div>
+          </div>
+      </div>
+
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="issn_number">Issn number:</label></div>
+          <div class="col-lg-3"><input type="text" class="form-control" name="issn_number" [(ngModel)]="request.issn" #issn_number="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && issn_number.invalid }" required minlength="8" maxlength="9" /></div>
+          <div  *ngIf="f.submitted && issn_number.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="issn_number.errors.required">Issn number is required</div>
+              <div *ngIf="issn_number.errors.minlength">Issn number must be at least 8 characters long</div>
+              <div *ngIf="issn_number.errors.maxlength">Issn number must be max 9 characters long</div>
+          </div>
+      </div>
+
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="membership_price">Membership price:</label></div>
+          <div class="col-lg-3"><input type="number" class="form-control" name="membership_price" [(ngModel)]="request.price" #membership_price="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && membership_price.invalid }" required /></div>
+          <div  *ngIf="f.submitted && membership_price.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="membership_price.errors.required">Membership is required</div>
+          </div>
+      </div>
+
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="payment_option">Payment option:</label></div>
+          <div class="col-lg-3">
+              <!-- <input type="text" class="form-control" name="payment_option" [(ngModel)]="formData.payment_option" #payment_option="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && payment_option.invalid }" required /> -->
+              <select class="form-control" name="payment_option" [(ngModel)]="request.wayOfPayment" #payment_option="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && payment_option.invalid }" required>
+                  <option >OPEN_ACCESS</option>
+                  <option >PAID_ACCESS</option>
+              </select>
+          </div>
+          <div  *ngIf="f.submitted && payment_option.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="payment_option.errors.required">Payment option is required</div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-3">
+
+        </div>
+        <div class="col-lg-3">
+          <input type="submit" class="btn btn-success form-control" value="Sign Up">
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+
+</div>
+

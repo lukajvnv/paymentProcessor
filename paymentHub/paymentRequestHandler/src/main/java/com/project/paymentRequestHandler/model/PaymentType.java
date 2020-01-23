@@ -29,6 +29,8 @@ public class PaymentType {
 	@Column
 	private String paymentTypeHandlerUrl;
 	
+	@Column
+	private String paymentTypeHandlerUrlRoot;
 	
 	@ManyToMany(mappedBy="paymentTypes", fetch=FetchType.LAZY, cascade = {
             CascadeType.MERGE,
@@ -56,7 +58,17 @@ public class PaymentType {
 		this.paymentTypeHandlerUrl = paymentTypeHandlerUrl;
 	}
 
+	
 
+
+	public PaymentType(String paymentTypeName, String paymentTypeHandlerName, String paymentTypeHandlerUrl,
+			String paymentTypeHandlerUrlRoot) {
+		super();
+		this.paymentTypeName = paymentTypeName;
+		this.paymentTypeHandlerName = paymentTypeHandlerName;
+		this.paymentTypeHandlerUrl = paymentTypeHandlerUrl;
+		this.paymentTypeHandlerUrlRoot = paymentTypeHandlerUrlRoot;
+	}
 
 
 	public Long getPaymentTypeId() {
@@ -108,6 +120,16 @@ public class PaymentType {
 
 	public void setSellerInfo(Set<SellerInfo> sellerInfo) {
 		this.sellerInfo = sellerInfo;
+	}
+
+
+	public String getPaymentTypeHandlerUrlRoot() {
+		return paymentTypeHandlerUrlRoot;
+	}
+
+
+	public void setPaymentTypeHandlerUrlRoot(String paymentTypeHandlerUrlRoot) {
+		this.paymentTypeHandlerUrlRoot = paymentTypeHandlerUrlRoot;
 	}
 	
 	

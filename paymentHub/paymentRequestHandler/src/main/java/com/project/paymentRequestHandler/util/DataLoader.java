@@ -10,8 +10,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.project.paymentRequestHandler.model.NewClientRequest;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
+import com.project.paymentRequestHandler.repository.NewClientRequestRepository;
 import com.project.paymentRequestHandler.repository.PaymentTypeRepository;
 import com.project.paymentRequestHandler.repository.SellerInfoRepository;
 
@@ -24,13 +26,16 @@ public class DataLoader implements ApplicationRunner {
 	@Autowired
 	private SellerInfoRepository sellerInfoRepository;
 	
-
+	@Autowired
+	private NewClientRequestRepository newClientRequestRepository;
+	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// TODO Auto-generated method stub
 		createPaymentTypes();
 		createSellerInfoAccount();
 		
+		createNewClientRequest();
 	}
 	
 	
@@ -50,6 +55,12 @@ public class DataLoader implements ApplicationRunner {
 
 	}
 	
+	private void createNewClientRequest() throws IOException {
+		NewClientRequest newClientRequest = new NewClientRequest(1l, "");
+		
+		newClientRequestRepository.save(newClientRequest);
+	}
+	
 	
 	
 
@@ -60,9 +71,9 @@ public class DataLoader implements ApplicationRunner {
 //		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8765");
 
 		//PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8762/cardPaymentHandler/card/pay");
-		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8763/card/pay");
-		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764/bitCoin/createOrder");
-		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8762/payPalHandler/payPal");
+		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8763/card/pay", "https://localhost:8763/");
+		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764/bitCoin/createOrder", "https://localhost:8764/");
+		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8762/payPalHandler/payPal", "https://localhost:8765/");
 		
 		paymentTypeRepository.save(paymentType1);
 		paymentTypeRepository.save(paymentType2);

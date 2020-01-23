@@ -16,7 +16,7 @@ public class SellerBankInfo {
 	private Long bankInfoId;
 	
 	@Column
-	private Long sellerIdentifier;  //FK
+	private Long sellerIdentifier;  //FK 
 	
 	//prepoznaje koja banka, kako drugacije
 	@Column

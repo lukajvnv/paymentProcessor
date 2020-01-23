@@ -53,6 +53,15 @@ public class SellerInfo {
 		this.sellerPib = sellerPib;
 		this.paymentTypes = paymentTypes;
 	}
+	
+	
+
+	public SellerInfo(Long sellerIdentifier, String sellerName, String sellerPib) {
+		super();
+		this.sellerIdentifier = sellerIdentifier;
+		this.sellerName = sellerName;
+		this.sellerPib = sellerPib;
+	}
 
 	public Long getSellerDBId() {
 		return sellerDBId;

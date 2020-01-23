@@ -23,7 +23,8 @@ public class SellerBitcoinInfo {
 	private String order_id; //order_id je order id porudzbine na coingate-u
 	
 	
-	
+	@Column
+	private Long sellerIdentifier;  //FK 
 	
 	public SellerBitcoinInfo() {
 		super();
@@ -82,6 +83,22 @@ public class SellerBitcoinInfo {
 
 	public void setBitcoinAddress(String bitcoinAddress) {
 		this.bitcoinAddress = bitcoinAddress;
+	}
+
+
+
+
+
+	public Long getSellerIdentifier() {
+		return sellerIdentifier;
+	}
+
+
+
+
+
+	public void setSellerIdentifier(Long sellerIdentifier) {
+		this.sellerIdentifier = sellerIdentifier;
 	}
 	
 

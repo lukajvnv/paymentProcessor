@@ -9,7 +9,7 @@ public class MagazineDTO {
 
 	private Long magazineId;
 	
-	private String ISSN;
+	private String issn;
 
 	private String name;
 
@@ -38,7 +38,7 @@ public class MagazineDTO {
 			Long sellerIdentifier, Double price) {
 		super();
 		this.magazineId = magazineId;
-		ISSN = iSSN;
+		issn = iSSN;
 		this.name = name;
 		this.wayOfPayment = wayOfPayment;
 		this.active = active;
@@ -48,7 +48,7 @@ public class MagazineDTO {
 	
 	public MagazineDTO(Magazine m) {
 		this.magazineId = m.getMagazineId();
-		ISSN = m.getISSN();
+		issn = m.getISSN();
 		this.name = m.getName();
 		this.wayOfPayment = m.getWayOfPayment();
 		this.active = true;
@@ -63,10 +63,10 @@ public class MagazineDTO {
 		this.magazineId = magazineId;
 	}
 	public String getISSN() {
-		return ISSN;
+		return issn;
 	}
 	public void setISSN(String iSSN) {
-		ISSN = iSSN;
+		issn = iSSN;
 	}
 	public String getName() {
 		return name;
