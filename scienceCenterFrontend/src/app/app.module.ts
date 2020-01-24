@@ -13,6 +13,7 @@ import { ErrorPageComponent } from './error-page/error-page.component';
 import { RouterModule, ActivatedRouteSnapshot } from '@angular/router';
 import { PayService } from './service/pay.service';
 import { FormsModule } from '@angular/forms';
+import { NewMagazineComponent } from './new-magazine/new-magazine.component';
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -26,6 +27,9 @@ const routes = [
   },
   {
     path: 'buy-magazine', component: PayMagazineFormComponent
+  },
+  {
+    path: 'new-magazine', component: NewMagazineComponent
   },
   {
     path: 'success', component: SuccesPageComponent
@@ -57,7 +61,8 @@ const routes = [
     PayMagazineFormComponent,
     SuccesPageComponent,
     FailedPageComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    NewMagazineComponent
   ],
   imports: [
     BrowserModule,

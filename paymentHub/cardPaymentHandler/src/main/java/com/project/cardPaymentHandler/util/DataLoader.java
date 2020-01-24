@@ -14,6 +14,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import com.project.cardPaymentHandler.model.BankInfo;
+import com.project.cardPaymentHandler.model.FieldMetadata;
 import com.project.cardPaymentHandler.model.SellerBankInfo;
 import com.project.cardPaymentHandler.model.Tx;
 import com.project.cardPaymentHandler.model.TxStatus;
@@ -39,6 +40,8 @@ public class DataLoader implements ApplicationRunner {
 		createSellerInfoAccount();
 		
 		createTx();
+		
+		createFieldMetadata();
 		
 		// proba();
 	}
@@ -146,6 +149,27 @@ public class DataLoader implements ApplicationRunner {
 		unityOfWork.getTxRepository().save(tx2);
 		unityOfWork.getTxRepository().save(tx3);
 		unityOfWork.getTxRepository().save(tx4);	
+	}
+	
+	private void createFieldMetadata() {
+		
+		FieldMetadata field1 = new FieldMetadata("sellerBankAccountNumber", "String", "text");
+		FieldMetadata field2 = new FieldMetadata("sellerClientName", "String", "text");
+		FieldMetadata field3 = new FieldMetadata("sellerUsername", "String", "text");
+		FieldMetadata field4 = new FieldMetadata("sellerPassword", "String", "text");
+		FieldMetadata field5 = new FieldMetadata("txSuccessUrl", "String", "text");
+		FieldMetadata field6 = new FieldMetadata("txFailedUrl", "String", "text");
+		FieldMetadata field7 = new FieldMetadata("txErrorUrl", "String", "text");
+		
+		unityOfWork.getFieldMetadataRepository().save(field1);
+		unityOfWork.getFieldMetadataRepository().save(field2);
+		unityOfWork.getFieldMetadataRepository().save(field3);
+		unityOfWork.getFieldMetadataRepository().save(field4);
+		unityOfWork.getFieldMetadataRepository().save(field5);
+		unityOfWork.getFieldMetadataRepository().save(field6);
+		unityOfWork.getFieldMetadataRepository().save(field7);
+
+
 	}
 
 }

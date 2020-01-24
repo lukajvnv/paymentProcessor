@@ -78,6 +78,18 @@ public Magazine(Long magazineId, String iSSN, String name, WayOfPayment wayOfPay
 	this.price = price;
 }
 
+public Magazine(String iSSN, String name, WayOfPayment wayOfPayment, boolean active,
+		Long sellerIdentifier, Double price) {
+	super();
+	this.magazineId = magazineId;
+	ISSN = iSSN;
+	this.name = name;
+	this.wayOfPayment = wayOfPayment;
+	this.active = active;
+	this.sellerIdentifier = sellerIdentifier;
+	this.price = price;
+}
+
 
 
 	public Magazine(Long magazineId, String iSSN, WayOfPayment wayOfPayment, boolean active, Long sellerIdentifier) {

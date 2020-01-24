@@ -2,6 +2,7 @@ package com.project.paymentRequestHandler.service;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
 import com.project.paymentRequestHandler.model.ShoppingCart;
+import com.project.paymentRequestHandler.model.NewClientRequest;
+import com.project.paymentRequestHandler.model.PaymentType;
+import com.project.paymentRequestHandler.model.SellerInfo;
+import com.project.paymentRequestHandler.repository.NewClientRequestRepository;
 import com.project.paymentRequestHandler.repository.PaymentTypeRepository;
 import com.project.paymentRequestHandler.repository.SellerInfoRepository;
 import com.project.paymentRequestHandler.repository.ShoppingCartRepository;
@@ -28,6 +33,7 @@ public class RequestService {
 	
 	@Autowired
 	private ShoppingCartRepository cartRepo;
+	private NewClientRequestRepository newClientRequestRepository;
 	
 	public PaymentTypeResponseDTO getSupportedPaymentTypes(PaymentTypeRequestDTO request) {
 		SellerInfo sellerInfo = sellerInfoRepository.findBySellerDBId(request.getSellerId());
@@ -59,10 +65,18 @@ public class RequestService {
 		
 		Set<PaymentType> paymentTypes = sellerInfo.getPaymentTypes();
 		for(PaymentType type: paymentTypes) {
-			retVal.add(new PaymentTypeDTO(type.getPaymentTypeId(), type.getPaymentTypeName(), type.getPaymentTypeHandlerName(), type.getPaymentTypeHandlerUrl()));
+			retVal.add(new PaymentTypeDTO(type.getPaymentTypeId(), type.getPaymentTypeName(), type.getPaymentTypeHandlerName(), type.getPaymentTypeHandlerUrl(), type.getPaymentTypeHandlerUrlRoot()));
 		}
 		
 		return retVal;
+	}
+	
+	public NewClientRequest saveNewRequest(NewClientRequest newClientRequest) {
+		return newClientRequestRepository.save(newClientRequest);
+	}
+	
+	public NewClientRequest getNewClientRequest(long requestId) {
+		return newClientRequestRepository.getOne(requestId);
 	}
 	
 	

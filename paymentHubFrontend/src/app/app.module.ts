@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { PayComponent } from './pay/pay.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NewClientComponent } from './new-client/new-client.component';
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -17,6 +18,9 @@ const routes: Routes = [
     path: '', redirectTo: '/pay/:id', pathMatch: 'full'   //id je sellerId po kojem ce traziti koje sve on nacine placanja nudi
   }, */{
     path:'pay/:id', component: PayComponent
+  },
+  {
+    path: 'new-client/:id', component: NewClientComponent
   },
   {
     path: 'externalRedirect',
@@ -31,7 +35,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    PayComponent
+    PayComponent,
+    NewClientComponent
   ],
   imports: [
     BrowserModule,

@@ -12,6 +12,7 @@ export class Magazine{
     price: number;
 
   //   constructor() {}
+  //  constructor() {}
 
    /* constructor(id: number, issn: string, name: string, price: number){
         this.id = id;
@@ -30,4 +31,12 @@ export class Magazine{
     }
 
 
+    // constructor(id: number, issn: string, name: string, wayOfPayment: WayOfPayment, sellerId: number, price: number){
+    //     this.magazineId = id;
+    //     this.issn = issn;
+    //     this.name = name;
+    //     this.wayOfPayment = wayOfPayment;
+    //     this.sellerIdentifier = sellerId;
+    //     this.price = price;
+    // }
 }

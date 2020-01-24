@@ -17,6 +17,7 @@ import com.project.cardPaymentHandler.dto.PaymentValidationRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
 import com.project.cardPaymentHandler.dto.TxCheckDto;
 import com.project.cardPaymentHandler.model.BankInfo;
+import com.project.cardPaymentHandler.model.FieldMetadata;
 import com.project.cardPaymentHandler.model.SellerBankInfo;
 import com.project.cardPaymentHandler.model.Tx;
 import com.project.cardPaymentHandler.model.TxStatus;
@@ -35,8 +36,7 @@ public class CardService {
 	
 	
 	private Logger logger = LoggerFactory.getLogger(CardService.class);
-
-	
+		
 	public PaymentValidationResponseDTO pay(PaymentRequestDTO request) throws IOException {
 		logger.info("pay init");
 		

@@ -1,0 +1,86 @@
+<div class="jumbotron">
+  <h2 class="text-center">New magazine</h2>
+  <div class="container">
+      
+    <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitBasic(f.value, f)" novalidate>
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="name">Name:</label></div>
+          <div class="col-lg-3"><input type="text" class="form-control" name="name" [(ngModel)]="newClientReqeust.sellerName" #name="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && name.invalid }" required /></div>
+          <div  *ngIf="f.submitted && name.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="name.errors.required">Name is required</div>
+          </div>
+      </div>
+
+      <div class="form-group row" >
+        <div class="col-lg-4"><label for="pib">PIB:</label></div>
+        <div class="col-lg-3"><input type="text" class="form-control" name="pib" [(ngModel)]="newClientReqeust.sellerPib" #pib="ngModel"
+            [ngClass]="{ 'is-invalid': f.submitted && pib.invalid }" required /></div>
+        <div  *ngIf="f.submitted && pib.invalid" class="col-lg-3 text-danger">
+            <div *ngIf="pib.errors.required">PIB is required</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-3">
+
+        </div>
+        <div class="col-lg-3" *ngIf="displaySubmitBasic">
+          <input type="submit" class="btn btn-success form-control" value="Sign Up">
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <div *ngIf="displaySelect">
+    <h2>Please select payment type</h2>
+    <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitSelect(f.value, f)" novalidate >
+      <select class="col-lg-3 form-control" name="paymentTypeSelect"  [(ngModel)]="selectedPaymentTypes" #paymentTypeSelect="ngModel" multiple required size="{{formsKeyValues.length}}" >
+        <option *ngFor="let val of formsKeyValues" value={{val}}>
+          {{forms[val].paymentType.paymentTypeName}}
+        </option>
+      </select>
+      <div  *ngIf="f.submitted && paymentTypeSelect.invalid" class="col-lg-3 text-danger">
+        <div *ngIf="paymentTypeSelect.errors.required">Please select payment types</div>
+      </div>
+  
+      <div class="col-lg-3" >
+        <input type="submit" class="btn btn-success form-control" value="Enter payment data">
+      </div>
+    </form>
+  </div>
+  
+  <div *ngIf="displayForms">
+    <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitSubmitPaymentData(f.value, f)" novalidate >
+      <div *ngFor="let key of selectedPaymentTypes">
+        <h2>Fill form data for: {{selectedForms[key].paymentType.paymentTypeName}}</h2>
+        <div *ngFor="let field of selectedForms[key].formFields" >
+          <label for={{field.fieldName}}>{{field.fieldName}}</label>
+    
+          <input type="text" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'text'" required>
+          <input type="checkbox" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'boolean'" required>
+          <input type="number" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'number'" required>
+    
+          <!-- <select name="{{field.id}}" ngModel  *ngIf="field.type.name=='enum'">
+            <option *ngFor="let val of enumValues" value={{val}}>
+              {{field.type.values[val]}}
+            </option>
+           
+    
+          </select> -->
+    
+           
+        </div>
+        <h2>----------------</h2>
+      </div> 
+      <div  *ngIf="f.submitted && f.form.invalid" class="col-lg-3 text-danger">
+        All data are required, please fiil in!!!
+      </div>
+      <div class="col-lg-3" >
+        <input type="submit" class="btn btn-success form-control" value="Submit payment data">
+      </div>
+    </form> 
+  </div>
+
+</div>

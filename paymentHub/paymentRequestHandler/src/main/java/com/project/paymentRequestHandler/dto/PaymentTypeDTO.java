@@ -10,14 +10,30 @@ public class PaymentTypeDTO {
 	
 	private String paymentTypeHandlerUrl;
 
+	private String paymentTypeHandlerUrlRoot;
+	
+//	public PaymentTypeDTO(Long paymentTypeId, String paymentTypeName, String paymentTypeHandlerName,
+//			String paymentTypeHandlerUrl) {
+//		super();
+//		this.paymentTypeId = paymentTypeId;
+//		this.paymentTypeName = paymentTypeName;
+//		this.paymentTypeHandlerName = paymentTypeHandlerName;
+//		this.paymentTypeHandlerUrl = paymentTypeHandlerUrl;
+//	}
+	
+	
+
 	public PaymentTypeDTO(Long paymentTypeId, String paymentTypeName, String paymentTypeHandlerName,
-			String paymentTypeHandlerUrl) {
+			String paymentTypeHandlerUrl, String paymentTypeHandlerUrlRoot) {
 		super();
 		this.paymentTypeId = paymentTypeId;
 		this.paymentTypeName = paymentTypeName;
 		this.paymentTypeHandlerName = paymentTypeHandlerName;
 		this.paymentTypeHandlerUrl = paymentTypeHandlerUrl;
+		this.paymentTypeHandlerUrlRoot = paymentTypeHandlerUrlRoot;
 	}
+
+
 
 	public Long getPaymentTypeId() {
 		return paymentTypeId;
@@ -55,5 +71,19 @@ public class PaymentTypeDTO {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+
+
+	public String getPaymentTypeHandlerUrlRoot() {
+		return paymentTypeHandlerUrlRoot;
+	}
+
+
+
+	public void setPaymentTypeHandlerUrlRoot(String paymentTypeHandlerUrlRoot) {
+		this.paymentTypeHandlerUrlRoot = paymentTypeHandlerUrlRoot;
+	}
+	
+	
 
 }

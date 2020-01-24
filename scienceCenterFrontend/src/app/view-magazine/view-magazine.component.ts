@@ -50,7 +50,7 @@ export class ViewMagazineComponent implements OnInit {
     this.router.navigate(['buy-magazine']);
   }
   registrate() {
-    this.router.navigate(['registrate']);
+    this.router.navigate(['new-magazine']);
   }
 
   buyMagazine(id:number,sellerId:number) {

@@ -12,6 +12,9 @@ public class Seller {
 	private Long sellerId;
 	
 	@Column
+	private Long sellerIdentifier;  //FK 
+	
+	@Column
 	private String email;
 	
 	public Seller() {
@@ -24,6 +27,8 @@ public class Seller {
 		this.sellerId = sellerId;
 		this.email = email;
 	}
+	
+	
 
 	public Long getSellerId() {
 		return sellerId;
@@ -39,6 +44,14 @@ public class Seller {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getSellerIdentifier() {
+		return sellerIdentifier;
+	}
+
+	public void setSellerIdentifier(Long sellerIdentifier) {
+		this.sellerIdentifier = sellerIdentifier;
 	}
 
 }

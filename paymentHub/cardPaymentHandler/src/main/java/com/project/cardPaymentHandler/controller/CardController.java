@@ -1,6 +1,7 @@
 package com.project.cardPaymentHandler.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.cardPaymentHandler.dto.PaymentRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
+import com.project.cardPaymentHandler.model.FieldMetadata;
 import com.project.cardPaymentHandler.model.Tx;
-import com.project.cardPaymentHandler.model.TxStatus;
 import com.project.cardPaymentHandler.service.CardService;
 
 @RestController
@@ -28,11 +29,10 @@ public class CardController {
 	private CardService cardService;
 	
 	private Logger logger = LoggerFactory.getLogger(CardController.class);
-
+	
 	
 	@RequestMapping(path="/pay",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> pay() {
-		
 		
 		return new ResponseEntity<>(new String("Okej cardHandler get radi"), HttpStatus.OK);
 	}
