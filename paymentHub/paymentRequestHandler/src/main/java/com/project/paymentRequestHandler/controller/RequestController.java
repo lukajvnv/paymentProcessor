@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
+import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
+import com.project.paymentRequestHandler.model.ShoppingCart;
 import com.project.paymentRequestHandler.service.RequestService;
 
 @RestController
@@ -35,6 +38,24 @@ public class RequestController {
 		PaymentTypeResponseDTO response = requestService.getSupportedPaymentTypes(request);
 		
 		return new ResponseEntity<PaymentTypeResponseDTO>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> savePost(@RequestBody ShoppingCart request) {
+		System.out.println("Usao u save");
+		
+		requestService.saveShoppingCartTemp(request);
+		
+		return new ResponseEntity<>("Pozovaca", HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/getPrice/{id}", method = RequestMethod.GET)
+	public ResponseEntity<ShoppingCart> getPrice(@PathVariable Long id) {
+		System.out.println("Usao u getPrice");
+		
+		ShoppingCart sc = requestService.getPrice(id);
+		
+		return new ResponseEntity<ShoppingCart>(sc, HttpStatus.OK);
 	}
 	
 	

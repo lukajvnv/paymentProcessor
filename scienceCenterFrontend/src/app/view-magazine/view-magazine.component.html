@@ -53,6 +53,62 @@
   </table>
 </div>
 
+<div *ngFor="let mag of magazines">
+  <section class="container content-section">
+    <h2 class="section-header">Magazine</h2>
+    <div class="shop-items">
+        <div class="shop-item">
+            <span class="shop-item-title">ISSN: {{mag.issn}} </span>
+            <br>
+            <span class="shop-item-title">Name : {{mag.name}}</span>
+            <br>
+            <span class="shop-item-title"> Way of payment: {{mag.wayOfPayment}}</span>
+            <br>
+            <span class="shop-item-title">Seller ID: {{mag.sellerIdentifier}}</span>
+            <img class="shop-item-image" src="assets\magazinePNG.png">
+            <div class="shop-item-details">
+                <span class="shop-item-price">{{mag.price}}€</span>
+                <button (click)="addToCart(mag.issn)" class="btn btn-primary shop-item-button" type="button">ADD TO CART</button>
+            </div>
+        </div>
+    </div>
+  </section>
+</div>
+
+
+
+  <section class="container content-section">
+    <h2 class="section-header">CART</h2>
+    <div class="cart-row">
+        <span class="cart-item cart-header cart-column">ITEM</span>
+        <span class="cart-price cart-header cart-column">PRICE</span>
+        <span class="cart-quantity cart-header cart-column"></span>
+    </div>
+    <div *ngFor="let cart of shoppingcart.magazines; let i = index">
+        <div class="cart-items">
+          <div class="cart-row">
+              <div class="cart-item cart-column">
+                  <img class="cart-item-image" src="assets\magazinePNG.png" width="100" height="100">
+                  <span class="cart-item-title">{{cart.name}}</span>
+              </div>
+              <span class="cart-price cart-column">{{cart.price}}€</span>
+              <div class="cart-quantity cart-column">
+                  <button class="btn btn-danger" type="button" (click)="removeFromCart(cart.issn)">REMOVE</button>
+              </div>
+          </div>
+        </div>
+    </div>
+    
+    <div class="cart-total">
+        <strong class="cart-total-title">Total</strong>
+        <span class="cart-total-price">{{shoppingcart.totalAmount}}€</span>
+    </div>
+    <button class="btn btn-primary btn-purchase" type="button" (click)="checkout()">CHECKOUT</button>
+  </section>
+
+
+
+
 
 <button (click)="buy()">Buy</button>
 <button (click)="registrate()">Registrate</button>

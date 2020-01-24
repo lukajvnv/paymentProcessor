@@ -44,9 +44,11 @@ export class PayService {
     .pipe(retry(1), catchError(this.handlerError));
   }
 
+  //cuvanje shopping cart-a
   executePayment(request: any): Observable<any> {
     // workaround
-    return this.http.post(this.SCIENCE_CENTER_API + 'buy', request);
+    alert("???????????????????????????")
+    return this.http.post(this.SCIENCE_CENTER_API + 'cart', request);
   }
 
   private handlerError(error: Response) {

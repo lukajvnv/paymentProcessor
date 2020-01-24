@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+ -->    
+   <!--  <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/card_info_form.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.session.js}"></script> -->
+</head>
+<body>
+    <form action="#" th:action="@{https://localhost:8841/card/pay}" th:object="${request}" method="post">
+    	<table>
+                <tr>
+                    <td>PAN:</td>
+                    <td><input type="text" name="pan" id="pan" /></td>
+<!--                     <td th:if="${#fields.hasErrors('pan')}" th:errors="*{pan}">Name Error</td>
+ -->                </tr>
+                <tr>
+                    <td>SSC:</td>
+                    <td><input type="text" name="securityCode" id="securityCode" /></td>
+<!--                     <td th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</td>
+ -->                </tr>
+                <tr>
+                    <td>Cardholder name:</td>
+                    <td><input type="text" name="cardHolderName" id="cardHolderName" /></td>
+<!--                     <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+ -->                </tr>
+                <tr>
+                    <td>Valid until:</td>
+                    <td><input type="date" name="validUntil" id="validUntil" /></td>
+<!--                     <td th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</td>
+ -->                </tr>
+                <tr>
+                    <td><button type="submit" value="Click here to continue">Submit</button></td>
+                </tr>
+        </table>
+    	    <input name="merchantUsername" type="hidden"  th:value="${merchantId}" />
+    	    <input name="paymentId" type="hidden"  th:value="${paymentId}"/>
+    	
+    
+    <!-- <input name="name"  value="xyz" />
+    <input name="phone"  value="9898989898" />
+    
+    <input type="submit" value="Click here to continue" /> -->
+    
+	</form>
+    <!-- <script type="text/javascript">
+
+        function send(){
+        	var proba = {broj: 5, tekst: "fld"};
+        	$.post({
+        		url : 'https://localhost:8841/test/testHelloSubmit',
+        		contentType : 'application/json',
+        		data : JSON.stringify(proba),
+        		success : function(articleFilterResponse){
+        			$(location).attr('href', 'http://stackoverflow.com')
+        			alert("uspeh");
+        			console.log("uspeh");
+        		},
+        		error : function(a, b, c){
+        			 alert("fail");
+        			 console.log("uspeh");
+        		}
+        	});
+        }
+
+    </script> -->
+</body>
+</html>

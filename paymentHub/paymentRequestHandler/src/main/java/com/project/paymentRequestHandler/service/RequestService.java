@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import com.project.paymentRequestHandler.dto.PaymentTypeDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
+import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
+import com.project.paymentRequestHandler.model.ShoppingCart;
 import com.project.paymentRequestHandler.repository.PaymentTypeRepository;
 import com.project.paymentRequestHandler.repository.SellerInfoRepository;
+import com.project.paymentRequestHandler.repository.ShoppingCartRepository;
 
 @Service
 public class RequestService {
@@ -22,6 +25,9 @@ public class RequestService {
 	
 	@Autowired
 	private SellerInfoRepository sellerInfoRepository;
+	
+	@Autowired
+	private ShoppingCartRepository cartRepo;
 	
 	public PaymentTypeResponseDTO getSupportedPaymentTypes(PaymentTypeRequestDTO request) {
 		SellerInfo sellerInfo = sellerInfoRepository.findBySellerDBId(request.getSellerId());
@@ -35,6 +41,19 @@ public class RequestService {
 		return response;
 	}
 	
+	public void saveShoppingCartTemp(ShoppingCart request) {
+		
+		cartRepo.save(request);
+		
+	}
+	
+	public ShoppingCart getPrice(Long sellerId) {
+		
+		ShoppingCart sc = cartRepo.findBySellerId(sellerId);
+		
+		return sc;
+	}
+	
 	private ArrayList<PaymentTypeDTO> createPaymentTypeDTOList(SellerInfo sellerInfo) {
 		ArrayList<PaymentTypeDTO> retVal = new ArrayList<PaymentTypeDTO>();
 		
@@ -45,6 +64,8 @@ public class RequestService {
 		
 		return retVal;
 	}
+	
+	
 	
 	
 }

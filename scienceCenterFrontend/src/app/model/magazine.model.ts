@@ -1,3 +1,4 @@
+
 export enum WayOfPayment{
     OPEN_ACCESS, PAID_ACCESS 
 }
@@ -10,7 +11,7 @@ export class Magazine{
     sellerIdentifier: number;
     price: number;
 
-    // constructor() {}
+  //   constructor() {}
 
    /* constructor(id: number, issn: string, name: string, price: number){
         this.id = id;
@@ -27,4 +28,6 @@ export class Magazine{
         this.sellerIdentifier = sellerId;
         this.price = price;
     }
+
+
 }

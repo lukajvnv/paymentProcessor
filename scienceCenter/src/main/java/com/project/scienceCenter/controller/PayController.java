@@ -14,6 +14,7 @@ import com.project.scienceCenter.dto.PaymentRequestDTO;
 import com.project.scienceCenter.dto.PaymentResponseDTO;
 import com.project.scienceCenter.dto.PaymentTypeRequestDTO;
 import com.project.scienceCenter.dto.PaymentTypeResponseDTO;
+import com.project.scienceCenter.model.ShoppingCart;
 
 @RestController
 @RequestMapping("/pay")
@@ -43,6 +44,16 @@ public class PayController {
 		ResponseEntity<PaymentResponseDTO> response = restTemplate.postForEntity(request.getUrl(), request, PaymentResponseDTO.class);
 		
 		return new ResponseEntity<PaymentResponseDTO>(response.getBody(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> cartPost(@RequestBody ShoppingCart cart) {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		restTemplate.postForEntity(cart.getUrl(), cart, String.class);
+		
+		return new ResponseEntity<>("Sve ok kao sto status kaze", HttpStatus.OK);
 	}
 
 }

@@ -28,6 +28,10 @@ export class PayServiceService {
     .pipe(retry(1), catchError(this.handlerError));
   }
 
+  getPrice(sellerId: Number) : Observable<any> {
+    return this.http.get(this.REQUEST_HANDLER_API + 'getPrice/'+sellerId);
+  }
+
   private handlerError(error: Response) {
     return Observable.throw(error);
   }
