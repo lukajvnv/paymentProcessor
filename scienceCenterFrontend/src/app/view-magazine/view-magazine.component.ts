@@ -128,7 +128,7 @@ export class ViewMagazineComponent implements OnInit {
         console.log(m);
         break;
       }
-      alert("seller ID: " + payRequest.sellerId);
+      //alert("seller ID: " + payRequest.sellerId);
       //prvo cemo da sacuvamo shopping cart pa cemo ponuditi kp
       let shoppingCartTemp: ShoppingCart = new ShoppingCart();
       shoppingCartTemp.totalAmount = this.shoppingcart.totalAmount;

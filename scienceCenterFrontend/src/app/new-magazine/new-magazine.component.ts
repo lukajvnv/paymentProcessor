@@ -1,3 +1,4 @@
+import { WayOfPayment } from './../model/magazine.model';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -11,7 +12,8 @@ import { Observable } from 'rxjs';
 })
 export class NewMagazineComponent implements OnInit {
 
-  private request: Magazine = new Magazine();
+  //izmenjano zbog konflikta sa lukadinom
+  private request: Magazine = new Magazine(0,"","",WayOfPayment.OPEN_ACCESS,0,0);
   private response;
   
 

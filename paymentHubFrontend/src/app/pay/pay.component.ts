@@ -57,7 +57,7 @@ export class PayComponent implements OnInit {
     if(this.selectedPaymentType.paymentTypeName == "BITCOIN") {
       //alert("Usao u bitcoin");
       //bice neki convert u bitcoin
-      payRequest.amount = 0.00001;
+      payRequest.amount = 0.0001;
      
     } else if(this.selectedPaymentType.paymentTypeName == "PAYPALL") {
       //alert("Usao u pphandler");

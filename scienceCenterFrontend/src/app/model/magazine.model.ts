@@ -12,7 +12,7 @@ export class Magazine{
     price: number;
 
   //   constructor() {}
-  //  constructor() {}
+    //constructor() {}
 
    /* constructor(id: number, issn: string, name: string, price: number){
         this.id = id;

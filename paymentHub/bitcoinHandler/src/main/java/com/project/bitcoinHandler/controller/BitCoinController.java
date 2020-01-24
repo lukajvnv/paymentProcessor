@@ -292,7 +292,10 @@ public class BitCoinController {
 			    
 			    System.out.println("Order status: " + gorResponse.getStatus());
 				
-			    if(gorResponse.getStatus().equals("paid") || gorResponse.getStatus().equals("invalid") || gorResponse.getStatus().equals("expired")) {
+			    if(gorResponse.getStatus().equals("paid") || 
+			    		gorResponse.getStatus().equals("invalid") || 
+			    		gorResponse.getStatus().equals("expired") || 
+			    		gorResponse.getStatus().equals("canceled")) {
 			    	
 			    	
 			    	Tx tx2 = new Tx();
@@ -306,8 +309,10 @@ public class BitCoinController {
 			    		
 			    	} else if(gorResponse.getStatus().equals("invalid")) {
 			    		tx.setStatus(TxStatus.FAILED);
-			    	} else {
+			    	} else if(gorResponse.getStatus().equals("expired")){
 			    		tx.setStatus(TxStatus.EXPIRED);
+			    	} else {
+			    		tx.setStatus(TxStatus.CANCELED);
 			    	}
 			    	
 			    	txRepo.save(tx);
