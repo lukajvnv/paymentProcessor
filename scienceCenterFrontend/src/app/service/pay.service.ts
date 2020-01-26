@@ -48,7 +48,8 @@ export class PayService {
   executePayment(request: any): Observable<any> {
     // workaround
 //alert("???????????????????????????")
-    return this.http.post(this.SCIENCE_CENTER_API + 'cart', request);
+    return this.http.post(this.SCIENCE_CENTER_API + 'cart', request)
+    .pipe(retry(1), catchError(this.handlerError));
   }
 
   private handlerError(error: Response) {

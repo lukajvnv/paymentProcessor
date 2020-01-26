@@ -8,4 +8,5 @@ import com.project.paymentRequestHandler.model.ShoppingCart;
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long>  {
 
 	ShoppingCart findBySellerId(Long id);
+	ShoppingCart findByOrderId(Long id);
 }

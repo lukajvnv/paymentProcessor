@@ -18,7 +18,16 @@ export class ShoppingCart {
     sellerId: number;
     totalAmount: number;
     url: string;//url za cuvanje na payment handlaru
+    orderId: number; //jedinstven orderId po kome ce se znati ko je zeli da kupi
 
+    constructor() {
+
+    }
+
+}
+
+export class OrderId {
+    orderId: number;
     constructor() {
 
     }

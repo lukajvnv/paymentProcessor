@@ -28,8 +28,8 @@ export class PayServiceService {
     .pipe(retry(1), catchError(this.handlerError));
   }
 
-  getPrice(sellerId: Number) : Observable<any> {
-    return this.http.get(this.REQUEST_HANDLER_API + 'getPrice/'+sellerId);
+  getPrice(orderId: Number) : Observable<any> {
+    return this.http.get(this.REQUEST_HANDLER_API + 'getPrice/'+orderId);
   }
 
   private handlerError(error: Response) {

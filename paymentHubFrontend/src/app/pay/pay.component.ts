@@ -21,15 +21,19 @@ export class PayComponent implements OnInit {
 
   selectedPaymentType: PaymentType = new PaymentType();
   param;
+  param1;
 
   price;
+  priceBtc;
+  btcValue = 0.0001308788;
 
   constructor(private router: Router, private payService: PayServiceService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.param = this.route.snapshot.params.id;
-    let request : PaymentTypeRequest = new PaymentTypeRequest(this.param);
+    this.param1 = this.route.snapshot.params.sellerId;
+    let request : PaymentTypeRequest = new PaymentTypeRequest(this.param1,this.param);
     //alert("Ide gas: " + request.sellerId);
     this.payService.getPaymentTypes(request).subscribe(data => {
       //alert("Ide gas");
@@ -42,6 +46,7 @@ export class PayComponent implements OnInit {
       console.log('juzni vetar gas');
       console.log(data);
       this.price = this.shoppingCart.totalAmount;
+      this.convertEuroToBtc(this.price);
     })
 
 
@@ -57,7 +62,7 @@ export class PayComponent implements OnInit {
     if(this.selectedPaymentType.paymentTypeName == "BITCOIN") {
       //alert("Usao u bitcoin");
       //bice neki convert u bitcoin
-      payRequest.amount = 0.0001;
+      payRequest.amount = this.priceBtc;
      
     } else if(this.selectedPaymentType.paymentTypeName == "PAYPALL") {
       //alert("Usao u pphandler");
@@ -116,5 +121,11 @@ export class PayComponent implements OnInit {
 
   //   });
   // }
+
+
+    // 1€ => 0.0001308788 BTC
+    convertEuroToBtc(amount) {
+      this.priceBtc = amount * this.btcValue;
+    }
 
 }

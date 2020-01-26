@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import com.project.scienceCenter.dto.MagazineDTO;
 import com.project.scienceCenter.dto.NewClientResponse;
 import com.project.scienceCenter.dto.NewMagazineConfirmationDto;
+import com.project.scienceCenter.dto.OrderIdDTO;
 import com.project.scienceCenter.dto.PaymentRequestDTO;
 import com.project.scienceCenter.dto.PaymentResponseDTO;
 import com.project.scienceCenter.dto.PaymentTypeRequestDTO;
@@ -57,13 +58,14 @@ public class PayController {
 	}
 	
 	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> cartPost(@RequestBody ShoppingCart cart) {
+	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCart cart) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		
-		restTemplate.postForEntity(cart.getUrl(), cart, String.class);
+		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(cart.getUrl(), cart, OrderIdDTO.class);
 		
-		return new ResponseEntity<>("Sve ok kao sto status kaze", HttpStatus.OK);
+		return new ResponseEntity<OrderIdDTO>(dto.getBody(), HttpStatus.OK);
+	}
 	@PostMapping(path = "/register")
 	public ResponseEntity<?> newMagazine(@RequestBody MagazineDTO magazineDto){
 		Magazine newMagazine = new Magazine(magazineDto.getISSN(), magazineDto.getName(), magazineDto.getWayOfPayment(), true, -1l, magazineDto.getPrice());

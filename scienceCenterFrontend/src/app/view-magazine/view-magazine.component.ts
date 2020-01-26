@@ -1,4 +1,4 @@
-import { Cart, ShoppingCart } from './../model/shoppingcart.model';
+import { Cart, ShoppingCart, OrderId } from './../model/shoppingcart.model';
 import { PayResponse } from './../model/pay-response.model';
 import { PaymentTypeResponse } from './../model/payment-type-response.model';
 import { PayService } from './../service/pay.service';
@@ -26,6 +26,7 @@ export class ViewMagazineComponent implements OnInit {
    payResponse: PayResponse = new PayResponse();
 
   selectedPaymentType: PaymentType = new PaymentType();
+  orderIdDTO: OrderId = new OrderId();
 
    listMagazines: Magazine[] = [];
 
@@ -135,19 +136,30 @@ export class ViewMagazineComponent implements OnInit {
       shoppingCartTemp.sellerId = payRequest.sellerId;
       shoppingCartTemp.url = "https://localhost:8762/requestHandler/request/save";
       this.payService.executePayment(shoppingCartTemp).subscribe(data => {
+        //ovde ocekujemo orderId
+       // alert("Zasto nije usao ovde??")
+       // alert("Data: " + data);
+        this.orderIdDTO = data;
+        payRequest.orderId = this.orderIdDTO.orderId;
         console.log(data);
+
+       // alert("Data: " + payRequest.orderId);
+
+        this.payService.buyMagazine(payRequest).subscribe(data => {
+          this.payResponse = data;
+        
+          this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.url }], {
+          skipLocationChange: true,
+        }) 
+        })
       });
+
+      //alert("Data: " + payRequest.orderId);
       //mozda ipak necemo
       //ili cemo samo cuvati na science, daaaaa!!! IQ 200
 
       //metoda za redirekciju na ponudjaca placanja
-      this.payService.buyMagazine(payRequest).subscribe(data => {
-        this.payResponse = data;
       
-        this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.url }], {
-        skipLocationChange: true,
-      }) 
-      })
       
    }
   }

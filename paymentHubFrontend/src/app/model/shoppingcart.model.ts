@@ -18,6 +18,7 @@ export class ShoppingCart {
     sellerId: number;
     totalAmount: number;
     url: string;//url za cuvanje na payment handlaru
+    orderId: number; //random generisani orderId
 
     constructor() {
 

@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.paymentRequestHandler.util.Generator;
+import com.project.paymentRequestHandler.repository.IdGeneratorRepository;
 import com.project.paymentRequestHandler.dto.PaymentTypeDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
@@ -32,30 +34,56 @@ public class RequestService {
 	private SellerInfoRepository sellerInfoRepository;
 	
 	@Autowired
+	private ShoppingCartRepository shoppingCartRepo;
+	
+	@Autowired
 	private ShoppingCartRepository cartRepo;
+	@Autowired
 	private NewClientRequestRepository newClientRequestRepository;
 	
+	@Autowired
+	private IdGeneratorRepository idGeneratorRepository;
+	
 	public PaymentTypeResponseDTO getSupportedPaymentTypes(PaymentTypeRequestDTO request) {
+		
 		SellerInfo sellerInfo = sellerInfoRepository.findBySellerDBId(request.getSellerId());
 		if(sellerInfo == null) {
 			
 		}
+		
+		//shoppingCartRepo.findByOrderId(request.getOrderId());
+		
 		ArrayList<PaymentTypeDTO> paymentTypesDTO = createPaymentTypeDTOList(sellerInfo);
 		PaymentTypeResponseDTO response = new PaymentTypeResponseDTO(sellerInfo.getSellerDBId(), 
-				paymentTypesDTO, "https://localhost:4666/pay/" + request.getSellerId());
+				paymentTypesDTO, "https://localhost:4666/pay/"+ request.getSellerId() + "/" + request.getOrderId());
 		
 		return response;
 	}
 	
-	public void saveShoppingCartTemp(ShoppingCart request) {
+	public Long saveShoppingCartTemp(ShoppingCart request) {
+		
+		//ovde idemo random generator za orderId
+		Long orderId = generateOrderId();
+		request.setOrderId(orderId);
 		
 		cartRepo.save(request);
 		
+		//ici ce return taj orderId
+		return orderId;
+		
 	}
 	
-	public ShoppingCart getPrice(Long sellerId) {
-		
-		ShoppingCart sc = cartRepo.findBySellerId(sellerId);
+	private long generateOrderId() {
+//		Random random = new Random(System.nanoTime());
+//		long number = random.nextLong();
+		Generator g = idGeneratorRepository.save(new Generator());
+		long number = g.getGeneratedId();
+		return number;
+	}
+	
+	public ShoppingCart getPrice(Long orderId) {
+		ShoppingCart sc = cartRepo.findByOrderId(orderId);
+		//ShoppingCart sc = cartRepo.findBySellerId(sellerId);
 		
 		return sc;
 	}

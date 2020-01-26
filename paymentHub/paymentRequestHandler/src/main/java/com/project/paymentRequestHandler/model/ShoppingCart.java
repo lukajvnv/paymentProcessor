@@ -20,12 +20,23 @@ public class ShoppingCart {
 	
 	@Column
 	private Long sellerId;
+	
+	@Column
+	private Long orderId;
 
 	
 	
 	public ShoppingCart() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public ShoppingCart(Long id, Double totalAmount, Long sellerId, Long orderId) {
+		super();
+		this.id = id;
+		this.totalAmount = totalAmount;
+		this.sellerId = sellerId;
+		this.orderId = orderId;
 	}
 
 	public ShoppingCart(Long id, Double totalAmount, Long sellerId) {
@@ -58,11 +69,15 @@ public class ShoppingCart {
 	public void setSellerId(Long sellerId) {
 		this.sellerId = sellerId;
 	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 	
-	
-	
-	
-	
-	
+
 	
 }

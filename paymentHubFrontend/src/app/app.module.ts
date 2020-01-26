@@ -17,7 +17,7 @@ const routes: Routes = [
  /* {
     path: '', redirectTo: '/pay/:id', pathMatch: 'full'   //id je sellerId po kojem ce traziti koje sve on nacine placanja nudi
   }, */{
-    path:'pay/:id', component: PayComponent
+    path:'pay/:sellerId/:id', component: PayComponent
   },
   {
     path: 'new-client/:id', component: NewClientComponent

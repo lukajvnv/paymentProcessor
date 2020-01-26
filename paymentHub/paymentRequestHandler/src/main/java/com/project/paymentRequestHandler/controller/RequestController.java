@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.project.paymentRequestHandler.dto.NewClientDto;
 import com.project.paymentRequestHandler.dto.NewMagazineConfirmationDto;
+import com.project.paymentRequestHandler.dto.OrderIdDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeFormDto;
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
@@ -57,14 +58,20 @@ public class RequestController {
 	}
 	
 	@RequestMapping(path = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> savePost(@RequestBody ShoppingCart request) {
+	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCart request) {
 		System.out.println("Usao u save");
 		
-		requestService.saveShoppingCartTemp(request);
+		Long orderId = requestService.saveShoppingCartTemp(request);
 		
-		return new ResponseEntity<>("Pozovaca", HttpStatus.OK);
+		OrderIdDTO dto = new OrderIdDTO(orderId);
+		
+		
+		//vracamo orderId
+		return new ResponseEntity<OrderIdDTO>(dto, HttpStatus.OK);
 	}
-	
+	/*
+	 * {id} --> orderId
+	 * */
 	@RequestMapping(path = "/getPrice/{id}", method = RequestMethod.GET)
 	public ResponseEntity<ShoppingCart> getPrice(@PathVariable Long id) {
 		System.out.println("Usao u getPrice");
