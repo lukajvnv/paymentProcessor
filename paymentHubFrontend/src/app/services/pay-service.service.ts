@@ -32,6 +32,10 @@ export class PayServiceService {
     return this.http.get(this.REQUEST_HANDLER_API + 'getPrice/'+orderId);
   }
 
+  getPaymentAndOrderData(orderId: number) : Observable<any> {
+    return this.http.get(this.REQUEST_HANDLER_API + 'getPaymentAndOrderData/' + orderId);
+  }
+
   private handlerError(error: Response) {
     return Observable.throw(error);
   }

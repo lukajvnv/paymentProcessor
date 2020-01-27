@@ -20,6 +20,9 @@ const routes: Routes = [
     path:'pay/:sellerId/:id', component: PayComponent
   },
   {
+    path:'pay/:id', component: PayComponent
+  },
+  {
     path: 'new-client/:id', component: NewClientComponent
   },
   {

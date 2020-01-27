@@ -1,0 +1,31 @@
+<div *ngIf="magazine">
+  <section class="container content-section">
+    <h2 class="section-header">Magazine</h2>
+    <div class="shop-items">
+        <div class="shop-item">
+            <span class="shop-item-title">ISSN: {{magazine.issn}} </span>
+            <br>
+            <span class="shop-item-title">Name : {{magazine.name}}</span>
+            <br>
+            <span class="shop-item-title"> Way of payment: {{magazine.wayOfPayment}}</span>
+            <br>
+            <span class="shop-item-title">Seller ID: {{magazine.sellerIdentifier}}</span>
+            <img class="shop-item-image" src="assets\magazinePNG.png">
+            
+        </div>
+    </div>
+  </section>
+</div>
+
+<div *ngIf="editions">
+  <section class="container content-section">
+    <h2 class="section-header">Magazine editions</h2>
+    <div class="shop-items">
+        <div class="shop-item">
+          <button *ngFor="let edition of editions" (click)="viewEdition(edition.magazineEditionId)"  class="list-group-item list-group-item-action" >View edition: {{edition.magazineEditionId}}</button>
+         
+            
+        </div>
+    </div>
+  </section>
+</div>

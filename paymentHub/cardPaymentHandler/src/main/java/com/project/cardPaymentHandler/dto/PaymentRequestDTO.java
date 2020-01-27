@@ -9,6 +9,9 @@ public class PaymentRequestDTO {
 	
 	@NotNull
 	private Float amount;
+	
+	@NotNull
+	private Long orderId;
 
 	public PaymentRequestDTO(Long sellerId, Float amount) {
 		super();
@@ -31,6 +34,16 @@ public class PaymentRequestDTO {
 	public void setAmount(Float amount) {
 		this.amount = amount;
 	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+	
+	
 	
 	
 	

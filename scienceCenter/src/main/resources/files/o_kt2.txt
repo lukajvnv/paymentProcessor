@@ -1,0 +1,19 @@
+﻿U nastavku slede detalji demo-a koji će timovi koji žele više ocene (8, 9, 10) morati da prezentuju na sledećoj kontrolnoj tački (28.12.).
+
+Za datu kontrolnu tačku, potrebno je podići KP sa svim svojim mikroservisima i demonstrirati end-to-end komunikaciju između naučne centrale i 
+sva 3 načina plaćanja kroz KP. Za potrebe ove kontrolne tačke važi:
+
+Naučna centrala može biti trivijalan servis koji pokreće 6 transakcija((ne)uspesna placanje 3 servisa);
+Trivijalan UI na svemu je dovoljan;
+Dovoljno je da je samo Acquirer aktivan sa aspekta plaćanja putem banke(...?); acquirer i kupac i prodavac u istoj banci scenario
+Nije potrebno realizovati pretplatu putem PayPal(kriptovalute?); sve treba implementirati samo NE PRETPLATA
+Bezbednost realizovati samo za onaj podskup funkcija koje su tada realizovane (pre svega KP deo);
+
+Transakcije treba da bude moguće lako ispratiti (logovi, baza, konzola - bitno je da je vidljivo šta se dešava u momentu).
+
+Timovi će imati kratak slot (~5 minuta) da demonstriraju uspešne i neuspešne (kupac nije imao dovoljno sredstava) transakcije 
+za sva 3 servisa i još par minuta da odgovore na prateća pitanja. S' obzirom na veoma kratak vremenski slot, timovi moraju 
+spremiti brzo izvršavanje transakcija u ambijentu Jugodrva. Preporuka je da se koriste automatski testovi(testovi u springu???? NE NEGO selenium end-to-end testovi) ili 
+da se veoma dobro pripreme manualni. Timovi koji su u mogućnosti treba da razdvoje servise na 2 mašine (fizičke ili virtualne????????? dva racunara).
+
+Neuspešna realizacija više od jedne transakcije dovodi do diskvalifikacije za više ocene.

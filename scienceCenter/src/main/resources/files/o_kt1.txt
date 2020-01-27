@@ -1,0 +1,23 @@
+﻿Za 1. KT se počinje sa istraživanjem - čitate PCI DSS, istražujete visoku dostupnost?????, 
+proučavate mikroservise i razmišljate o integracijama. Treba da kompletirate to istraživanje, 
+da pre svega znate koji deo PCI DSSa jeste relevantan za vas i kako ćete adresirati svaki od 
+zahteva iz njega (ako ne i njihova implementacija). 
+
+Za visoku dostupnost i live upgrade treba 
+da imate jasnu sliku kako će funkcionisati i test koji će pokazati ispravnost ideje.
+
+Proof of concept je dokaz da dizajn koji je izašao iz vašeg istraživanja ima smisla:
+
+Za osnovnu funkcionalnost, potrebno je podići KP mikroservise i 2 "glupava" servisa 
+(jedan glumi NC, drugi glumi neki servis za plaćanje, oba imaju po 1 funkciju), 
+te da pokažete da komunikacija može da ide od prve tačke, kroz vašu mikroservisnu arhitekturu, 
+sve do druge tačke.
+
+Za bezbednost, da su ugrađene bezbednosne kontrole koje pokrivaju do tada formiranu funkcionalnost 
+(npr. šifrovana komunikacija, ACL-ovi->Access control list)
+
+Za integracije, treba formulisati integraciju sa obe strane (NC i ostalih prodavaca sa jedne strane, 
+a servisa za plaćanje sa druge) i mehanizam kako ćete raditi live uvođenje novih entiteta u sistem.
+
+PoC je daleko od kompletnog rešenja, ali je konkretniji od samog dizajna i njegova svrha je da pokaže 
+da to što ste smislili radi posao makar za trivijalan slučaj.

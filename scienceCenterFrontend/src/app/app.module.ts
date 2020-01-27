@@ -14,6 +14,11 @@ import { RouterModule, ActivatedRouteSnapshot } from '@angular/router';
 import { PayService } from './service/pay.service';
 import { FormsModule } from '@angular/forms';
 import { NewMagazineComponent } from './new-magazine/new-magazine.component';
+import { ViewAllMagazinesComponent } from './view-all-magazines/view-all-magazines.component';
+import { ViewOneMagazineComponent } from './view-one-magazine/view-one-magazine.component';
+import { UserTxComponent } from './user-tx/user-tx.component';
+import { CartComponent } from './cart/cart.component';
+import { ViewOneMagazineEditionComponent } from './view-one-magazine-edition/view-one-magazine-edition.component';
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -24,6 +29,23 @@ const routes = [
   },
   {
     path: 'view-magazine', component: ViewMagazineComponent
+  },
+  {
+    path: 'view-all-magazines', component: ViewAllMagazinesComponent
+  },
+  {
+    path: 'magazine/:id', component: ViewOneMagazineComponent
+  },
+  {
+    path: 'magazine-edition/:id', component: ViewOneMagazineEditionComponent
+  },
+  {
+    path: 'cart', component: CartComponent
+
+  },
+  {
+    path: 'user-tx', component: UserTxComponent
+
   },
   {
     path: 'buy-magazine', component: PayMagazineFormComponent
@@ -62,7 +84,12 @@ const routes = [
     SuccesPageComponent,
     FailedPageComponent,
     ErrorPageComponent,
-    NewMagazineComponent
+    NewMagazineComponent,
+    ViewAllMagazinesComponent,
+    ViewOneMagazineComponent,
+    UserTxComponent,
+    CartComponent,
+    ViewOneMagazineEditionComponent
   ],
   imports: [
     BrowserModule,

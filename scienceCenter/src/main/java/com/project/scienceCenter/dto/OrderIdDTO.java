@@ -3,6 +3,8 @@ package com.project.scienceCenter.dto;
 public class OrderIdDTO {
 
 	private Long orderId;
+	
+	private String kpUrl;
 
 	public OrderIdDTO() {
 		super();
@@ -20,6 +22,14 @@ public class OrderIdDTO {
 
 	public void setOrderId(Long orderId) {
 		this.orderId = orderId;
+	}
+	
+	public String getKpUrl() {
+		return kpUrl;
+	}
+
+	public void setKpUrl(String kpUrl) {
+		this.kpUrl = kpUrl;
 	}
 	
 	

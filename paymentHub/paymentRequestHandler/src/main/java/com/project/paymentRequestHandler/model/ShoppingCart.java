@@ -45,6 +45,14 @@ public class ShoppingCart {
 		this.totalAmount = totalAmount;
 		this.sellerId = sellerId;
 	}
+	
+	
+
+	public ShoppingCart(Double totalAmount, Long sellerId) {
+		super();
+		this.totalAmount = totalAmount;
+		this.sellerId = sellerId;
+	}
 
 	public Long getId() {
 		return id;

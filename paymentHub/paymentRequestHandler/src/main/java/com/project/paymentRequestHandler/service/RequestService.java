@@ -16,6 +16,7 @@ import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
 import com.project.paymentRequestHandler.model.ShoppingCart;
+import com.project.paymentRequestHandler.model.TxInfo;
 import com.project.paymentRequestHandler.model.NewClientRequest;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
@@ -23,6 +24,7 @@ import com.project.paymentRequestHandler.repository.NewClientRequestRepository;
 import com.project.paymentRequestHandler.repository.PaymentTypeRepository;
 import com.project.paymentRequestHandler.repository.SellerInfoRepository;
 import com.project.paymentRequestHandler.repository.ShoppingCartRepository;
+import com.project.paymentRequestHandler.repository.TxInfoRepository;
 
 @Service
 public class RequestService {
@@ -44,6 +46,9 @@ public class RequestService {
 	@Autowired
 	private IdGeneratorRepository idGeneratorRepository;
 	
+	@Autowired
+	private TxInfoRepository txInfoRepository;
+	
 	public PaymentTypeResponseDTO getSupportedPaymentTypes(PaymentTypeRequestDTO request) {
 		
 		SellerInfo sellerInfo = sellerInfoRepository.findBySellerDBId(request.getSellerId());
@@ -56,6 +61,22 @@ public class RequestService {
 		ArrayList<PaymentTypeDTO> paymentTypesDTO = createPaymentTypeDTOList(sellerInfo);
 		PaymentTypeResponseDTO response = new PaymentTypeResponseDTO(sellerInfo.getSellerDBId(), 
 				paymentTypesDTO, "https://localhost:4666/pay/"+ request.getSellerId() + "/" + request.getOrderId());
+		
+		return response;
+	}
+	
+	public PaymentTypeResponseDTO getSupportedPaymentTypes(long sellerId) {
+		
+		SellerInfo sellerInfo = sellerInfoRepository.findBySellerDBId(sellerId);
+		if(sellerInfo == null) {
+			
+		}
+		
+		//shoppingCartRepo.findByOrderId(request.getOrderId());
+		
+		ArrayList<PaymentTypeDTO> paymentTypesDTO = createPaymentTypeDTOList(sellerInfo);
+		PaymentTypeResponseDTO response = new PaymentTypeResponseDTO(sellerInfo.getSellerDBId(), 
+				paymentTypesDTO);
 		
 		return response;
 	}
@@ -107,7 +128,24 @@ public class RequestService {
 		return newClientRequestRepository.getOne(requestId);
 	}
 	
+	public TxInfo saveNewTxInfo(TxInfo newEntity) {
+		return txInfoRepository.save(newEntity);
+	}
 	
+	public TxInfo getTxInfoByOrderId(long orderId) {
+		return txInfoRepository.findByOrderId(orderId);
+	}
 	
+	public TxInfo getTxInfoByPaymentId(long paymentId) {
+		return txInfoRepository.findByPaymentId(paymentId);
+	}
+	
+	public TxInfo getTxInfoByOrderIdAndPaymentId(long orderId, long paymentId) {
+		return txInfoRepository.findByOrderIdAndPaymentId(orderId, paymentId);
+	}
+	
+	public TxInfo getTxInfoByPaymentIdAndServiceWhoHandle(long orderId, String serviceWhoHandlePayment) {
+		return txInfoRepository.findByPaymentIdAndServiceWhoHandlePayment(orderId, serviceWhoHandlePayment);
+	}
 	
 }

@@ -27,28 +27,38 @@ export class PayComponent implements OnInit {
   priceBtc;
   btcValue = 0.0001308788;
 
+  cartId: string;
+
   constructor(private router: Router, private payService: PayServiceService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.param = this.route.snapshot.params.id;
-    this.param1 = this.route.snapshot.params.sellerId;
-    let request : PaymentTypeRequest = new PaymentTypeRequest(this.param1,this.param);
-    //alert("Ide gas: " + request.sellerId);
-    this.payService.getPaymentTypes(request).subscribe(data => {
-      //alert("Ide gas");
-      this.paymentTypeResponse = data;
-      console.log('ide gas');
-    })
+    // this.param = this.route.snapshot.params.id;
+    // this.param1 = this.route.snapshot.params.sellerId;
+    // let request : PaymentTypeRequest = new PaymentTypeRequest(this.param1,this.param);
+    // this.payService.getPaymentTypes(request).subscribe(data => {
+    //   this.paymentTypeResponse = data;
+    // })
 
-    this.payService.getPrice(this.route.snapshot.params.id).subscribe(data => {
-      this.shoppingCart = data;
-      console.log('juzni vetar gas');
-      console.log(data);
-      this.price = this.shoppingCart.totalAmount;
-      this.convertEuroToBtc(this.price);
-    })
+    // this.payService.getPrice(this.route.snapshot.params.id).subscribe(data => {
+    //   this.shoppingCart = data;
+    //   console.log(data);
+    //   this.price = this.shoppingCart.totalAmount;
+    //   this.convertEuroToBtc(this.price);
+    // })
 
+    this.route.paramMap.subscribe(data => {
+      const cartId = data.get('id');
+      this.cartId = cartId;
+
+      this.payService.getPaymentAndOrderData(+this.cartId).subscribe(data => {
+        this.paymentTypeResponse = data.paymentTypes;
+        this.shoppingCart = data.shoppingCart ;
+
+        this.price = this.shoppingCart.totalAmount;
+       this.convertEuroToBtc(this.price);
+      });
+    });
 
   }
 
@@ -73,54 +83,32 @@ export class PayComponent implements OnInit {
       payRequest.amount = this.price;
     }
 
+    //set OrderId iz Kp
+    payRequest.orderId = +this.cartId;
+
     this.payService.buyMagazine(payRequest).subscribe(data => {
-      console.log(data);
-      this.payResponse = data;
-      console.log(this.payResponse.paymentUrl);
-     // window.location.href =data.paymentUrl as string;
-      this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
-         skipLocationChange: true,
-      });
-      // if (this.selectedPaymentType.paymentTypeName == "PAYPALL") {
-      //   alert(1)
-      //   const tempResponse = data;
-      //   let url = `${payRequest.url}/execute`;
-      //   let executeRequest = {
-      //     url: url,
-      //     payerId: this.paymentTypeResponse.sellerInfoDbId,
-      //     amount: payRequest.amount,
-      //     paymentId: tempResponse.paymentId
-      //   }
-      //   this.payService.executePayment(executeRequest).toPromise().then(data => {
-      //     console.log(data);
-      //   })
-      // } else {
-      //   // this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
-        // skipLocationChange: true,
-        // });
-      // }
-      console.log('GASCINA');
+      if (this.selectedPaymentType.paymentTypeName == "PAYPALL") {
+        // alert(1)
+        // const tempResponse = data;
+        // let url = `${payRequest.url}/execute`;
+        // let executeRequest = {
+        //   url: url,
+        //   payerId: this.paymentTypeResponse.sellerInfoDbId,
+        //   amount: payRequest.amount,
+        //   paymentId: tempResponse.paymentId
+        // }
+        // this.payService.executePayment(executeRequest).toPromise().then(data => {
+        //   console.log(data);
+        // })
+      } else {
+        this.router.navigate(['/externalRedirect', { externalUrl: data.paymentUrl }], {
+          skipLocationChange: true,
+        });
+      }
     }, error => console.log(error));
   }
 
 
-  // buy(){
-  //   let payRequest: PayRequest = new PayRequest();
-  //   payRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
-  //   // za karticu puca ako nema iznos
-  //   payRequest.amount = 500;
-  //   payRequest.url = this.selectedPaymentType.paymentTypeHandlerUrl;
-  //   this.payService.buyMagazine(payRequest).subscribe(data => {
-  //     this.payResponse = data;
-
-  //     this.router.navigate(['/externalRedirect', { externalUrl: this.payResponse.paymentUrl }], {
-  //       skipLocationChange: true,
-  //     });
-
-  //   }, err => {
-
-  //   });
-  // }
 
 
     // 1€ => 0.0001308788 BTC

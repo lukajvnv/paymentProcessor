@@ -4,6 +4,8 @@ export class PayRequest {
     amount: number;
     url: string;
 
+    orderId: number;
+
     constructor() {}
 
 }

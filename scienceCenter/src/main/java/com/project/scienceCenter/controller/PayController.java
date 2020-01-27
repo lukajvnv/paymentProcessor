@@ -20,9 +20,13 @@ import com.project.scienceCenter.dto.PaymentRequestDTO;
 import com.project.scienceCenter.dto.PaymentResponseDTO;
 import com.project.scienceCenter.dto.PaymentTypeRequestDTO;
 import com.project.scienceCenter.dto.PaymentTypeResponseDTO;
-import com.project.scienceCenter.model.ShoppingCart;
+import com.project.scienceCenter.dto.ShoppingCartDto;
+import com.project.scienceCenter.dto.ShoppingCartRequestKpDto;
+import com.project.scienceCenter.dto.TxInfoDto;
 import com.project.scienceCenter.model.Magazine;
+import com.project.scienceCenter.model.UserTx;
 import com.project.scienceCenter.repository.MagazineRepository;
+import com.project.scienceCenter.repository.UserTxRepository;
 
 @RestController
 @RequestMapping("/pay")
@@ -31,6 +35,9 @@ public class PayController {
 	
 	@Autowired
 	private MagazineRepository magazineRepository;
+	
+	@Autowired
+	private UserTxRepository userTxRepository;
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> test() {
@@ -57,15 +64,60 @@ public class PayController {
 		return new ResponseEntity<PaymentResponseDTO>(response.getBody(), HttpStatus.OK);
 	}
 	
+//	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCart cart) {
+//		
+//		RestTemplate restTemplate = new RestTemplate();
+//		
+//		//izvuci tu tx iz baze 
+//		
+//		//String url = cart.getUrl();
+//		String url = "https://localhost:8762/requestHandler/request/save";
+//		
+//		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(url, cart, OrderIdDTO.class);
+//		
+//		// za izvucenu tu tx iz baze dodaliti id iz kpA
+//
+//		
+//		return new ResponseEntity<OrderIdDTO>(dto.getBody(), HttpStatus.OK);
+//	}
+	
 	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCart cart) {
+	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCartDto request) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		
-		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(cart.getUrl(), cart, OrderIdDTO.class);
+		//izvuci tu tx iz baze 
+		UserTx cart = userTxRepository.getOne(request.getCartId());
+		
+		//dobavi nekako sellerId -> sadrzaj korpe od isto prodavca/tj. casopisa!!!
+		cart.setkPIdentifier(1l);
+		
+		//String url = cart.getUrl();
+		String url = "https://localhost:8762/requestHandler/request/save";
+		
+		ShoppingCartRequestKpDto kpRequest = new ShoppingCartRequestKpDto(cart.getkPIdentifier(), cart.getTotalAmount());
+		
+		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(url, kpRequest, OrderIdDTO.class);
+		
+		// za izvucenu tu tx iz baze dodeliti id iz kpA
+		cart.setkPIdentifier(dto.getBody().getOrderId());
+		userTxRepository.save(cart);
 		
 		return new ResponseEntity<OrderIdDTO>(dto.getBody(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(path = "/updateTxAfterPaymentIsFinished", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TxInfoDto> updateTxInTheEnd(@RequestBody TxInfoDto request) {		
+		
+		UserTx userTx = userTxRepository.findBykPClientIdentifier(request.getOrderId());
+		userTx.setStatus(request.getStatus());
+		
+		userTxRepository.save(userTx);
+		
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
+	}
+	
 	@PostMapping(path = "/register")
 	public ResponseEntity<?> newMagazine(@RequestBody MagazineDTO magazineDto){
 		Magazine newMagazine = new Magazine(magazineDto.getISSN(), magazineDto.getName(), magazineDto.getWayOfPayment(), true, -1l, magazineDto.getPrice());

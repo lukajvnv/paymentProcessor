@@ -1,0 +1,45 @@
+<div *ngIf="edition">
+  <section class="container content-section">
+    <h2 class="section-header">Magazine edition</h2>
+    <div class="shop-items">
+        <div class="shop-item">
+            <span class="shop-item-title">Id: {{edition.magazineEditionId}} </span>
+            <br>
+            <span class="shop-item-title">Publishing date : {{edition.publishingDate | date}}</span>
+            <br>
+            <span class="shop-item-title"> Price: {{edition.magazineEditionPrice}}</span>
+            
+            
+            
+        </div>
+    </div>
+  </section>
+</div>
+
+<h2 class="section-header">Magazine edition articles</h2>
+<div *ngIf="articles">
+  <div  *ngFor="let article of articles">
+    <section class="container content-section">
+      <div class="shop-items">
+          <div class="shop-item">
+              <span class="shop-item-title">Id: {{article.articleId}} </span>
+              <br>
+              <span class="shop-item-title">Title : {{article.articleTitle}}</span>
+              <br>
+              <span class="shop-item-title"> Abstract: {{article.articleAbstract}}</span>
+              <br>
+              <span class="shop-item-title"> Publishing date: {{article.publishingDate | date}} </span>
+              <br>
+              <span class="shop-item-title">Doi: {{article.doi}} </span>
+              <br>
+              <span class="shop-item-title">price : {{article.price}}€</span>
+              <div class="shop-item-details">
+                  <span class="shop-item-price"></span>
+                  <button (click)="addToCart(article)" class="btn btn-primary shop-item-button" type="button">Add to cart</button>
+              </div>
+          </div>
+      </div>
+    </section>
+  </div>
+</div>
+

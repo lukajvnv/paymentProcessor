@@ -1,0 +1,22 @@
+<div *ngFor="let mag of magazines">
+  <section class="container content-section">
+    <h2 class="section-header">Magazine</h2>
+    <div class="shop-items">
+        <div class="shop-item">
+            <span class="shop-item-title">ISSN: {{mag.issn}} </span>
+            <br>
+            <span class="shop-item-title">Name : {{mag.name}}</span>
+            <br>
+            <span class="shop-item-title"> Way of payment: {{mag.wayOfPayment}}</span>
+            <br>
+            <span class="shop-item-title">Seller ID: {{mag.sellerIdentifier}}</span>
+            <img class="shop-item-image" src="assets\magazinePNG.png">
+            <div class="shop-item-details">
+                <span class="shop-item-price">{{mag.price}}€</span>
+                <button (click)="view(mag)" class="btn btn-primary shop-item-button" type="button">View magazine</button>
+            </div>
+        </div>
+    </div>
+  </section>
+</div>
+

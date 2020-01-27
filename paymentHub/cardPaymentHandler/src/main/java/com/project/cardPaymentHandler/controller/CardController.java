@@ -1,7 +1,6 @@
 package com.project.cardPaymentHandler.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.project.cardPaymentHandler.dto.PaymentRequestDTO;
 import com.project.cardPaymentHandler.dto.PaymentValidationResponseDTO;
-import com.project.cardPaymentHandler.model.FieldMetadata;
+import com.project.cardPaymentHandler.dto.TxInfoDto;
 import com.project.cardPaymentHandler.model.Tx;
 import com.project.cardPaymentHandler.service.CardService;
 
@@ -44,6 +44,15 @@ public class CardController {
 		try {
 			response =  cardService.pay(request);
 			logger.info("Pay initialized ended successfully");
+			
+			RestTemplate restTemplate = new RestTemplate();
+			
+			TxInfoDto txInfo = new TxInfoDto();
+			txInfo.setOrderId(request.getOrderId());
+			txInfo.setServiceWhoHandlePayment("https://localhost:8763");
+			txInfo.setPaymentId(response.getPaymentId());
+			
+			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
 			
 			return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 		} catch (IOException e) {
@@ -73,6 +82,13 @@ public class CardController {
 		
 		//saveTx(txS);
 		request = cardService.saveTx(txS);
+		
+		//callback to NC
+		RestTemplate restTemplate = new RestTemplate();
+		
+		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8763");
+		
+		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
 	
 		return new ResponseEntity<>(new Tx(), HttpStatus.OK);
 	}

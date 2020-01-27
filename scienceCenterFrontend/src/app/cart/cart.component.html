@@ -1,0 +1,33 @@
+<section class="container content-section" *ngIf="cart">
+  <h2 class="section-header">CART</h2>
+  <div class="cart-row">
+      <span class="cart-item cart-header cart-column">ITEM TYPE</span>
+      <span class="cart-price cart-header cart-column">ITEM ID</span>
+      <span class="cart-price cart-header cart-column">PRICE</span>
+      <span class="cart-quantity cart-header cart-column"></span>
+  </div>
+  <div *ngFor="let item of cart.items; let i = index">
+      <div class="cart-items">
+        <div class="cart-row">
+            <div class="cart-item cart-column">
+                <img class="cart-item-image" src="assets\magazinePNG.png" width="100" height="100">
+                <span class="cart-item-title">{{item.buyingType}}</span>
+            </div>
+            <div class="cart-item cart-column">
+              <img class="cart-item-image" src="assets\magazinePNG.png" width="100" height="100">
+              <span class="cart-item-title">{{item.itemId}}</span>
+            </div>
+            <span class="cart-price cart-column">{{item.price}}€</span>
+            <div class="cart-quantity cart-column">
+                <button class="btn btn-danger" type="button" (click)="removeFromCart(item)">REMOVE</button>
+            </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="cart-total">
+      <strong class="cart-total-title">Total</strong>
+      <span class="cart-total-price">{{cart.totalAmount}}€</span>
+  </div>
+  <button class="btn btn-primary btn-purchase" type="button" (click)="checkout()">CHECKOUT</button>
+</section>

@@ -1,0 +1,62 @@
+<table>
+  <thead>
+    <th>Id</th>
+    <th>Created</th>
+    <th>Status</th>
+    <th>Total amount</th>
+    <th>Display</th>
+  </thead>
+  <tr *ngFor="let tx of userTxs">
+    <td>{{tx.userTxId}}</td>
+    <td>{{tx.created | date}}</td>
+    <td>{{tx.status}}</td>
+    <td>{{tx.totalAmount}}</td>
+    <td><button (click)="click(tx)">Details</button></td>
+  </tr>
+</table>
+<div *ngIf="selectedTx">
+  <div *ngFor="let item of selectedTx.items; let i = index ">
+    <section class="container content-section">
+      <h2 class="section-header">Item {{i}}</h2>
+      <div class="shop-items">
+          <div class="shop-item">
+              <span class="shop-item-title">Id: {{item.userTxItemId}} </span>
+              <br>
+              <span class="shop-item-title">Price : {{item.price}}</span>
+              <br>
+              <span class="shop-item-title"> Buying type: {{item.buyingType}}</span>
+              <br>
+              <!-- <span class="shop-item-title">Seller ID: {{mag.sellerIdentifier}}</span> -->
+              <!-- <img class="shop-item-image" src="assets\magazinePNG.png"> -->
+              <!-- <div class="shop-item-details">
+                  <span class="shop-item-price">{{mag.price}}€</span>
+                  <button (click)="view(mag)" class="btn btn-primary shop-item-button" type="button">View magazine</button>
+              </div> -->
+              <section class="container content-section">
+                <h2 class="section-header">Article details</h2>
+                <div class="shop-items">
+                    <div class="shop-item">
+                        <span class="shop-item-title">Id: {{item.content.articleId}} </span>
+                        <br>
+                        <span class="shop-item-title">Title : {{item.content.articleTitle}}</span>
+                        <br>
+                        <span class="shop-item-title"> Abstract: {{item.content.articleAbstract}}</span>
+                        <br>
+                        <span class="shop-item-title"> Publishing date: {{item.content.publishingDate | date}} </span>
+                        <br>
+                        <span class="shop-item-title">Doi: {{item.content.doi}} </span>
+                        <br>
+                        <span class="shop-item-title">price : {{item.content.price}}€</span>
+                        <!-- <div class="shop-item-details">
+                            <span class="shop-item-price"></span>
+                            <button (click)="addToCart(article)" class="btn btn-primary shop-item-button" type="button">Add to cart</button>
+                        </div> -->
+                    </div>
+                </div>
+              </section>
+          </div>
+      </div>
+    </section>
+  </div>
+</div>
+

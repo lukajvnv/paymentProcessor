@@ -5,6 +5,8 @@ export class Cart {
     
     totalAmount: number = 0;
 
+    cartId: number;
+
     //bice neki customerId da se zna kom kupcu aktiviramo casopis
 
     constructor() {

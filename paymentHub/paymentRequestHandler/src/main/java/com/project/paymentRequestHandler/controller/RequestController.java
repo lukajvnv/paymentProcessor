@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,14 +19,17 @@ import org.springframework.web.client.RestTemplate;
 import com.project.paymentRequestHandler.dto.NewClientDto;
 import com.project.paymentRequestHandler.dto.NewMagazineConfirmationDto;
 import com.project.paymentRequestHandler.dto.OrderIdDTO;
+import com.project.paymentRequestHandler.dto.PaymentOrderDataDto;
 import com.project.paymentRequestHandler.dto.PaymentTypeFormDto;
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
-import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
-import com.project.paymentRequestHandler.model.ShoppingCart;
 import com.project.paymentRequestHandler.dto.SellerInfoDto;
+import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
+import com.project.paymentRequestHandler.dto.TxInfoDto;
 import com.project.paymentRequestHandler.model.NewClientRequest;
 import com.project.paymentRequestHandler.model.SellerInfo;
+import com.project.paymentRequestHandler.model.ShoppingCart;
+import com.project.paymentRequestHandler.model.TxInfo;
 import com.project.paymentRequestHandler.service.ClientService;
 import com.project.paymentRequestHandler.service.RequestService;
 
@@ -57,18 +59,37 @@ public class RequestController {
 		return new ResponseEntity<PaymentTypeResponseDTO>(response, HttpStatus.OK);
 	}
 	
+//	@RequestMapping(path = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCart request) {		
+//		Long orderId = requestService.saveShoppingCartTemp(request);
+//		
+//		OrderIdDTO dto = new OrderIdDTO(orderId);
+//		
+//		dto.setKpUrl("https://localhost:4666/pay/" + orderId);
+//		
+//		//vracamo orderId - redirekt url na kp
+//		return new ResponseEntity<OrderIdDTO>(dto, HttpStatus.OK);
+//	}
+	
 	@RequestMapping(path = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCart request) {
-		System.out.println("Usao u save");
+	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCartDTO request) {		
 		
-		Long orderId = requestService.saveShoppingCartTemp(request);
+		ShoppingCart s = new ShoppingCart(request.getTotalAmount().doubleValue(), request.getkPClientIdentifier());
+		
+		Long orderId = requestService.saveShoppingCartTemp(s);
 		
 		OrderIdDTO dto = new OrderIdDTO(orderId);
 		
+		dto.setKpUrl("https://localhost:4666/pay/" + orderId);
 		
-		//vracamo orderId
+		//cuvanje inicijalnog tx-a
+		TxInfo txInfo = new TxInfo(orderId, -1l, "");
+		requestService.saveNewTxInfo(txInfo);
+		
+		//vracamo orderId i redirekt url na kp
 		return new ResponseEntity<OrderIdDTO>(dto, HttpStatus.OK);
 	}
+	
 	/*
 	 * {id} --> orderId
 	 * */
@@ -79,6 +100,50 @@ public class RequestController {
 		ShoppingCart sc = requestService.getPrice(id);
 		
 		return new ResponseEntity<ShoppingCart>(sc, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/getPaymentAndOrderData/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PaymentOrderDataDto> cardHandlerPost(@PathVariable long id) {
+		System.out.println("Usao, nece debug da radi nesto");
+		
+		if(id == 0) {
+			return new ResponseEntity<PaymentOrderDataDto>(HttpStatus.OK);
+		}
+		
+		ShoppingCart sc = requestService.getPrice(id);
+		
+		PaymentTypeResponseDTO types = requestService.getSupportedPaymentTypes(sc.getSellerId());
+		
+		PaymentOrderDataDto response = new PaymentOrderDataDto(sc, types);
+		
+		return new ResponseEntity<PaymentOrderDataDto>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/updateTxAfterPaymentInit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TxInfoDto> updateTxInitial(@RequestBody TxInfoDto request) {		
+		
+		TxInfo txInfo = requestService.getTxInfoByOrderId(request.getOrderId());
+		txInfo.setServiceWhoHandlePayment(request.getServiceWhoHandlePayment());
+		txInfo.setPaymentId(request.getPaymentId());
+		
+		requestService.saveNewTxInfo(txInfo);
+		
+		
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/updateTxAfterPaymentIsFinished", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TxInfoDto> updateTxInTheEnd(@RequestBody TxInfoDto request) {		
+		
+		TxInfo txInfo = requestService.getTxInfoByPaymentIdAndServiceWhoHandle(request.getPaymentId(), request.getServiceWhoHandlePayment());
+		request.setOrderId(txInfo.getOrderId());
+		
+		
+		RestTemplate restTemplate = new RestTemplate();
+		
+		ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8836/pay/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/newClient/{externalIdentifier}")

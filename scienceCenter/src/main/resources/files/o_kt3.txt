@@ -1,0 +1,20 @@
+﻿Za datu kontrolnu tačku, potrebno je ispeglati sve što se tražilo na drugoj tački i osposobiti dodatne funkcionalnosti. 
+Ovo uključuje:
+
+Rešavanje svih mogućih error i unfinished transaction scenarija, 
+poput onog gde kupac zatvara tab neposredno pre nego što će platiti, gde izvrši plaćanje na eksternom servisu, 
+ali dođe do greške u KPu pa NC ne dobije informaciju da je čovek platio i sl. Akcenat ovog segmenta je da se dobro
+razmotre sve moguće situacije otkaza i da KP podrži strategiju za rešavanje potencijalnog problema.
+
+Podržati PCC i Issuer komunikaciju za plaćanje putem banke.
+
+Podržati sistem pretplate koji nudi PayPal API.
+
+Podržati registraciju novog prodavca i izbor podržanih načina plaćanja.
+
+Realizovati ne-trivijalan (ali ne nužno finalan) interfejs za web-shop naučne centrale.
+
+Uveriti se da sve prethodno implementirane funkcije i dalje rade.
+
+Timovi će imati kratak slot (~10 minuta) da demonstriraju nove funkcionalnosti i odgovore na prateća pitanja.
+
