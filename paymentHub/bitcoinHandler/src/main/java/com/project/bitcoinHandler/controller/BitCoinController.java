@@ -28,6 +28,7 @@ import com.project.bitcoinHandler.dto.CreateOrderRequestDTO;
 import com.project.bitcoinHandler.dto.GetOrderResponseDTO;
 import com.project.bitcoinHandler.dto.PaymentRequestDTO;
 import com.project.bitcoinHandler.dto.PaymentResponseDTO;
+import com.project.bitcoinHandler.dto.TxInfoDto;
 import com.project.bitcoinHandler.dto.BitCoinResponseDTO;
 import com.project.bitcoinHandler.dto.CheckoutResponseDTO;
 import com.project.bitcoinHandler.model.SellerBitcoinInfo;
@@ -35,6 +36,7 @@ import com.project.bitcoinHandler.model.Tx;
 import com.project.bitcoinHandler.repository.BitcoinRepository;
 import com.project.bitcoinHandler.repository.TxRepository;
 import com.project.bitcoinHandler.util.TxStatus;
+import com.project.bitcoinHandler.util.TxStatusReqHandler;
 
 import java.io.IOException;
 import java.util.Date;
@@ -131,6 +133,15 @@ public class BitCoinController {
 		
 		Tx tx = createTransaction(btcResponse,sbi);
 		txRepo.save(tx);
+		
+		TxInfoDto txInfo = new TxInfoDto();
+		txInfo.setOrderId(btcDTO.getOrderId());
+		txInfo.setServiceWhoHandlePayment("https://localhost:8764");
+		txInfo.setPaymentId(tx.getorder_id()); //ovde se nalazi orderId koji je i na coingate-u
+		
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
+		
 		//BitCoinResponseDTO response = parser.parseList(responseEntity.getBody().toString());
 		
 		//BitCoinResponseDTO responseDTO =  responseEntity.;
@@ -183,8 +194,10 @@ public class BitCoinController {
 	}
 	
 	
-	
-	public Tx createTransaction(BitCoinResponseDTO btcDTO, SellerBitcoinInfo sbi) {
+	/*
+	 * Kreiranje transakcije na bekendu u momentu kad korisnik kreira
+	 * */
+	private Tx createTransaction(BitCoinResponseDTO btcDTO, SellerBitcoinInfo sbi) {
 		
 		Tx tx = new Tx();
 		
@@ -204,6 +217,9 @@ public class BitCoinController {
 		return tx;
 		
 	}
+	
+
+	
 	
 	/*
 	 * Metoda za konkretno placanje, to be implemented
@@ -260,6 +276,10 @@ public class BitCoinController {
 		return new ResponseEntity<Object>(responseEntity,HttpStatus.OK);
 	}
 	
+	/*
+	 * Metoda koja svakih 2 min (15 sekundi radi demonstracije rada) proverava da li je transakcija prosla 
+	 * na coingate-u.
+	 * */
 	@Scheduled(fixedDelay = 15000)
 	public void scheduleFixedDelayTask() {
 		
@@ -297,25 +317,37 @@ public class BitCoinController {
 			    		gorResponse.getStatus().equals("expired") || 
 			    		gorResponse.getStatus().equals("canceled")) {
 			    	
-			    	
+			    	//naredne tri linije mi nisu nista jasne zasto sam ovo radio pre mesec dana
 			    	Tx tx2 = new Tx();
 		    		tx2 = txRepo.findByusername(gorResponse.getId());
 		    		System.out.println("TX: " + tx2.getorder_id());
+		    		
+		    		RestTemplate restTemplate = new RestTemplate();
+		    		
+		    		TxInfoDto txInfo;
 			    	
 			    	if(gorResponse.getStatus().equals("paid")) {
-			    		//promenimo u bazi
-			    		//txRepo.getOne((Integer)gorResponse.getId()); 
-			    		tx.setStatus(TxStatus.PAID);
 			    		
+			    		tx.setStatus(TxStatus.PAID);
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.SUCCESS, "https://localhost:8764");
+			    			
 			    	} else if(gorResponse.getStatus().equals("invalid")) {
 			    		tx.setStatus(TxStatus.FAILED);
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764");
 			    	} else if(gorResponse.getStatus().equals("expired")){
 			    		tx.setStatus(TxStatus.EXPIRED);
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764");
 			    	} else {
 			    		tx.setStatus(TxStatus.CANCELED);
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.ERROR, "https://localhost:8764");
 			    	}
 			    	
 			    	txRepo.save(tx);
+		    		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
+		    	
+			    	
+			    	
+			    	
 			    	
 			    }
 				
