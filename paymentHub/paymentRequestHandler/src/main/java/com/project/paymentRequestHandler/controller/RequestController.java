@@ -170,7 +170,7 @@ public class RequestController {
 		NewMagazineConfirmationDto newMagazineConfirmationDtoRequest = new NewMagazineConfirmationDto(request.getSellerIdentifier(),  persistedSellerInfo.getSellerIdentifier());
 		//callback to Nc
 		RestTemplate restTemplate = new RestTemplate();
-		//ResponseEntity<?> response = restTemplate.postForEntity("https://localhost:8836/pay/registerConfirmationBasic", newMagazineConfirmationDtoRequest, Object.class);
+		ResponseEntity<?> response = restTemplate.postForEntity("https://localhost:8836/pay/registerConfirmationBasic", newMagazineConfirmationDtoRequest, Object.class);
 		
 		//offer payment options
 		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields();

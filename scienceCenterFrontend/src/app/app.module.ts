@@ -25,7 +25,7 @@ const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
 const routes = [
   {
-    path: '', redirectTo: '/view-magazine', pathMatch: 'full'
+    path: '', redirectTo: '/view-all-magazines', pathMatch: 'full'
   },
   {
     path: 'view-magazine', component: ViewMagazineComponent

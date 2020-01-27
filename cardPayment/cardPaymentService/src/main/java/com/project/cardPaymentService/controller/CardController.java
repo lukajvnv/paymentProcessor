@@ -164,6 +164,13 @@ public class CardController {
 		PaymentRequest paymentReq = null;
 		try {
 			paymentReq = validationService.getPaymentRequest(request);
+			
+			if(paymentReq.getRequestStatus() == TxStatus.ERROR) {
+				logger.error("Time is up! You cannot longer pay your transaction");
+				PaymentCardResponseDTO res = new PaymentCardResponseDTO();
+				res.setRedirectUrl(paymentReq.getErrorUrl());
+				return new ResponseEntity<PaymentCardResponseDTO>(res, HttpStatus.REQUEST_TIMEOUT);
+			}
 		} catch (PaymentRequestException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -189,7 +196,7 @@ public class CardController {
 	    	validationService.savePaymentRequest(paymentReq);
 	    	Tx errorTx = transactionService.saveTxLog(TxStatus.ERROR, paymentReq.getAmount(), "ERROR", "NONE" , "NONE", "NONE", "NONE", paymentReq.getPaymentId()
 	    			, paymentReq.getMerchantTimestamp(), response.getMerchantOrderId(), null, null);
-			logger.info("Not enough money at the account");
+			logger.info("Payment action finished due to unknown error");
 			response.setTx(errorTx);
 			response.setRedirectUrl(paymentReq.getErrorUrl());
 			response.setOutcome(TxStatus.ERROR);
@@ -226,35 +233,44 @@ public class CardController {
 	    
 	  }
 	
-		private static final String CRON_EXP = "* * * * * * *";
+	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";
+	private static final String CRON_EXP_EVERY_FIVE_MINUTE = "0 */5 * ? * *";
+	private static final long DELAY_EXP_EVERY_ONE_MINUTE = 60000;
+	private static final long DELAY_EXP_EVERY_FIVE_MINUTE = 300000;
 	
-		//@Scheduled(cron = CRON_EXP)
+		@Scheduled(fixedDelay = DELAY_EXP_EVERY_FIVE_MINUTE)
 		@GetMapping("/checkPaymentRequest")
 		public void checkPaymentRequest() {
+			logger.info("Check payment requests initialized");
 			List<PaymentRequest> nonPaidList = validationService.retrieveNonPaidRequest();
+			logger.info("Check payment requests nonPaidList retrieved");
 			for (PaymentRequest request: nonPaidList) {
 				request.setRequestStatus(TxStatus.ERROR);
 				validationService.savePaymentRequest(request);
 				BankAccount sellerAccount = validationService.getAccount(request.getMerchantUsername());
-				Tx sellerTx = transactionService.saveTxLog(TxStatus.ERROR, request.getAmount(), "Money added to the seler account", "UNKNOWN", "UNKNOWN", sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber(), request.getPaymentId(),
+				Tx sellerTx = transactionService.saveTxLog(TxStatus.ERROR, request.getAmount(), "Error during transaction", "UNKNOWN", "UNKNOWN", sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber(), request.getPaymentId(),
 						request.getMerchantTimestamp(), request.getMerchantOrderId(), null, null);
-				logger.info("Money added to the seler account");
+				logger.info("Save tx with error in db, message: {}", sellerTx.getTxDescription());
 				transactionService.sendTxToKp(sellerTx);
 			}
+			logger.info("Check payment requests finished");
 		}
 		
 		@PostMapping("/checkTx")
 		public ResponseEntity<Tx> checkTx(@RequestBody TxCheckDto txcheck) {
 			Tx tx = null;
 			try {
+				logger.info("Check tx initialized");
 				tx = validationService.getTx(txcheck.getPaymentId(), txcheck.getMerchantOrderId());
 				if(tx == null) {
+					logger.error("Check tx : tx not found");
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
 			} catch (Exception e) {
+				logger.error("Check tx ended with exception");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			
+			logger.info("Check tx finished");
 			return new ResponseEntity<Tx>(tx, HttpStatus.OK);
 		}
 	

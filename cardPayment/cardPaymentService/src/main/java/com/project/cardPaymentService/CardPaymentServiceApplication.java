@@ -4,12 +4,14 @@ import java.io.IOException;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.project.cardPaymentService.service.AuthorizationService;
 import com.project.cardPaymentService.service.ValidationService;
 import com.project.cardPaymentService.util.Base64Utility;
 
 @SpringBootApplication
+@EnableScheduling
 public class CardPaymentServiceApplication {
 
 	public static void main(String[] args) {

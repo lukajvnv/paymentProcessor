@@ -34,6 +34,13 @@ public class PaymentCardResponseDTO {
 	
 	
 
+	public PaymentCardResponseDTO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
 	public PaymentCardResponseDTO(Long merchantOrderId, Long paymentId) {
 		super();
 		this.merchantOrderId = merchantOrderId;

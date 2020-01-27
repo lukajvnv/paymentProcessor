@@ -42,7 +42,6 @@ export class NewClientComponent implements OnInit {
 
   ngOnSubmitBasic(value, form ){
     this.newClientReqeust.newClientRequestId = this.newClientRequestId;
-    this.newClientReqeust.newClientRequestId = '1';
     let x = this.magazineService.newClientBasic(this.newClientReqeust);
 
     x.subscribe(data => {

@@ -39,7 +39,7 @@ public class DataLoader implements ApplicationRunner {
 		createBankInfoAccount();
 		createSellerInfoAccount();
 		
-		createTx();
+		//createTx();
 		
 		createFieldMetadata();
 		

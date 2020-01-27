@@ -180,9 +180,9 @@ public class TransactionService {
 //			response.setOutcome(TxStatus.SUCCESS);
 //			return response;
 		} catch (Exception e) {
-			Tx errorTx = saveTxLog(TxStatus.ERROR, req.getAmount(), "Not enough money at the account", "NONE" , "NONE", sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber(), req.getPaymentId()
+			Tx errorTx = saveTxLog(TxStatus.ERROR, req.getAmount(), "ERROR WITH PROCESSING CARD DATA or through paying process", "NONE" , "NONE", sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber(), req.getPaymentId()
 					, req.getMerchantTimestamp(), req.getMerchantOrderId(), response.getAcquirerTimestamp(), response.getAcquirerOrderId());
-			logger.info("Not enough money at the account");
+			logger.error("ERROR WITH PROCESSING CARD DATA or through paying process");
 			response.setTx(errorTx);
 			response.setRedirectUrl(req.getErrorUrl());
 			response.setOutcome(TxStatus.ERROR);
@@ -209,6 +209,7 @@ public class TransactionService {
 	
 	public Tx sendTxToKp(Tx tx) {
 		RestTemplate restTemplate = new RestTemplate();
+		logger.info("Send tx to kp");
 		ResponseEntity<Tx> response =  restTemplate.postForEntity("https://localhost:8763/card/saveTx", tx, Tx.class);
 	
 		return response.getBody();

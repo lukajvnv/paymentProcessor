@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -103,8 +104,12 @@ public class CardController {
 		
 	}
 	
-	private static final String CRON_EXP = "* * * * * * *";
-	//@Scheduled(cron = CRON_EXP)
+	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";
+	private static final String CRON_EXP_EVERY_FIVE_MINUTE = "0 */5 * ? * *";
+	private static final long DELAY_EXP_EVERY_ONE_MINUTE = 60000;
+	private static final long DELAY_EXP_EVERY_FIVE_MINUTE = 300000;
+	
+	@Scheduled(cron = CRON_EXP_EVERY_FIVE_MINUTE)
 	@GetMapping(path="/checkTxs")
 	public void checkTxs() {
 		cardService.checkTxs();

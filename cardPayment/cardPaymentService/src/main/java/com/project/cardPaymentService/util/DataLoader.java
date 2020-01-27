@@ -26,10 +26,10 @@ public class DataLoader implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// TODO Auto-generated method stub
-		createInitialPaymentRequest();
-		// createCardAccount();
+		//createInitialPaymentRequest();
+
 		createBankAccount();
-		createTx();
+		//createTx();
 		
 		testQuery();
 		
@@ -70,13 +70,10 @@ public class DataLoader implements ApplicationRunner {
 
 	}
 	
-	private void createCardAccount() {
-		CardAccount acc1 = new CardAccount();
-		CardAccount acc2 = new CardAccount();
-	}
+	
 	
 	private void createBankAccount() {
-		BankAccount bank1 = new BankAccount("745-578979123-45", "Casopis A", "casopisA", "ktP9zj/U1zRo2x+1+s/0ggjHZLl45XnLy8xIINHTpck=", "8bflvLaZDvLPwjLjf9Ns2g==", 4444f);
+		BankAccount bank1 = new BankAccount("745-578979123-45", "Casopis A", "casopisA", "ktP9zj/U1zRo2x+1+s/0ggjHZLl45XnLy8xIINHTpck=", "8bflvLaZDvLPwjLjf9Ns2g==", 444f);
 		unityOfWork.getBankAccountRepository().save(bank1);
 		
 		BankAccount bank2 = new BankAccount("745-556321789-54", "Casopis B", "casopisB", "okXaW4aDRLzw1BD2L/s+JkQJtwFOOxmLZwt8RiUHAyM=", "sPssSO3OuKXATln+TBLtZA==", 10000f);
@@ -85,7 +82,7 @@ public class DataLoader implements ApplicationRunner {
 		BankAccount bank3 = new BankAccount("745-56355589-54", "Casopis C", "casopisC", "SDLcsfaocMjMgueNJ9BckoXNqYHWE9Lr5GdbZGVAcLc=", "fVEo7X9RaBCTomdT/wYf1g==", 555f);
 		unityOfWork.getBankAccountRepository().save(bank3);
 		
-		BankAccount bank4 = new BankAccount("745-23544458-88", "kupac A", "kupacA", "q4N1VDks+NhaTUEkTHUeBuR/eXp9tLFV+XEaUY0joA4=", "BdIDr4w0iTugtZzP7ET9kQ==", 450f);
+		BankAccount bank4 = new BankAccount("745-23544458-88", "kupac A", "kupacA", "q4N1VDks+NhaTUEkTHUeBuR/eXp9tLFV+XEaUY0joA4=", "BdIDr4w0iTugtZzP7ET9kQ==", 44f);
 		unityOfWork.getBankAccountRepository().save(bank4);
 
 		
@@ -110,7 +107,7 @@ public class DataLoader implements ApplicationRunner {
 //		BankAccount bank6 = new BankAccount("456-2345412-99", "Kupac C", "kupacC", "xmVtrLS21ncix83tYo/tkLlI1aJarmN1K+NSf6UYRXE=", "2rMbsEFiFtUevHw8Isvi6w==", 10000f);
 //		unityOfWork.getBankAccountRepository().save(bank6);
 //		
-//		BankAccount bank7 = new BankAccount("456-23545121-66", "Kupac D", "kupacD", "svL20fraOYf4HzH0kWYPXummIOgI/v6oDy6bgBIgPmQ=", "PCBezlaQsNg/gaiU3G5Hxw==", 555f);
+//		BankAccount bank7 = new BankAccount("456-23545121-66", "Kupac D", "kupacD", "svL20fraOYf4HzH0kWYPXummIOgI/v6oDy6bgBIgPmQ=", "PCBezlaQsNg/gaiU3G5Hxw==", 44f);
 //		unityOfWork.getBankAccountRepository().save(bank7);
 //		
 //		

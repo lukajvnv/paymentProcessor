@@ -40,6 +40,7 @@ import com.project.scienceCenter.repository.UserRepository;
 import com.project.scienceCenter.repository.UserTxItemRepository;
 import com.project.scienceCenter.repository.UserTxRepository;
 import com.project.scienceCenter.service.TestService;
+import com.project.scienceCenter.util.Base64Utility;
 
 @RestController
 @RequestMapping("/test")
@@ -237,5 +238,13 @@ public class TestController {
 		
 				
 		return new ResponseEntity<List<UserTxDto>>(userTxDtos, HttpStatus.OK);
+	}
+	
+	public String getDocument(byte[] data) {
+		String encoded = Base64Utility.encode(data);
+//		 String ret = "data:base64" + "," + encoded;
+		 String ret = encoded;
+		
+		return ret;
 	}
 }
