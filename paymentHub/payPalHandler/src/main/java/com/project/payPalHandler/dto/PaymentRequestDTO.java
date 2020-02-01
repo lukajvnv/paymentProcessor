@@ -5,13 +5,10 @@ import javax.validation.constraints.NotNull;
 
 public class PaymentRequestDTO {
 
-	@NotNull
 	private Long sellerId;
 	
-	@NotNull
 	private Float amount;
 	
-	@NotBlank
 	private String url;
 	
 	

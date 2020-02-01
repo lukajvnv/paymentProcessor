@@ -1,6 +1,7 @@
 package com.project.paymentRequestHandler.dto;
 
 import com.project.paymentRequestHandler.model.ShoppingCart;
+import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
 
 public class PaymentOrderDataDto {
 

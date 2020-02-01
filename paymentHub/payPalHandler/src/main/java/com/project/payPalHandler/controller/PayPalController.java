@@ -2,6 +2,8 @@ package com.project.payPalHandler.controller;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.paypal.base.rest.PayPalRESTException;
 import com.project.payPalHandler.dto.PaymentRequestDTO;
 import com.project.payPalHandler.dto.PaymentResponseDTO;
+import com.project.payPalHandler.dto.SubscriptionRequestDto;
 import com.project.payPalHandler.service.PayPalService;
 
 @RestController
@@ -64,6 +68,15 @@ public class PayPalController {
         response.sendRedirect(redirectUrl);
     }
 	
+	@PostMapping("/subscription")
+    public PaymentResponseDTO subscription(@RequestBody SubscriptionRequestDto subscriptionRequest) throws MalformedURLException, UnsupportedEncodingException, PayPalRESTException {
+        return _ppservice.startSubscription(subscriptionRequest);
+    }
+	
+	@GetMapping("/subscription")
+    public void getProcessPayment(@RequestParam String token) throws PayPalRESTException {
+        _ppservice.executeSubscription(token);
+    }
 	
 	
 }

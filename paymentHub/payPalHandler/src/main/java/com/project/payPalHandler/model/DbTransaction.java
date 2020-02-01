@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.project.payPalHandler.util.PaymentStatus;
+
 @Entity
 public class DbTransaction {
 
@@ -28,45 +30,10 @@ public class DbTransaction {
     private String redirectUrl;
 
     @Column
-    private Boolean successful;
+    private String currency;
     
     @Column
-    private String currency;
-
-	public DbTransaction(Long id, String paymentId, Seller seller, String amount, String redirectUrl,
-			Boolean successful, String currency) {
-		super();
-		this.id = id;
-		this.paymentId = paymentId;
-		this.seller = seller;
-		this.amount = amount;
-		this.redirectUrl = redirectUrl;
-		this.successful = successful;
-		this.currency = currency;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public DbTransaction() {
-
-	}
-
-	public DbTransaction(Long id, String paymentId, Seller seller, String amount, String redirectUrl,
-			Boolean successful) {
-		super();
-		this.id = id;
-		this.paymentId = paymentId;
-		this.seller = seller;
-		this.amount = amount;
-		this.redirectUrl = redirectUrl;
-		this.successful = successful;
-	}
+    private PaymentStatus paymentStatus;
 
 	public Long getId() {
 		return id;
@@ -108,12 +75,39 @@ public class DbTransaction {
 		this.redirectUrl = redirectUrl;
 	}
 
-	public Boolean getSuccessful() {
-		return successful;
+	public String getCurrency() {
+		return currency;
 	}
 
-	public void setSuccessful(Boolean successful) {
-		this.successful = successful;
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
+
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public DbTransaction(Long id, String paymentId, Seller seller, String amount, String redirectUrl, String currency,
+			PaymentStatus paymentStatus) {
+		super();
+		this.id = id;
+		this.paymentId = paymentId;
+		this.seller = seller;
+		this.amount = amount;
+		this.redirectUrl = redirectUrl;
+		this.currency = currency;
+		this.paymentStatus = paymentStatus;
+	}
+
+	public DbTransaction() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+    
+    
 	
 }
