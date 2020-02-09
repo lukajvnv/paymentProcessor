@@ -1,6 +1,10 @@
 package com.project.scienceCenter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,16 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.scienceCenter.dto.MagazineDTO;
 import com.project.scienceCenter.dto.NewClientResponse;
 import com.project.scienceCenter.dto.NewMagazineConfirmationDto;
 import com.project.scienceCenter.dto.OrderIdDTO;
-import com.project.scienceCenter.dto.PaymentRequestDTO;
-import com.project.scienceCenter.dto.PaymentResponseDTO;
-import com.project.scienceCenter.dto.PaymentTypeRequestDTO;
-import com.project.scienceCenter.dto.PaymentTypeResponseDTO;
 import com.project.scienceCenter.dto.ShoppingCartDto;
 import com.project.scienceCenter.dto.ShoppingCartRequestKpDto;
 import com.project.scienceCenter.dto.TxInfoDto;
@@ -39,48 +40,9 @@ public class PayController {
 	@Autowired
 	private UserTxRepository userTxRepository;
 	
-	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> test() {
-		return new ResponseEntity<>(new String("Okej NC radi poziv KP kako treba"), HttpStatus.OK);
-	}
+	@Value("${server.port}")
+	private String webShopClientport;
 	
-	@RequestMapping(path = "/paymentTypes", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PaymentTypeResponseDTO> cardHandlerPost(@RequestBody PaymentTypeRequestDTO request) {
-		
-		RestTemplate restTemplate = new RestTemplate();
-		
-		ResponseEntity<PaymentTypeResponseDTO> response = restTemplate.postForEntity("https://localhost:8762/requestHandler/request/paymentTypes", request, PaymentTypeResponseDTO.class);
-		
-		return new ResponseEntity<PaymentTypeResponseDTO>(response.getBody(), HttpStatus.OK);
-	}
-	
-	@RequestMapping(path = "/buy", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PaymentResponseDTO> cardHandlerPost(@RequestBody PaymentRequestDTO request) {
-		
-		RestTemplate restTemplate = new RestTemplate();
-		
-		ResponseEntity<PaymentResponseDTO> response = restTemplate.postForEntity(request.getUrl(), request, PaymentResponseDTO.class);
-		
-		return new ResponseEntity<PaymentResponseDTO>(response.getBody(), HttpStatus.OK);
-	}
-	
-//	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCart cart) {
-//		
-//		RestTemplate restTemplate = new RestTemplate();
-//		
-//		//izvuci tu tx iz baze 
-//		
-//		//String url = cart.getUrl();
-//		String url = "https://localhost:8762/requestHandler/request/save";
-//		
-//		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(url, cart, OrderIdDTO.class);
-//		
-//		// za izvucenu tu tx iz baze dodaliti id iz kpA
-//
-//		
-//		return new ResponseEntity<OrderIdDTO>(dto.getBody(), HttpStatus.OK);
-//	}
 	
 	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCartDto request) {
@@ -94,11 +56,21 @@ public class PayController {
 		cart.setkPIdentifier(1l);
 		
 		//String url = cart.getUrl();
-		String url = "https://localhost:8111/request/save";
+//		String url = "https://localhost:8111/request/save";
+		String url = "https://localhost:8762/requestHandler/request/save";
+
 		
 		ShoppingCartRequestKpDto kpRequest = new ShoppingCartRequestKpDto(cart.getkPIdentifier(), cart.getTotalAmount());
 		
-		ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(url, kpRequest, OrderIdDTO.class);
+		//ResponseEntity<OrderIdDTO> dto = restTemplate.postForEntity(url, kpRequest, OrderIdDTO.class);
+		
+		ResponseEntity<OrderIdDTO> dto = null;
+		try {
+			dto = restTemplate.exchange(url, HttpMethod.POST, createHeader(kpRequest), OrderIdDTO.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// za izvucenu tu tx iz baze dodeliti id iz kpA
 		cart.setkPIdentifier(dto.getBody().getOrderId());
@@ -126,7 +98,17 @@ public class PayController {
 		String newClientRequestUrl = "https://localhost:8762/requestHandler/request/newClient/";
 		
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<String> response = restTemplate.getForEntity(newClientRequestUrl + persistedMagazine.getMagazineId(), String.class);
+		// ResponseEntity<String> response = restTemplate.getForEntity(newClientRequestUrl + persistedMagazine.getMagazineId(), String.class);
+		
+		
+		ResponseEntity<String> response = null;
+		try {
+			response = restTemplate.exchange(newClientRequestUrl + persistedMagazine.getMagazineId(), HttpMethod.GET, createHeader(null), String.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		return new ResponseEntity<>(new NewClientResponse(response.getBody()), HttpStatus.OK);
 	}
@@ -139,6 +121,21 @@ public class PayController {
 		magazineRepository.save(magazine);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	private HttpEntity<?> createHeader (Object body){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("external", "true");
+		headers.add("hostsc", "localhost:" + webShopClientport);
+		
+		HttpEntity<?> entity;
+		if(body != null) {
+			entity = new HttpEntity<>(body, headers);
+		} else {
+			entity = new HttpEntity<>(headers);
+		}
+		
+		return entity;
 	}
 
 }

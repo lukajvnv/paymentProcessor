@@ -22,17 +22,20 @@ public class TxInfo {
 	
 	@Column
 	private String serviceWhoHandlePayment;
+	
+	@Column
+	private String clientApplication;
 
 	public TxInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TxInfo(Long orderId, Long paymentId, String serviceWhoHanlePayment) {
+	public TxInfo(Long orderId, Long paymentId, String clientApplication) {
 		super();
 		this.orderId = orderId;
 		this.paymentId = paymentId;
-		this.serviceWhoHandlePayment = serviceWhoHanlePayment;
+		this.clientApplication = clientApplication;
 	}
 
 	public Long getTxInfoId() {
@@ -65,6 +68,14 @@ public class TxInfo {
 
 	public void setServiceWhoHandlePayment(String serviceWhoHandlePayment) {
 		this.serviceWhoHandlePayment = serviceWhoHandlePayment;
+	}
+
+	public String getClientApplication() {
+		return clientApplication;
+	}
+
+	public void setClientApplication(String clientApplication) {
+		this.clientApplication = clientApplication;
 	}
 	
 	

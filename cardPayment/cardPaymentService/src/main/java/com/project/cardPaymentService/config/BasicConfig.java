@@ -7,12 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import com.project.cardPaymentService.TestInterceptor;
 
 @Configuration
 public class BasicConfig {
@@ -26,7 +29,14 @@ public class BasicConfig {
 						.allowedHeaders("*")
 						.allowedMethods("*")
 						.allowedOrigins("*");
-				}			
+				}
+
+//				@Override
+//				public void addInterceptors(InterceptorRegistry registry) {
+//					// TODO Auto-generated method stub
+//					registry.addInterceptor(new TestInterceptor());
+//					WebMvcConfigurer.super.addInterceptors(registry);
+//				}			
 			};
 	    }
 	    
@@ -35,7 +45,7 @@ public class BasicConfig {
 //		public RestTemplate restTemplate() {
 //			return new RestTemplate();
 //		}
-	
+	 
 	
 	@Bean
 	public TemplateEngine htmlTemplateEngine() {

@@ -1,8 +1,10 @@
 package com.project.cardPaymentService.controller;
 
+import java.net.InetSocketAddress;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,10 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 
+import com.project.cardPaymentService.FormWrapper;
 import com.project.cardPaymentService.Proba;
 import com.project.cardPaymentService.dto.PaymentCardRequestDTO;
 import com.project.cardPaymentService.dto.PccRequestDTO;
@@ -283,6 +288,49 @@ public class TestController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		 return new ResponseEntity<String>("Radi pcc post poziv, odg:" + "", HttpStatus.OK);
+	 }
+	 
+	 //*************************************************************************************
+	 
+	 @PostMapping("/formTest")
+	    public ResponseEntity<?> multiUploadFileModel(@ModelAttribute FormWrapper model) {
+	        try {
+//	            saveUploadedFile(model.getImage());
+//	            formRepo.save(mode.getTitle(),model.getDescription()); //Save as you want as per requirement 
+	        } catch (Exception e) {
+	            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
+	        return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
+	    }
+	 
+	 @GetMapping("/formTest")
+	    public ResponseEntity<?> multiUploadFileModel() {
+	        try {
+//	            saveUploadedFile(model.getImage());
+//	            formRepo.save(mode.getTitle(),model.getDescription()); //Save as you want as per requirement 
+	        } catch (Exception e) {
+	            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
+	        return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
+	    }
+	 
+	 @GetMapping("/multiValue")
+	 public ResponseEntity<String> multiValue(
+	   @RequestHeader MultiValueMap<String, String> headers) {
+	     headers.forEach((key, value) -> {
+	         System.out.println(String.format("Header '%s' = %s", key, value.stream().collect(Collectors.joining("|"))));
+	           
+	     });
+	          
+	     return new ResponseEntity<String>(
+	       String.format("Listed %d headers", headers.size()), HttpStatus.OK);
+	 }
+	 
+	 @GetMapping("/getBaseUrl")
+	 public ResponseEntity<String> getBaseUrl(@RequestHeader HttpHeaders headers) {
+	     InetSocketAddress host = headers.getHost();
+	     String url = "http://" + host.getHostName() + ":" + host.getPort();
+	     return new ResponseEntity<String>(String.format("Base URL = %s", url), HttpStatus.OK);
 	 }
 	
 }

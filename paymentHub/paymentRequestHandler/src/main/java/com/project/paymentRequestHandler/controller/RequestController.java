@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,7 +74,9 @@ public class RequestController {
 //	}
 	
 	@RequestMapping(path = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCartDTO request) {		
+	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCartDTO request, @RequestHeader MultiValueMap<String, String> headers) {	
+		//prosao authentifikaciju
+		String hostSc = headers.get("hostsc").get(0);
 		
 		ShoppingCart s = new ShoppingCart(request.getTotalAmount().doubleValue(), request.getkPClientIdentifier());
 		
@@ -83,7 +87,7 @@ public class RequestController {
 		dto.setKpUrl("https://localhost:4666/pay/" + orderId);
 		
 		//cuvanje inicijalnog tx-a
-		TxInfo txInfo = new TxInfo(orderId, -1l, "");
+		TxInfo txInfo = new TxInfo(orderId, -1l, hostSc);
 		requestService.saveNewTxInfo(txInfo);
 		
 		//vracamo orderId i redirekt url na kp
@@ -137,18 +141,27 @@ public class RequestController {
 		
 		TxInfo txInfo = requestService.getTxInfoByPaymentIdAndServiceWhoHandle(request.getPaymentId(), request.getServiceWhoHandlePayment());
 		request.setOrderId(txInfo.getOrderId());
-		
-		
+			
+		//callback to Nc
 		RestTemplate restTemplate = new RestTemplate();
 		
-		ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8836/pay/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		String url = "https://HOST/pay/updateTxAfterPaymentIsFinished";
+		//String host = "localhost:8836";
+		String host = txInfo.getClientApplication();
+		
+		ResponseEntity<?> response = restTemplate.postForEntity(url.replace("HOST", host), request, TxInfoDto.class);
+		
 		
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/newClient/{externalIdentifier}")
-	public ResponseEntity<String> initRegister(@PathVariable("externalIdentifier") long externalIdentifier){
-		NewClientRequest newClientRequest = new NewClientRequest(externalIdentifier, "");
+	public ResponseEntity<String> initRegister(@PathVariable("externalIdentifier") long externalIdentifier, @RequestHeader MultiValueMap<String, String> headers){
+		//prosao authentifikaciju
+		String hostSc = headers.get("hostsc").get(0);
+		
+		
+		NewClientRequest newClientRequest = new NewClientRequest(externalIdentifier, hostSc);
 		NewClientRequest persistedNewClientRequest = requestService.saveNewRequest(newClientRequest);
 		
 		String responseRedirectUrl = "https://localhost:4666/new-client/" + persistedNewClientRequest.getNewClientId(); 
@@ -170,7 +183,12 @@ public class RequestController {
 		NewMagazineConfirmationDto newMagazineConfirmationDtoRequest = new NewMagazineConfirmationDto(request.getSellerIdentifier(),  persistedSellerInfo.getSellerIdentifier());
 		//callback to Nc
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<?> response = restTemplate.postForEntity("https://localhost:8836/pay/registerConfirmationBasic", newMagazineConfirmationDtoRequest, Object.class);
+		
+		String url = "https://HOST/pay/registerConfirmationBasic";
+		//String host = "localhost:8836";
+		String host = request.getClientApplication();
+		
+		ResponseEntity<?> response = restTemplate.postForEntity(url.replace("HOST", host), newMagazineConfirmationDtoRequest, Object.class);
 		
 		//offer payment options
 		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields();
