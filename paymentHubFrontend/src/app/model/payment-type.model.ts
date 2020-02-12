@@ -9,5 +9,7 @@ export class PaymentType{
 	
 	  paymentTypeHandlerUrl: string;
 
+	  paymentTypeHandlerUrlRoot: string;
+
     constructor(){}
 }

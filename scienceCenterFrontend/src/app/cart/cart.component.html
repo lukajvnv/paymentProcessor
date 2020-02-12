@@ -1,4 +1,4 @@
-<section class="container content-section" *ngIf="cart">
+<section class="container content-section" *ngIf="cartDisplay">
   <h2 class="section-header">CART</h2>
   <div class="cart-row">
       <span class="cart-item cart-header cart-column">ITEM TYPE</span>
@@ -6,7 +6,7 @@
       <span class="cart-price cart-header cart-column">PRICE</span>
       <span class="cart-quantity cart-header cart-column"></span>
   </div>
-  <div *ngFor="let item of cart.items; let i = index">
+  <div *ngFor="let item of cartDisplay.items; let i = index">
       <div class="cart-items">
         <div class="cart-row">
             <div class="cart-item cart-column">
@@ -27,7 +27,7 @@
   
   <div class="cart-total">
       <strong class="cart-total-title">Total</strong>
-      <span class="cart-total-price">{{cart.totalAmount}}€</span>
+      <span class="cart-total-price">{{cartDisplay.totalAmount}}€</span>
   </div>
   <button class="btn btn-primary btn-purchase" type="button" (click)="checkout()">CHECKOUT</button>
 </section>

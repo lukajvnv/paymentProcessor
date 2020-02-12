@@ -1,0 +1,3 @@
+export enum BuyingType {
+	MEMBERSHIP, MAGAZINE_EDITION, ARTICLE
+}

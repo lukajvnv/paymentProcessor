@@ -1,2 +1,13 @@
 <p>test works!</p>
-<button (click)="click()"></button>
+<button (click)="click()">Klik</button>
+<div  #divMessages></div>
+
+<!-- <div  [innerHTML]="content"></div> -->
+<div *ngFor="let form of tabs; let i = index">
+    {{i}}
+</div>
+
+<div>
+    {{content}}
+</div>
+

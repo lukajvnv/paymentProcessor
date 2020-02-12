@@ -1,11 +1,13 @@
 package com.project.paymentRequestHandler.dto;
 
+import java.util.List;
 import java.util.Map;
 
 public class NewClientDto {
 	
 	private long newClientId;
 	private Map<Long, PaymentTypeFormDto> forms;
+	private List<PaymentTypeDTO> paymentTypes;
 	
 	public NewClientDto() {
 		super();
@@ -16,6 +18,14 @@ public class NewClientDto {
 		super();
 		this.newClientId = newClientId;
 		this.forms = forms;
+	}
+	
+	
+
+	public NewClientDto(long newClientId, List<PaymentTypeDTO> paymentTypes) {
+		super();
+		this.newClientId = newClientId;
+		this.paymentTypes = paymentTypes;
 	}
 
 	public long getNewClientId() {
@@ -32,6 +42,14 @@ public class NewClientDto {
 
 	public void setForms(Map<Long, PaymentTypeFormDto> forms) {
 		this.forms = forms;
+	}
+
+	public List<PaymentTypeDTO> getPaymentTypes() {
+		return paymentTypes;
+	}
+
+	public void setPaymentTypes(List<PaymentTypeDTO> paymentTypes) {
+		this.paymentTypes = paymentTypes;
 	}
 
 	

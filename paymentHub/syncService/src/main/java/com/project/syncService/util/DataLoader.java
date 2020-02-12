@@ -32,7 +32,7 @@ public class DataLoader implements ApplicationRunner {
 		webshopClient3Viktor.setClientHost("localhost:8088");
 		
 		WebshopClient webshopClient4Srdjan = new WebshopClient();
-		webshopClient4Srdjan.setClientHost("localhost:8836");
+		webshopClient4Srdjan.setClientHost("localhost:8xxx");
 		
 		webshopClientRepository.save(webshopClient1Demo);
 		webshopClientRepository.save(webshopClient2Luka);

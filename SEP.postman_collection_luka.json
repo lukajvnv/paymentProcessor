@@ -1,0 +1,627 @@
+{
+	"info": {
+		"_postman_id": "5834b3af-bbdc-4a03-8a1f-6f54b4c69105",
+		"name": "SEP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https NC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8836/test",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8836",
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test card handlera iz request handlera",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8111/test/card",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test card handlera iz request  handlera post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"broj\": 5, \"tekst\": \"flakjfla\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8111/test/card",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cardhandler https direkt",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8763/test",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8763",
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payPalHandler preko zuul NE RADI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8762/payPalHandler/test",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8762",
+					"path": [
+						"payPalHandler",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestHandler preko zuul NESTO SA SERT VRV TREBA",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8762/requestHandler/test",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8762",
+					"path": [
+						"requestHandler",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test bitcoin handler iz request handlera",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8111/test/bitcoin",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"bitcoin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test bitcoin handler iz request handlera post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"broj\": 5, \"tekst\": \"flakjfla\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8111/test/bitcoin",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"bitcoin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test paypal hand iz req handler ",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8111/test/payPal",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"payPal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test paypal hand iz req handler post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"broj\": 5, \"tekst\": \"flakjfla\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8111/test/bitcoin",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"test",
+						"bitcoin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "paypal service iz paypal handlera",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8765/test/service",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"test",
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test servisa placanja iz NC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8836/test/service",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8836",
+					"path": [
+						"test",
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "poziv placanje putem kartice iz request handlera",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8111/service/card",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"service",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "initPayment cardReq -> cardService",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchantId\": \"casopisA\", \n\t\"merchantPassword\": \"casopisA\", \n\t\"amount\": 4444, \n\t\"merchantOrderId\": 5151, \n\t\"merchantTimeStamp\": \"2019-12-19 01:20:08.682\",\n\t\"successUrl\": \"43\",\n\t\"failedUrl\": \"43\",\n\t\"errorUrl\": \"43\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8841/card/initPayment",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"card",
+						"initPayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay by card front -> cardPaymentService ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"pan\": \"5512365555555\", \n\t\"securityCode\": \"4444\", \n\t\"cardHolderName\": \"Casopis B\", \n\t\"validUntil\": \"2021-12-19\", \n\t\"merchantUsername\": \"casopisA\",\n\t\"paymentId\": \"799806098\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8841/card/pay",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"card",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cardService poziva PCC get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8841/test/callPcc",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"test",
+						"callPcc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cardService poziva PCC post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"broj\": 5, \"tekst\": \"flak\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8841/test/callPccToCallOther",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"test",
+						"callPccToCallOther"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pcc poziv",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"acquirerOrderId\": 1234567890,\n\t\"acquirerTimestamp\": \"2020-01-20T00:01:50.444Z\",\n\t\"paymentCardRequest\": {\n\t\t\"pan\": \"5512365555555\", \n\t\t\"securityCode\": \"4444\", \n\t\t\"cardHolderName\": \"Casopis B\", \n\t\t\"validUntil\": \"2021-12-19\", \n\t\t\"merchantUsername\": \"casopisA\",\n\t\t\"paymentId\": \"799806098\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8841/test/payPcc",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"test",
+						"payPcc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay by card front[druga banka] -> cardPaymentService ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"pan\": \"4864236653214568\", \n\t\"securityCode\": \"888\", \n\t\"cardHolderName\": \"Kupac B\", \n\t\"validUntil\": \"2022-12-03\", \n\t\"merchantUsername\": \"casopisA\",\n\t\"paymentId\": \"799806098\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8841/card/pay",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"card",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "servisa kartice provera tx",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8841/card/checkPaymentRequest",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8841",
+					"path": [
+						"card",
+						"checkPaymentRequest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "card handler check txs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8763/card/checkTxs",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8763",
+					"path": [
+						"card",
+						"checkTxs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sync new client request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"host\": \"localhost:8836\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8769/newWebshopClient",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8769",
+					"path": [
+						"newWebshopClient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new paymentTypeRequest",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"paymentTypeName\" : \"CUSTOM\",\n\t\"paymentTypeHandlerName\" : \"customPaymentHandler\",\n\t\"paymentTypeHandlerUrl\": \"https://localhost:8766/custom/pay\",\n\t\"paymentTypeHandlerUrlRoot\": \"https://localhost:8766/\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8111/request/newPaymentType",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8111",
+					"path": [
+						"request",
+						"newPaymentType"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

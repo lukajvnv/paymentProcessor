@@ -48,6 +48,10 @@ export class TestService {
     return this.http.get('https://localhost:8836/test/getCart/' + id);
   }
 
+  removeCart(id: string) : Observable<any> {
+    return this.http.get('https://localhost:8836/test/removeItemFromCart/' + id);
+  }
+
   getUserTx() : Observable<any> {
     return this.http.get('https://localhost:8836/test/getUserTxs');
   }

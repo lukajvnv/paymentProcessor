@@ -1,9 +1,14 @@
 package com.project.scienceCenter.dto;
 
+import com.project.scienceCenter.model.BuyingType;
+
 public class NewCartItemRequest {
 	
 	private long cartId;
 	private long articleId;
+	
+	private BuyingType buyingType;
+	
 	public long getCartId() {
 		return cartId;
 	}
@@ -24,6 +29,13 @@ public class NewCartItemRequest {
 		super();
 		this.cartId = cartId;
 		this.articleId = articleId;
+	}
+	
+	public BuyingType getBuyingType() {
+		return buyingType;
+	}
+	public void setBuyingType(BuyingType buyingType) {
+		this.buyingType = buyingType;
 	}
 	
 	

@@ -1,15 +1,21 @@
 package com.project.paymentRequestHandler.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 public class PaymentTypeDTO {
 	
 	private Long paymentTypeId;
 	
+	@NotEmpty
 	private String paymentTypeName;
 	
+	@NotEmpty
 	private String paymentTypeHandlerName;
 	
+	@NotEmpty
 	private String paymentTypeHandlerUrl;
 
+	@NotEmpty
 	private String paymentTypeHandlerUrlRoot;
 	
 //	public PaymentTypeDTO(Long paymentTypeId, String paymentTypeName, String paymentTypeHandlerName,

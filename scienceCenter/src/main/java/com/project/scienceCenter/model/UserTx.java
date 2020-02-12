@@ -42,6 +42,9 @@ public class UserTx {
 	
 	@Column
 	private Long kPClientIdentifier;
+	
+	@Column
+	private Long orderId;
 
 	public UserTx() {
 		super();
@@ -110,6 +113,14 @@ public class UserTx {
 
 	public void setkPIdentifier(Long kPIdentifier) {
 		this.kPClientIdentifier = kPIdentifier;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 	
 	

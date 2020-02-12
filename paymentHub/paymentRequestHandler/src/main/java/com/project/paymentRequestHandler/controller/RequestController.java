@@ -2,11 +2,14 @@ package com.project.paymentRequestHandler.controller;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import com.project.paymentRequestHandler.dto.NewClientDto;
 import com.project.paymentRequestHandler.dto.NewMagazineConfirmationDto;
 import com.project.paymentRequestHandler.dto.OrderIdDTO;
 import com.project.paymentRequestHandler.dto.PaymentOrderDataDto;
+import com.project.paymentRequestHandler.dto.PaymentTypeDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeFormDto;
 import com.project.paymentRequestHandler.dto.PaymentTypeRequestDTO;
 import com.project.paymentRequestHandler.dto.PaymentTypeResponseDTO;
@@ -29,10 +33,12 @@ import com.project.paymentRequestHandler.dto.SellerInfoDto;
 import com.project.paymentRequestHandler.dto.ShoppingCartDTO;
 import com.project.paymentRequestHandler.dto.TxInfoDto;
 import com.project.paymentRequestHandler.model.NewClientRequest;
+import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
 import com.project.paymentRequestHandler.model.ShoppingCart;
 import com.project.paymentRequestHandler.model.TxInfo;
 import com.project.paymentRequestHandler.service.ClientService;
+import com.project.paymentRequestHandler.service.PaymentTypeService;
 import com.project.paymentRequestHandler.service.RequestService;
 
 @RestController
@@ -45,6 +51,9 @@ public class RequestController {
 	
 	@Autowired
 	private ClientService clientService;
+	
+	@Autowired
+	private PaymentTypeService paymentTypeService;
 	
 	@RequestMapping(path = "/card", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> cardHandler() {
@@ -149,68 +158,37 @@ public class RequestController {
 		//String host = "localhost:8836";
 		String host = txInfo.getClientApplication();
 		
+		System.out.println("ordId: " + request.getOrderId());
+		System.out.println("paymentId: " + request.getPaymentId());
+		System.out.println("paymentId: " + request.getStatus());
+
+		//privremeno zeza callback...
 		ResponseEntity<?> response = restTemplate.postForEntity(url.replace("HOST", host), request, TxInfoDto.class);
 		
 		
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/newClient/{externalIdentifier}")
-	public ResponseEntity<String> initRegister(@PathVariable("externalIdentifier") long externalIdentifier, @RequestHeader MultiValueMap<String, String> headers){
-		//prosao authentifikaciju
-		String hostSc = headers.get("hostsc").get(0);
-		
-		
-		NewClientRequest newClientRequest = new NewClientRequest(externalIdentifier, hostSc);
-		NewClientRequest persistedNewClientRequest = requestService.saveNewRequest(newClientRequest);
-		
-		String responseRedirectUrl = "https://localhost:4666/new-client/" + persistedNewClientRequest.getNewClientId(); 
-		
-		return new ResponseEntity<String>(responseRedirectUrl, HttpStatus.OK);
-	}
 	
-	@PostMapping(path = "/newClient")
-	public ResponseEntity<?> newClientRegistration(@RequestBody SellerInfoDto sellerInfoDto){
+	
+	@PostMapping(path = "/newPaymentType")
+	public ResponseEntity<?> newPaymentType(@Valid @RequestBody PaymentTypeDTO request, BindingResult result){
 		
-		NewClientRequest request = requestService.getNewClientRequest(sellerInfoDto.getNewClientRequestId());
-		
-		if(request == null) {
-			
+		if(result.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		SellerInfo persistedSellerInfo = clientService.saveSellerInfo(new SellerInfo(request.getSellerIdentifier(), sellerInfoDto.getSellerName(), sellerInfoDto.getSellerPib()));
+		PaymentType newPaymentType = new PaymentType(request.getPaymentTypeName(), request.getPaymentTypeHandlerName(), request.getPaymentTypeHandlerUrl(), request.getPaymentTypeHandlerUrlRoot());
 		
-		NewMagazineConfirmationDto newMagazineConfirmationDtoRequest = new NewMagazineConfirmationDto(request.getSellerIdentifier(),  persistedSellerInfo.getSellerIdentifier());
-		//callback to Nc
-		RestTemplate restTemplate = new RestTemplate();
+		paymentTypeService.saveNewPaymentType(newPaymentType);
 		
-		String url = "https://HOST/pay/registerConfirmationBasic";
-		//String host = "localhost:8836";
-		String host = request.getClientApplication();
-		
-		ResponseEntity<?> response = restTemplate.postForEntity(url.replace("HOST", host), newMagazineConfirmationDtoRequest, Object.class);
-		
-		//offer payment options
-		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields();
-		NewClientDto newClientRequest = new NewClientDto(persistedSellerInfo.getSellerDBId(), forms);
-
-		
-		return new ResponseEntity<>(newClientRequest, HttpStatus.OK);
-	}
-	
-	@PostMapping(path = "/newClientPaymentData")
-	public ResponseEntity<?> newClientRegistration(@RequestBody NewClientDto request){
-		
-		clientService.submitPaymentData(request.getForms(), request.getNewClientId());
-		
-
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/test")
-	public ResponseEntity<Map<Long, PaymentTypeFormDto>> test() {
-		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields();
-		return new ResponseEntity<Map<Long,PaymentTypeFormDto>>(forms, HttpStatus.OK);
-	}
+//	@GetMapping(path = "/test")
+//	public ResponseEntity<Map<Long, PaymentTypeFormDto>> test() {
+//		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields();
+//		return new ResponseEntity<Map<Long,PaymentTypeFormDto>>(forms, HttpStatus.OK);
+//	}
 
 }

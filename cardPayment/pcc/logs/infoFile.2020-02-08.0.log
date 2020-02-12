@@ -1,0 +1,22 @@
+Pcc service | 2020-02-08 21:34:28.938 | PccApplication | No active profile set, falling back to default profiles: default
+Pcc service | 2020-02-08 21:35:04.321 | PccApplication | Started PccApplication in 51.529 seconds (JVM running for 55.584)
+Pcc service | 2020-02-08 21:35:04.323 | DataLoader | fa com.project.pcc.util.DataLoader
+Pcc service | 2020-02-08 21:35:04.501 | PccApplication | start info test
+Pcc service | 2020-02-08 21:50:12.797 | PccPayController | pay started
+Pcc service | 2020-02-08 21:50:12.798 | PccPayService | validation of pcc request has started
+Pcc service | 2020-02-08 21:50:12.799 | PccPayService | validation of pcc request ended successfully
+Pcc service | 2020-02-08 21:50:12.799 | PccPayService | The operation of finding bank has started
+Pcc service | 2020-02-08 21:50:13.126 | PccPayService | invokation of issuer bank RaifeissenBank Beograd d.o.o with bankPan: 864236 has started
+Pcc service | 2020-02-08 21:50:13.126 | PccPayService | invokation of issuer bank with request acquiererOrderId 6375684697, timestamp 2020-02-08 21:50:12.291 amount 40.0
+Pcc service | 2020-02-08 21:50:13.634 | PccPayService | invokation of issuer bank has finished
+Pcc service | 2020-02-08 21:50:13.634 | PccPayService | Tx invokation of issuer bank with request acquiererOrderId 6375684697, timestamp 2020-02-08 21:50:12.291 amount 40.0, OUTCOME: SUCCESS
+Pcc service | 2020-02-08 21:50:13.635 | PccPayController | pay finished sucessfully
+Pcc service | 2020-02-08 21:59:24.422 | PccPayController | pay started
+Pcc service | 2020-02-08 21:59:24.423 | PccPayService | validation of pcc request has started
+Pcc service | 2020-02-08 21:59:24.423 | PccPayService | validation of pcc request ended successfully
+Pcc service | 2020-02-08 21:59:24.423 | PccPayService | The operation of finding bank has started
+Pcc service | 2020-02-08 21:59:24.429 | PccPayService | invokation of issuer bank RaifeissenBank Beograd d.o.o with bankPan: 864236 has started
+Pcc service | 2020-02-08 21:59:24.429 | PccPayService | invokation of issuer bank with request acquiererOrderId 7095326639, timestamp 2020-02-08 21:59:24.34 amount 40.0
+Pcc service | 2020-02-08 21:59:24.891 | PccPayService | invokation of issuer bank has finished
+Pcc service | 2020-02-08 21:59:24.891 | PccPayService | Tx invokation of issuer bank with request acquiererOrderId 7095326639, timestamp 2020-02-08 21:59:24.34 amount 40.0, OUTCOME: SUCCESS
+Pcc service | 2020-02-08 21:59:24.891 | PccPayController | pay finished sucessfully

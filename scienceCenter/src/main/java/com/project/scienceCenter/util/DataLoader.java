@@ -54,12 +54,12 @@ public class DataLoader implements ApplicationRunner {
 	private void createMagazines() throws IOException {
 
 		Magazine m1 = new Magazine(1l, "S1ksjdf3343", "Bravo" , WayOfPayment.OPEN_ACCESS, true, 1l,20.0);
-		Magazine m2 = new Magazine(2l, "ghjghdf3343", "Zabavnik",WayOfPayment.PAID_ACCESS, true, 1l,30.0);
+		Magazine m2 = new Magazine(2l, "ghjghdf3343", "Zabavnik",WayOfPayment.PAID_ACCESS, true, 2l,30.0);
 		Magazine m3 = new Magazine(3l, "797jdf33sad", "Blic zena", WayOfPayment.OPEN_ACCESS, true, 1l,40.0);
 		
 		
 		Magazine peristedM1 = magRepo.save(m1);
-		magRepo.save(m2);
+		Magazine peristedM2 = magRepo.save(m2);
 		magRepo.save(m3);
 		
 		
@@ -71,7 +71,9 @@ public class DataLoader implements ApplicationRunner {
 		magEditionRepo.save(magazineEdition2);
 
 		
-		
+		MagazineEdition magazineEdition3 = new MagazineEdition(new Date(), 200f, peristedM2);
+		magEditionRepo.save(magazineEdition3);
+
 
 
 		
@@ -81,6 +83,8 @@ public class DataLoader implements ApplicationRunner {
 	private void createArticles() throws IOException {
 		MagazineEdition magEdition1 = magEditionRepo.getOne(1l);
 		MagazineEdition magEdition2 = magEditionRepo.getOne(2l);
+		MagazineEdition magEdition3 = magEditionRepo.getOne(3l);
+
 		
 		byte[] content1 = loadAndSaveFileInBytes("src/main/resources/files/o_kt1.txt");
 		 byte[] content2 = loadAndSaveFileInBytes("src/main/resources/files/o_kt2.txt");
@@ -93,7 +97,7 @@ public class DataLoader implements ApplicationRunner {
 		
 		Article article4 = new Article("Article 4", "This article 4 is about ...", new Date(), content1, ".txt", "3332-155", magEdition2, 20f);
 		Article article5 = new Article("Article 5", "This article 5 is about ...", new Date(), content2, ".txt", "455-155", magEdition2, 30f);
-		Article article6 = new Article("Article 6", "This article 6 is about ...", new Date(), content3, ".txt", "1232-666", magEdition2, 40f);
+		Article article6 = new Article("Article 6", "This article 6 is about ...", new Date(), content3, ".txt", "1232-666", magEdition3, 40f);
 	
 		articleResository.save(article1);
 		articleResository.save(article2);

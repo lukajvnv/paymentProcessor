@@ -13,7 +13,8 @@ import { PayRequest } from '../model/pay-request.model';
 })
 export class CartComponent implements OnInit {
 
-  private cart;
+  private cartSession: Cart;
+  private cartDisplay;
 
   constructor(private tokenStorageService: TokenStorageService, private router: Router, private testService: TestService, private payService: PayService) { }
 
@@ -22,17 +23,21 @@ export class CartComponent implements OnInit {
     if(!hasCart){
       this.router.navigate(['error']);
     }else{
-      let cart: Cart = this.tokenStorageService.getCart();
+       this.cartSession = this.tokenStorageService.getCart();
 
-      this.testService.getCart(+cart.cartId).subscribe(data => {
-        this.cart = data;
+      this.testService.getCart(+this.cartSession.cartId).subscribe(data => {
+        this.cartDisplay = data;
       });
     }
   }
 
   
   removeFromCart(item) {
-
+    this.testService.removeCart(item.userTxItemId).subscribe(data => {
+      this.testService.getCart(+this.cartSession.cartId).subscribe(data => {
+        this.cartDisplay = data;
+      });
+    });
   }
 
   checkout() {

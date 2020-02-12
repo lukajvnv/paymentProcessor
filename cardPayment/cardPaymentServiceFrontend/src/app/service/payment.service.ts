@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Proba } from '../model/proba.model';
 import { CardRequest } from '../model/card-request.model';
@@ -31,6 +31,18 @@ export class PaymentService {
 
   testRedirect(): Observable<any> {
     return this.http.get(this.SERVICE_API + '/locationRedirect');
+  }
+
+  retrieveHtml(): Observable<any> {
+    // return this.http.get<string>(this.SERVICE_API + '/testHelloT', options: {} );
+    const headers = new HttpHeaders();
+    return this.http.get(this.SERVICE_API + '/testHelloT', { headers, responseType: 'text'})
+  }
+
+  retrieveHtmls(): Observable<any> {
+    // return this.http.get<string>(this.SERVICE_API + '/testHelloT', options: {} );
+    const headers = new HttpHeaders();
+    return this.http.get(this.SERVICE_API + '/testHelloTArr')
   }
 
   private handlerError(error: Response) {

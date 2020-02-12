@@ -4,6 +4,7 @@ import { TestService } from '../services/test.service';
 import { TokenStorageService } from '../services/token-storage.service';
 import { Cart } from '../model/shoppingcart.model';
 import { NewCartItemRequest } from '../model/shoppingcart-new-item-request.model';
+import { BuyingType } from '../model/buying.type.enum';
 
 @Component({
   selector: 'app-view-one-magazine-edition',
@@ -38,6 +39,7 @@ export class ViewOneMagazineEditionComponent implements OnInit {
         this.tokenStorageService.setCart(newCart);
         const cart: Cart = this.tokenStorageService.getCart();
         let request = new NewCartItemRequest(cart.cartId, article.articleId);
+        request.buyingType = BuyingType.ARTICLE;
         this.testService.addToCart(request).subscribe(data => {
     
         });
@@ -45,6 +47,7 @@ export class ViewOneMagazineEditionComponent implements OnInit {
     } else{
       const cart: Cart = this.tokenStorageService.getCart();
       let request = new NewCartItemRequest(cart.cartId, article.articleId);
+      request.buyingType = BuyingType.ARTICLE;
       this.testService.addToCart(request).subscribe(data => {
   
       });

@@ -45,15 +45,21 @@ public class PayController {
 	
 	
 	@RequestMapping(path = "/cart", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderIdDTO> cartPost(@RequestBody ShoppingCartDto request) {
+	public ResponseEntity<?> cartPost(@RequestBody ShoppingCartDto request) {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		
 		//izvuci tu tx iz baze 
 		UserTx cart = userTxRepository.getOne(request.getCartId());
 		
-		//dobavi nekako sellerId -> sadrzaj korpe od isto prodavca/tj. casopisa!!!
-		cart.setkPIdentifier(1l);
+		//no items
+		if(cart.getItems().size() == 0) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+		
+		//dobavi nekako sellerId -> sadrzaj korpe od isto prodavca/tj. casopisa!!! SETOVANO PRI DODAVANJU U KORPU
+//		cart.setkPIdentifier(1l);
+
 		
 		//String url = cart.getUrl();
 //		String url = "https://localhost:8111/request/save";
@@ -69,11 +75,11 @@ public class PayController {
 			dto = restTemplate.exchange(url, HttpMethod.POST, createHeader(kpRequest), OrderIdDTO.class);
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		
 		// za izvucenu tu tx iz baze dodeliti id iz kpA
-		cart.setkPIdentifier(dto.getBody().getOrderId());
+		cart.setOrderId(dto.getBody().getOrderId());
 		userTxRepository.save(cart);
 		
 		return new ResponseEntity<OrderIdDTO>(dto.getBody(), HttpStatus.OK);
@@ -82,7 +88,9 @@ public class PayController {
 	@RequestMapping(path = "/updateTxAfterPaymentIsFinished", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TxInfoDto> updateTxInTheEnd(@RequestBody TxInfoDto request) {		
 		
-		UserTx userTx = userTxRepository.findBykPClientIdentifier(request.getOrderId());
+//		UserTx userTx = userTxRepository.findBykPClientIdentifier(request.getOrderId());
+		UserTx userTx = userTxRepository.findByOrderId(request.getOrderId());
+
 		userTx.setStatus(request.getStatus());
 		
 		userTxRepository.save(userTx);
@@ -95,7 +103,7 @@ public class PayController {
 		Magazine newMagazine = new Magazine(magazineDto.getISSN(), magazineDto.getName(), magazineDto.getWayOfPayment(), true, -1l, magazineDto.getPrice());
 		Magazine persistedMagazine = magazineRepository.save(newMagazine);
 		
-		String newClientRequestUrl = "https://localhost:8762/requestHandler/request/newClient/";
+		String newClientRequestUrl = "https://localhost:8762/requestHandler/client/newClient/";
 		
 		RestTemplate restTemplate = new RestTemplate();
 		// ResponseEntity<String> response = restTemplate.getForEntity(newClientRequestUrl + persistedMagazine.getMagazineId(), String.class);
@@ -106,7 +114,8 @@ public class PayController {
 			response = restTemplate.exchange(newClientRequestUrl + persistedMagazine.getMagazineId(), HttpMethod.GET, createHeader(null), String.class);
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 
 		

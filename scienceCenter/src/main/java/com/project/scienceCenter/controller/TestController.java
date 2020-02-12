@@ -154,18 +154,95 @@ public class TestController {
 	public ResponseEntity<MagazineEditionDto> addItemToCart(@RequestBody NewCartItemRequest request) {
 		
 		UserTx cartOrTx= userTxRepository.getOne(request.getCartId());
-		Article article = articleRepo.getOne(request.getArticleId());
 		
-		cartOrTx.setTotalAmount(cartOrTx.getTotalAmount() + article.getArticlePrice());
+		//if first item
+		if(cartOrTx.getkPIdentifier() == null) {
+			BuyingType type = request.getBuyingType();
+			MagazineEdition edition = null;
+			Magazine magazine = null;
+			switch (type) {
+				case ARTICLE:
+					Article article = articleRepo.getOne(request.getArticleId());
+					edition = article.getMagazineEdition();
+					magazine = edition.getMagazine();
+					break;
+				
+				case MAGAZINE_EDITION:
+					edition = magEditionRepo.getOne(request.getArticleId());
+					magazine = edition.getMagazine();
+					break;
+
+			default:
+				break;
+			}
+			
+			cartOrTx.setkPIdentifier(magazine.getSellerIdentifier());
+		} else {
+			BuyingType type = request.getBuyingType();
+			MagazineEdition edition = null;
+			Magazine magazine = null;
+			switch (type) {
+				case ARTICLE:
+					Article article = articleRepo.getOne(request.getArticleId());
+					edition = article.getMagazineEdition();
+					magazine = edition.getMagazine();
+					break;
+				
+				case MAGAZINE_EDITION:
+					edition = magEditionRepo.getOne(request.getArticleId());
+					magazine = edition.getMagazine();
+					break;
+
+			default:
+				break;
+			}
+			
+			//different kp client constraint
+			if(!(magazine.getSellerIdentifier().equals(cartOrTx.getkPIdentifier()))) {
+				System.out.println("razlicito");
+				return new ResponseEntity<>(new MagazineEditionDto(), HttpStatus.CONFLICT);
+			}
+		}
+		
+		BuyingType type = request.getBuyingType();
+		long itemId = -1l;
+		float price = -1f;
+		switch (type) {
+			case ARTICLE:
+				Article article = articleRepo.getOne(request.getArticleId());
+				price = article.getArticlePrice();
+				itemId = article.getArticleId();
+				break;
+			
+			case MAGAZINE_EDITION:
+				
+				break;
+
+		default:
+			break;
+		}
+		
+		cartOrTx.setTotalAmount(cartOrTx.getTotalAmount() + price);
 		UserTx cartOrTxUpdated = userTxRepository.save(cartOrTx);
 		
-		UserTxItem newUserTxItem = new UserTxItem(article.getArticlePrice(), cartOrTxUpdated, BuyingType.ARTICLE, article.getArticleId());
-		
-		
-		
+		UserTxItem newUserTxItem = new UserTxItem(price, cartOrTxUpdated, type, itemId);
 		
 		userTxItemRepository.save(newUserTxItem);
 		
+		
+		return new ResponseEntity<MagazineEditionDto>(new MagazineEditionDto(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(path = "/removeItemFromCart/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MagazineEditionDto> removeItemFromCart(@PathVariable long itemId) {
+		
+		UserTxItem itemToDelete = userTxItemRepository.getOne(itemId);
+		
+		UserTx tx = itemToDelete.getUserTx();
+		tx.setTotalAmount(tx.getTotalAmount() - itemToDelete.getPrice());
+		userTxRepository.save(tx);
+		
+		userTxItemRepository.deleteById(itemId);
 		
 		return new ResponseEntity<MagazineEditionDto>(new MagazineEditionDto(), HttpStatus.OK);
 	}

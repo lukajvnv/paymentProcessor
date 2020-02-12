@@ -1,7 +1,5 @@
 package com.project.paymentRequestHandler.model;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,24 +7,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 public class NewClientRequest {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column
-	private Long newClientId;
-	
 //	@Id
-//	@GeneratedValue(generator = "UUID")
-//	@GenericGenerator(
-//		name = "UUID",
-//		strategy = "org.hibernate.id.UUIDGenerator"
-//	)
-//	@Column(name = "id", updatable = false, nullable = false)
-//	private UUID id;
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Column
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clientIdGenerator")
+	@GenericGenerator(name = "clientIdGenerator",
+	    strategy = "com.project.paymentRequestHandler.util.ClientIdGenerator",
+	    parameters = {
+	        @Parameter(name = "sequence", value = "generator_generator_client_id_sequence")
+	    })
+	private Long newClientId;
+		
 	@Column
 	private Long sellerIdentifier;  //FK IZ NC
 	

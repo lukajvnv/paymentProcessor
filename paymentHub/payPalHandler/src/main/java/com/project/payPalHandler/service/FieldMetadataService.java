@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.payPalHandler.dto.FormWrapper;
 import com.project.payPalHandler.dto.PaymentTypeFormFieldDto;
 import com.project.payPalHandler.model.FieldMetadata;
 import com.project.payPalHandler.model.Seller;
@@ -25,14 +26,14 @@ public class FieldMetadataService {
 		return fieldMetadataRepository.findAll();
 	}
 	
-	public void addNewSeller(Map<String, PaymentTypeFormFieldDto> map, Long sellerIdentifierFk) {
-		PaymentTypeFormFieldDto email = map.get("email");
+	public void addNewSeller(FormWrapper form) {
+		Long sellerFk = Long.parseLong(form.getSellerFk());
 	
 		//!!!org.hibernate.id.IdentifierGenerationException: ids for this class must be manually assigned before calling save(): com.project.payPalHandler.model.Seller
 		Seller seller = new Seller();
 		seller.setSellerId(3l);
-		seller.setEmail((String)email.getFieldValue());
-		seller.setSellerIdentifier(sellerIdentifierFk);
+		seller.setEmail(form.getEmail());
+		seller.setSellerIdentifier(sellerFk);
 
 		
 		sellerRepository.save(seller);

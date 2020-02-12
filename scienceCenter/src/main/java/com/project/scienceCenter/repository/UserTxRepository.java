@@ -8,4 +8,5 @@ import com.project.scienceCenter.model.UserTx;
 public interface UserTxRepository extends JpaRepository<UserTx, Long> {
 
 	UserTx findBykPClientIdentifier(long kpIdentifier);
+	UserTx findByOrderId(long orderId);
 }

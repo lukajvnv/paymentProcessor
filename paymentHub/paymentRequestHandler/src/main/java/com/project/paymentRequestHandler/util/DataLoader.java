@@ -66,18 +66,17 @@ public class DataLoader implements ApplicationRunner {
 
 	
 	private void createPaymentTypes() {
-//		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8763");
-//		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764");
-//		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8765");
 
-		//PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8762/cardPaymentHandler/card/pay");
 		PaymentType paymentType1 = new PaymentType("CARD", "cardPaymentHandler", "https://localhost:8763/card/pay", "https://localhost:8763/");
 		PaymentType paymentType2 = new PaymentType("BITCOIN", "bitcoinHandler", "https://localhost:8764/bitCoin/createOrder", "https://localhost:8764/");
 		PaymentType paymentType3 = new PaymentType("PAYPAL", "payPalHandler", "https://localhost:8765/payPal", "https://localhost:8765/");
+		PaymentType paymentType4 = new PaymentType("CUSTOM", "customPaymentHandler", "https://localhost:8766/custom/pay", "https://localhost:8766/");
+
 		
 		paymentTypeRepository.save(paymentType1);
 		paymentTypeRepository.save(paymentType2);
 		paymentTypeRepository.save(paymentType3);
+		paymentTypeRepository.save(paymentType4);
 	}
 	
 }

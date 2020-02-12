@@ -4,5 +4,7 @@ export class NewClientDto {
     newClientId: number;
     forms: { [id: number] : Form; } = {};
 
+    paymentTypes: any[];
+
     constructor() {}
 }

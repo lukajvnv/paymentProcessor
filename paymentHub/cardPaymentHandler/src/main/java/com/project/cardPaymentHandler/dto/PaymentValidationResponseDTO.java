@@ -7,7 +7,6 @@ public class PaymentValidationResponseDTO {
 	private String paymentUrl;
 	private long paymentId;
 	private TxStatus txStatus;
-
 	
 	public PaymentValidationResponseDTO(String paymentUrl, long paymentId) {
 		super();
@@ -47,4 +46,5 @@ public class PaymentValidationResponseDTO {
 	public void setTxStatus(TxStatus txStatus) {
 		this.txStatus = txStatus;
 	}
+
 }

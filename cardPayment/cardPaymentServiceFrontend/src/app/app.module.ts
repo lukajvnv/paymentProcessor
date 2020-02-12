@@ -11,6 +11,7 @@ import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TestComponent } from './test/test.component';
+import { TestDisplayComponent } from './test-display/test-display.component';
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -40,7 +41,8 @@ const routes = [
   declarations: [
     AppComponent,
     PayComponent,
-    TestComponent
+    TestComponent,
+    TestDisplayComponent
   ],
   imports: [
     BrowserModule,

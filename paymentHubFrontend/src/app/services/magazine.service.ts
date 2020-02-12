@@ -12,6 +12,8 @@ export class MagazineService {
 
   private REQUEST_HANDLER_ZUUL = 'https://localhost:8762/requestHandler/test';
   private REQUEST_HANDLER_API = 'https://localhost:8111/request/';
+  private REQUEST_CLIENT_HANDLER_API = 'https://localhost:8111/client/';
+
   
 
   constructor(private http: HttpClient) { }
@@ -19,13 +21,26 @@ export class MagazineService {
   
 
   newClientBasic(request: SellerInfo) : Observable<any> {
-    return this.http.post(this.REQUEST_HANDLER_API + 'newClient', request)
+    return this.http.post(this.REQUEST_CLIENT_HANDLER_API + 'newClient', request)
+    .pipe(retry(1), catchError(this.handlerError));
+  }
+
+  newClientSelectedPaymentType(request) : Observable<any> {
+    return this.http.post(this.REQUEST_CLIENT_HANDLER_API + 'newClientPaymentTypesSubmit', request)
     .pipe(retry(1), catchError(this.handlerError));
   }
 
   newClientComplex(request) : Observable<any> {
-    return this.http.post(this.REQUEST_HANDLER_API + 'newClientPaymentData', request)
+    return this.http.post(this.REQUEST_CLIENT_HANDLER_API + 'newClientPaymentData', request)
     .pipe(retry(1), catchError(this.handlerError));
+  }
+
+  test(req): Observable<any> {
+    return this.http.post('https://localhost:8766/field/submit', req);
+  }
+
+  submitParticularForm(url: string, req): Observable<any> {
+    return this.http.post(url + 'field/submit', req);
   }
 
   private handlerError(error: Response) {

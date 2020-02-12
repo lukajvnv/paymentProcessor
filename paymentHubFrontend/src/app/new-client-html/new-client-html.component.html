@@ -1,0 +1,107 @@
+<div class="jumbotron">
+  <h2 class="text-center">New magazine</h2>
+  <div class="container">
+      
+    <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitBasic(f.value, f)" novalidate>
+      <div class="form-group row" >
+          <div class="col-lg-4"><label for="name">Name:</label></div>
+          <div class="col-lg-3"><input type="text" class="form-control" name="name" [(ngModel)]="newClientReqeust.sellerName" #name="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && name.invalid }" required /></div>
+          <div  *ngIf="f.submitted && name.invalid" class="col-lg-3 text-danger">
+              <div *ngIf="name.errors.required">Name is required</div>
+          </div>
+      </div>
+
+      <div class="form-group row" >
+        <div class="col-lg-4"><label for="pib">PIB:</label></div>
+        <div class="col-lg-3"><input type="text" class="form-control" name="pib" [(ngModel)]="newClientReqeust.sellerPib" #pib="ngModel"
+            [ngClass]="{ 'is-invalid': f.submitted && pib.invalid }" required /></div>
+        <div  *ngIf="f.submitted && pib.invalid" class="col-lg-3 text-danger">
+            <div *ngIf="pib.errors.required">PIB is required</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-3">
+
+        </div>
+        <div class="col-lg-3" *ngIf="displaySubmitBasic">
+          <input type="submit" class="btn btn-success form-control" value="Sign Up">
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <div *ngIf="displaySelect">
+    <h2>Please select payment type</h2>
+    <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitSelect(f.value, f)" novalidate >
+      <select class="col-lg-3 form-control" name="paymentTypeSelect"  [(ngModel)]="selectedPaymentTypes" #paymentTypeSelect="ngModel" multiple required size="{{formsKeyValues.length}}" >
+        <option *ngFor="let val of formsKeyValues" [ngValue]="val">
+          {{val.paymentTypeName}}
+        </option>
+      </select>
+      <div  *ngIf="f.submitted && paymentTypeSelect.invalid" class="col-lg-3 text-danger">
+        <div *ngIf="paymentTypeSelect.errors.required">Please select payment types</div>
+      </div>
+  
+      <div class="col-lg-3" >
+        <input type="submit" class="btn btn-success form-control" value="Enter payment data">
+      </div>
+    </form>
+  </div>
+  
+  <div *ngIf="displayForms">
+      <div *ngFor="let type of selectedPaymentTypes; let i = index;" >
+        <div *ngIf="shouldDisplayForm[i]">
+          <h2>Fill form data for: {{type.paymentTypeName}}</h2>
+          <form #f="ngForm" (ngSubmit)="f.form.valid && ngOnSubmitParticularForm(forms[type.paymentTypeId], i)" novalidate >
+
+              <div  >
+                <table >
+                  <tr *ngFor="let field of forms[type.paymentTypeId].formFields">
+                    <th width="33">
+                      <label for={{field.fieldName}}>{{field.fieldName}}</label>
+                    </th>
+                    <td width="33%">
+                      <input type="text" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'text'" required>
+                      <input type="checkbox" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'boolean'" required>
+                      <input type="number" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'number'" required>
+                      <input type="file" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'file'" (change)="onFileUpload($event, field.fieldName)" required>
+                    </td>
+                    <td width="33%">
+                      <div  *ngIf="f.submitted && f.form.invalid" class="col-lg-3 text-danger" style="color:red">
+                        All data are required, please fill in!!!
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th width="33">
+                    </th>
+                    <td width="33%">
+                      <div class="col-lg-3" >
+                        <input type="submit" class="btn btn-success form-control" value="Submit payment data">
+                      </div>
+                    </td>
+                    <td width="33%">
+
+                    </td>
+                  </tr>    
+                </table>
+              </div>
+
+          </form> 
+        </div>
+        <h2>----------------</h2>
+      </div> 
+      
+      
+  </div>
+
+  <div class="mt-3" *ngIf="displayForms">
+    <button (click)="ngOnSubmitSubmitPaymentData()">Complete all</button>
+  </div>
+
+
+</div>
+

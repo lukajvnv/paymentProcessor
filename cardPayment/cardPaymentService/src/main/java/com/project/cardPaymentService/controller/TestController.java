@@ -2,7 +2,9 @@ package com.project.cardPaymentService.controller;
 
 import java.net.InetSocketAddress;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -164,16 +166,45 @@ public class TestController {
 		 return new ModelAndView("html/form.html");
 	 }
 	 
-	 @RequestMapping("/testHelloT")
-	 public String testt(@RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+//	 @RequestMapping("/testHelloT")
+//	 public String testt(@RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+//		 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
+//
+//		 ctx.setVariable("name", name);
+//
+//		 // Rendered template in String, You can now return in a JSON property
+//		 String htmlContent = this.htmlTemplateEngine.process("html/form.html", ctx);
+//
+//		 return htmlContent;
+//	 }
+	 
+	 @GetMapping(path= "/testHelloT", produces = MediaType.TEXT_HTML_VALUE)
+	 public String testt() {
 		 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
 
-		 ctx.setVariable("name", name);
+		 ctx.setVariable("name", "Luka");
 
 		 // Rendered template in String, You can now return in a JSON property
-		 String htmlContent = this.htmlTemplateEngine.process("html/form.html", ctx);
+		 String htmlContent = this.htmlTemplateEngine.process("html/test.html", ctx);
 
 		 return htmlContent;
+	 }
+	 
+	 @GetMapping(path= "/testHelloTArr", produces = MediaType.APPLICATION_JSON_VALUE)
+	 public List<String> testtArr() {
+		 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
+
+		 ctx.setVariable("name", "Luka");
+
+		 // Rendered template in String, You can now return in a JSON property
+		 String htmlContent = this.htmlTemplateEngine.process("html/test.html", ctx);
+		 
+		 List<String> ret = new ArrayList<String>();
+		 ret.add(htmlContent);
+		 ret.add(htmlContent);
+		 ret.add(htmlContent);
+
+		 return ret;
 	 }
 	
 	 @RequestMapping(path="/testHelloSubmit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, 

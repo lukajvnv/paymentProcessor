@@ -9,6 +9,7 @@ import { PayComponent } from './pay/pay.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NewClientComponent } from './new-client/new-client.component';
+import { NewClientHtmlComponent } from './new-client-html/new-client-html.component';
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -22,8 +23,11 @@ const routes: Routes = [
   {
     path:'pay/:id', component: PayComponent
   },
+  // {
+  //   path: 'new-client/:id', component: NewClientComponent
+  // },
   {
-    path: 'new-client/:id', component: NewClientComponent
+    path: 'new-client/:id', component: NewClientHtmlComponent
   },
   {
     path: 'externalRedirect',
@@ -39,7 +43,8 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     PayComponent,
-    NewClientComponent
+    NewClientComponent,
+    NewClientHtmlComponent
   ],
   imports: [
     BrowserModule,
