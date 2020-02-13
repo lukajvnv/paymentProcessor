@@ -7,6 +7,9 @@ import { PayServiceService } from './../services/pay-service.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PaymentType } from '../model/payment-type.model';
+import { SubscriptionRequest } from '../model/subscription-request';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SubscriptionForm } from '../model/subscription-form';
 
 @Component({
   selector: 'app-pay',
@@ -18,8 +21,12 @@ export class PayComponent implements OnInit {
   paymentTypeResponse: PaymentTypeResponse = new PaymentTypeResponse();
   payResponse: PayResponse = new PayResponse();
   shoppingCart: ShoppingCart = new ShoppingCart();
+  subscriptionRequest: SubscriptionRequest = new SubscriptionRequest();
+  subscribeForm: FormGroup;
+  subscriptionForm: SubscriptionForm = new SubscriptionForm();
 
   selectedPaymentType: PaymentType = new PaymentType();
+  subscription: Boolean = false;
   param;
   param1;
 
@@ -46,6 +53,11 @@ export class PayComponent implements OnInit {
     //   this.price = this.shoppingCart.totalAmount;
     //   this.convertEuroToBtc(this.price);
     // })
+    // this.subscribeForm = this.fb.group({
+    //   frequency: [null, [Validators.required]],
+    //   interval: [null, [Validators.required]],
+    //   cycles: [null, [Validators.required]]
+    // })
 
     this.route.paramMap.subscribe(data => {
       const cartId = data.get('id');
@@ -60,6 +72,40 @@ export class PayComponent implements OnInit {
       });
     });
 
+  }
+
+  subscribe(){
+    this.subscription =!this.subscription;
+  }
+
+  submitForm(subscribeForm) {
+    // console.log(subscribeForm);
+    // console.log(subscribeForm.cycles);
+
+    let o = new Array();
+    for(var p in subscribeForm) {
+      console.log(p);
+      console.log(subscribeForm[p]);
+      if(p == "cycles") {
+        this.subscriptionRequest.cycles = subscribeForm[p];
+      } 
+      if(p == "interval") {
+        this.subscriptionRequest.interval = subscribeForm[p];
+      }
+      if(p == "frequency") {
+        this.subscriptionRequest.frequency = subscribeForm[p];
+      }
+    }
+    this.subscriptionRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
+    this.subscriptionRequest.amount = this.price;
+    this.subscriptionRequest.redirectUrl = this.selectedPaymentType.paymentTypeHandlerUrl + "/subscription";
+    console.log(this.subscriptionRequest);
+    this.payService.subscribe(this.subscriptionRequest).subscribe(data => {
+      console.log(data);
+      this.router.navigate(['/externalRedirect', { externalUrl: data.paymentUrl }], {
+        skipLocationChange: true,
+      });
+    })
   }
 
   buy() {
@@ -106,6 +152,11 @@ export class PayComponent implements OnInit {
         });
       }
     }, error => console.log(error));
+  }
+
+  startSubscription() {
+    // this.subscriptionRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
+    this.router.navigateByUrl("/subscription-form");
   }
 
 

@@ -172,14 +172,14 @@ public class PayPalService {
     }
 	
 	public PaymentResponseDTO startSubscription (SubscriptionRequestDto request) throws PayPalRESTException, MalformedURLException, UnsupportedEncodingException {
-		Plan plan = new Plan(request.getSubject(),"Template creation.", "fixed");
+		Plan plan = new Plan("Magazin","Template creation.", "fixed");
 		
 		PaymentDefinition paymentDefinition = new PaymentDefinition();
         paymentDefinition.setName("Regular payments.");
         paymentDefinition.setType("REGULAR");
         paymentDefinition.setFrequency(request.getFrequency().toUpperCase());
         paymentDefinition.setFrequencyInterval(request.getInterval());
-        paymentDefinition.setCycles(request.getCycles());
+        paymentDefinition.setCycles(String.valueOf(request.getCycles()));
         
         Currency amount = new Currency();
         amount.setCurrency("USD");
@@ -195,7 +195,7 @@ public class PayPalService {
 
         merchantPreferences.setSetupFee(amount);
         merchantPreferences.setCancelUrl("https://localhost:8765/payPal/cancelledPayment/" + plan.getId());
-        merchantPreferences.setReturnUrl("https://localhost:8765/payPal/subscription");
+        merchantPreferences.setReturnUrl("https://localhost:8765/payPal/execute-subscription");
         merchantPreferences.setMaxFailAttempts("0");
         merchantPreferences.setAutoBillAmount("YES");
         merchantPreferences.setInitialFailAmountAction("Continue");
@@ -217,7 +217,7 @@ public class PayPalService {
 		agreement.setName("TEST Subscription agreement");
 		agreement.setDescription("Testing subscription agreement implementation");
 //		agreement.setStartDate(LocalDate.now().plusDays(1L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")).replace(" ", "T") + "Z");
-		agreement.setStartDate("2020-02-02T23:23:23Z");
+		agreement.setStartDate("2020-02-20T23:23:23Z");
 //		agreement.setStartDate(LocalDate.now().plusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE));
 		
 		Plan planAgreement = new Plan();
@@ -251,7 +251,7 @@ public class PayPalService {
         subscription.setFrequencyInterval(request.getInterval());
         subscription.setPlanId(planId);
         subscription.setRedirectUrl(request.getRedirectUrl());
-        subscription.setSubject(request.getSubject());
+//        subscription.setSubject(request.getSubject());
         subscription.setSeller(seller);
         
         URL url = getApprovalUrl(createdAgreement.getLinks());

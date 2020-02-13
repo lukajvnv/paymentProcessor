@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { NewClientComponent } from './new-client/new-client.component';
 import { NewClientHtmlComponent } from './new-client-html/new-client-html.component';
 
+
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
 

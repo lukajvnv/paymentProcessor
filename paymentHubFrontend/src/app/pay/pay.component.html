@@ -9,5 +9,38 @@
   <option *ngFor="let type of paymentTypeResponse?.paymentTypes;" [ngValue]="type">{{type.paymentTypeName}}</option>
 </select>
 
+<br>
+<br>
+
+<div>
+  <label>Subscribe</label>
+  <input type="checkbox" (click)="subscribe()">  
+</div>
+
+<form *ngIf="subscription" #f="ngForm" (ngSubmit)="submitForm(f.value)">
+  <div class="form-group">
+    <label>Ukupan broj ciklusa za placanje: </label>
+    <input name="cycles" [(ngModel)]="subscriptionForm.cycles" id="cycles" type="number" required>
+  </div>
+  <div class="form-group">
+    <label>Ukupan period za placanje: </label>
+    <input name="interval" [(ngModel)]="subscriptionForm.interval" id="interval" type="text" required> 
+  </div>
+  <div class="form-group">
+    <label>Vrsta pretplate: </label>
+    <select name="frequency" id="frequency" [(ngModel)]="subscriptionForm.frequency" required>
+      <option value="MONTH">
+          Mesecna pretplata
+      </option>
+      <option value="YEAR">
+          Godisnja pretplata
+      </option>
+  </select>
+  </div>
+  <input type="submit" class="col-lg-2" class="btn btn-success" value="Potvrdi">
+</form>
+
+<br>
+
 <button (click)="buy()">Buy</button>
 

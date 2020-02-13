@@ -22,13 +22,13 @@ public class Subscription {
     
     private Float amount;
 
-    private String subject;
+//    private String subject;
 
     private String frequency;
 
     private String frequencyInterval;
 
-    private String cycles;
+    private Integer cycles;
 
     private String redirectUrl;
 
@@ -64,13 +64,13 @@ public class Subscription {
 		this.amount = amount;
 	}
 
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+//	public String getSubject() {
+//		return subject;
+//	}
+//
+//	public void setSubject(String subject) {
+//		this.subject = subject;
+//	}
 
 	public String getFrequency() {
 		return frequency;
@@ -88,11 +88,11 @@ public class Subscription {
 		this.frequencyInterval = frequencyInterval;
 	}
 
-	public String getCycles() {
+	public Integer getCycles() {
 		return cycles;
 	}
 
-	public void setCycles(String cycles) {
+	public void setCycles(Integer cycles) {
 		this.cycles = cycles;
 	}
 
@@ -104,14 +104,14 @@ public class Subscription {
 		this.redirectUrl = redirectUrl;
 	}
 
-	public Subscription(Long id, String planId, Seller seller, Float amount, String subject,
-			String frequency, String frequencyInterval, String cycles, String redirectUrl, String token) {
+	public Subscription(Long id, String planId, Seller seller, Float amount, 
+			String frequency, String frequencyInterval, Integer cycles, String redirectUrl, String token) {
 		super();
 		this.id = id;
 		this.planId = planId;
 		this.seller = seller;
 		this.amount = amount;
-		this.subject = subject;
+//		this.subject = subject;
 		this.frequency = frequency;
 		this.frequencyInterval = frequencyInterval;
 		this.cycles = cycles;

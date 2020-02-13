@@ -73,7 +73,7 @@ public class PayPalController {
         return _ppservice.startSubscription(subscriptionRequest);
     }
 	
-	@GetMapping("/subscription")
+	@GetMapping("/execute-subscription")
     public void getProcessPayment(@RequestParam String token) throws PayPalRESTException {
         _ppservice.executeSubscription(token);
     }

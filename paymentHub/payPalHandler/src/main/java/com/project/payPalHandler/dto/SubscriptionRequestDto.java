@@ -8,13 +8,13 @@ public class SubscriptionRequestDto {
 
     private String redirectUrl;
 
-    private String subject;
+//    private String subject;
 
     private String frequency;
 
     private String interval;
 
-    private String cycles;
+    private Integer cycles;
 
 
 
@@ -42,13 +42,13 @@ public class SubscriptionRequestDto {
 		this.redirectUrl = redirectUrl;
 	}
 
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+//	public String getSubject() {
+//		return subject;
+//	}
+//
+//	public void setSubject(String subject) {
+//		this.subject = subject;
+//	}
 
 	public String getFrequency() {
 		return frequency;
@@ -66,21 +66,21 @@ public class SubscriptionRequestDto {
 		this.interval = interval;
 	}
 
-	public String getCycles() {
+	public Integer getCycles() {
 		return cycles;
 	}
 
-	public void setCycles(String cycles) {
+	public void setCycles(Integer cycles) {
 		this.cycles = cycles;
 	}
 
-	public SubscriptionRequestDto(Long sellerId, Float amount, String redirectUrl, String subject, String frequency,
-			String interval, String cycles) {
+	public SubscriptionRequestDto(Long sellerId, Float amount, String redirectUrl, String frequency,
+			String interval, Integer cycles) {
 		super();
 		this.sellerId = sellerId;
 		this.amount = amount;
 		this.redirectUrl = redirectUrl;
-		this.subject = subject;
+//		this.subject = subject;
 		this.frequency = frequency;
 		this.interval = interval;
 		this.cycles = cycles;
