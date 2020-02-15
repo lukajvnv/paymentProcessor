@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -101,7 +102,7 @@ public class CustomController {
 		//callback to NC
 		RestTemplate restTemplate = new RestTemplate();
 		
-		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8766");
+		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8766/custom");
 		
 		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
 	
@@ -112,13 +113,10 @@ public class CustomController {
 	}
 	
 	
-	@GetMapping(path="/checkTx")
-	public void checkTx() {
-//		long paymentId = 1234567896l;
-//		long merchantOrderId = 4561230258l;
-//		
-//		cardService.checkTx(paymentId, merchantOrderId);
-		
+	@PostMapping(path="/checkTx")
+	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
+		request.setStatus(TxStatus.SUCCESS);
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
 	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";

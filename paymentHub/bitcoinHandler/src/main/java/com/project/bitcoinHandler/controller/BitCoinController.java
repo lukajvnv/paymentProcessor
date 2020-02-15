@@ -14,6 +14,7 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -136,7 +137,7 @@ public class BitCoinController {
 		
 		TxInfoDto txInfo = new TxInfoDto();
 		txInfo.setOrderId(btcDTO.getOrderId());
-		txInfo.setServiceWhoHandlePayment("https://localhost:8764");
+		txInfo.setServiceWhoHandlePayment("https://localhost:8764/bitCoin");
 		txInfo.setPaymentId(tx.getorder_id()); //ovde se nalazi orderId koji je i na coingate-u
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -419,6 +420,13 @@ public class BitCoinController {
 		
 	    
 	    
+	}
+	
+	@PostMapping(path="/checkTx")
+	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
+		//to be implemented
+		request.setStatus(TxStatusReqHandler.SUCCESS);
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
 }

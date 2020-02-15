@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.paymentRequestHandler.dto.NewClientDto;
@@ -169,7 +170,25 @@ public class RequestController {
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
-	
+	@RequestMapping(path = "/checkTx", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request) {		
+		
+		TxInfo txInfo = requestService.getTxInfoByOrderId(request.getOrderId());
+		String service = txInfo.getServiceWhoHandlePayment();
+		// txInfo.getPaymentId();
+		
+		RestTemplate restTemplate = new RestTemplate();
+				
+		try {
+			ResponseEntity<TxInfoDto> response = restTemplate.postForEntity(service + "/checkTx", txInfo, TxInfoDto.class);
+			return new ResponseEntity<TxInfoDto>(response.getBody(), HttpStatus.OK);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			return new ResponseEntity<TxInfoDto>(HttpStatus.CONFLICT);
+		}
+		
+	}
 	
 	@PostMapping(path = "/newPaymentType")
 	public ResponseEntity<?> newPaymentType(@Valid @RequestBody PaymentTypeDTO request, BindingResult result){

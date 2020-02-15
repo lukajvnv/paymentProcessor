@@ -1,49 +1,46 @@
-package com.project.paymentRequestHandler.model;
+package com.project.payPalHandler.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+public class TxInfoDto {
 
-@Entity
-public class TxInfo {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column
+	
 	private Long txInfoId;
 	
-	@Column
+	
 	private Long orderId;
 	
-	@Column
+	
 	private Long paymentId;
 	
-	@Column
-	private String serviceWhoHandlePayment;
+	private TxStatus status;
 	
-	@Column
-	private String clientApplication;
+	private String serviceWhoHandlePayment;
 
-	public TxInfo() {
+	public TxInfoDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TxInfo(Long orderId, Long paymentId, String clientApplication) {
+	public TxInfoDto(Long orderId, Long paymentId, String serviceWhoHanlePayment) {
 		super();
 		this.orderId = orderId;
 		this.paymentId = paymentId;
-		this.clientApplication = clientApplication;
+		this.serviceWhoHandlePayment = serviceWhoHanlePayment;
 	}
 	
 	
 
-	public TxInfo(Long orderId, Long paymentId, String serviceWhoHandlePayment, String clientApp) {
+	public TxInfoDto(Long paymentId, TxStatus status, String serviceWhoHandlePayment) {
+		super();
+		this.paymentId = paymentId;
+		this.status = status;
+		this.serviceWhoHandlePayment = serviceWhoHandlePayment;
+	}
+
+	public TxInfoDto(Long orderId, Long paymentId, TxStatus status, String serviceWhoHandlePayment) {
 		super();
 		this.orderId = orderId;
 		this.paymentId = paymentId;
+		this.status = status;
 		this.serviceWhoHandlePayment = serviceWhoHandlePayment;
 	}
 
@@ -79,12 +76,12 @@ public class TxInfo {
 		this.serviceWhoHandlePayment = serviceWhoHandlePayment;
 	}
 
-	public String getClientApplication() {
-		return clientApplication;
+	public TxStatus getStatus() {
+		return status;
 	}
 
-	public void setClientApplication(String clientApplication) {
-		this.clientApplication = clientApplication;
+	public void setStatus(TxStatus status) {
+		this.status = status;
 	}
 	
 	

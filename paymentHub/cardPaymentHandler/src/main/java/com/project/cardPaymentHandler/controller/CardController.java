@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +51,7 @@ public class CardController {
 			
 			TxInfoDto txInfo = new TxInfoDto();
 			txInfo.setOrderId(request.getOrderId());
-			txInfo.setServiceWhoHandlePayment("https://localhost:8763");
+			txInfo.setServiceWhoHandlePayment("https://localhost:8763/card");
 			txInfo.setPaymentId(response.getPaymentId());
 			
 			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
@@ -87,7 +88,7 @@ public class CardController {
 		//callback to NC
 		RestTemplate restTemplate = new RestTemplate();
 		
-		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8763");
+		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8763/card");
 		
 		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
 	
@@ -102,6 +103,13 @@ public class CardController {
 		
 		cardService.checkTx(paymentId, merchantOrderId);
 		
+	}
+	
+	@PostMapping(path="/checkTx")
+	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
+		Tx tx = cardService.checkTxParticular(request.getPaymentId());
+		request.setStatus(tx.getStatus());
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
 	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";

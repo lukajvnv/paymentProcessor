@@ -13,9 +13,11 @@ import org.springframework.stereotype.Component;
 import com.project.paymentRequestHandler.model.NewClientRequest;
 import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
+import com.project.paymentRequestHandler.model.TxInfo;
 import com.project.paymentRequestHandler.repository.NewClientRequestRepository;
 import com.project.paymentRequestHandler.repository.PaymentTypeRepository;
 import com.project.paymentRequestHandler.repository.SellerInfoRepository;
+import com.project.paymentRequestHandler.repository.TxInfoRepository;
 
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -29,6 +31,9 @@ public class DataLoader implements ApplicationRunner {
 	@Autowired
 	private NewClientRequestRepository newClientRequestRepository;
 	
+	@Autowired
+	private TxInfoRepository txInfoRepo;
+	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// TODO Auto-generated method stub
@@ -36,6 +41,8 @@ public class DataLoader implements ApplicationRunner {
 		createSellerInfoAccount();
 		
 		createNewClientRequest();
+		
+		createTxInfoForTesting();
 	}
 	
 	
@@ -62,7 +69,11 @@ public class DataLoader implements ApplicationRunner {
 	}
 	
 	
-	
+	private void createTxInfoForTesting() {
+		TxInfo txInfo = new TxInfo(1l, 1l, "https://localhost:8766/custom", "");
+		
+		txInfoRepo.save(txInfo);
+	}
 
 	
 	private void createPaymentTypes() {

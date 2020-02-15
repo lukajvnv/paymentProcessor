@@ -100,7 +100,7 @@ public class CardService {
 
 	}
 	
-	public void checkTx(long paymentId, long merchantOrderId) {
+	public Tx checkTx(long paymentId, long merchantOrderId) {
 		Tx tx = getTx(merchantOrderId, paymentId);
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -127,12 +127,15 @@ public class CardService {
 			logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", paymentId, merchantOrderId);
 
 			sendToSC(tx);
+			
+			return tx;
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			tx.setStatus(TxStatus.ERROR);
 			saveTx(tx);
 			sendToSC(tx);
+			return tx;
 		}
 		
 	}
@@ -146,6 +149,21 @@ public class CardService {
 		}
 		logger.info("Checking txs is finished");
 
+	}
+	
+	public Tx checkTxParticular(long paymentId) {
+		logger.info("Start checking unkwnodn tx-s");
+		Tx tx = unityOfWork.getTxRepository().findByPaymentId(paymentId);
+		logger.info("Unknown txs are retrieved");
+		
+		if(tx.getStatus().equals(TxStatus.UNKNOWN)) {
+			Tx txs = checkTx(tx.getPaymentId(), tx.getMerchantOrderId());
+			//ako je unknown...
+			return txs;
+		}
+		
+		logger.info("Checking txs is finished");
+		return tx;
 	}
 	
 	

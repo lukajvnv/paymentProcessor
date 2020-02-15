@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NewClientComponent } from './new-client/new-client.component';
 import { NewClientHtmlComponent } from './new-client-html/new-client-html.component';
+import { SubcriptionComponent } from './subcription/subcription.component';
 
 
 const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
@@ -45,7 +46,8 @@ const routes: Routes = [
     AppComponent,
     PayComponent,
     NewClientComponent,
-    NewClientHtmlComponent
+    NewClientHtmlComponent,
+    SubcriptionComponent
   ],
   imports: [
     BrowserModule,

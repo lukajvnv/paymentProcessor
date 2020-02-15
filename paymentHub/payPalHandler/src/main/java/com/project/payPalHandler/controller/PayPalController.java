@@ -22,6 +22,8 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.project.payPalHandler.dto.PaymentRequestDTO;
 import com.project.payPalHandler.dto.PaymentResponseDTO;
 import com.project.payPalHandler.dto.SubscriptionRequestDto;
+import com.project.payPalHandler.dto.TxInfoDto;
+import com.project.payPalHandler.dto.TxStatus;
 import com.project.payPalHandler.service.PayPalService;
 
 @RestController
@@ -78,5 +80,9 @@ public class PayPalController {
         _ppservice.executeSubscription(token);
     }
 	
-	
+	@PostMapping(path="/checkTx")
+	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
+		request.setStatus(TxStatus.SUCCESS);
+		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
+	}
 }

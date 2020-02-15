@@ -132,6 +132,32 @@ public class PayController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	//AKO TREBA DA SE PROVERAVA IZ NC ZASEBAN ISHOD TRANSAKCIJE
+	@RequestMapping(path = "/checkTx", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> checkTx(@RequestBody TxInfoDto request) {		
+		
+		UserTx tx = userTxRepository.getOne(request.getTxInfoId());
+		
+		request.setOrderId(tx.getOrderId());
+		
+		String checkUrl = "https://localhost:8762/requestHandler/request/checkTx";
+
+		RestTemplate restTemplate = new RestTemplate();
+					
+		ResponseEntity<TxInfoDto> dto = null;
+		try {
+			dto = restTemplate.exchange(checkUrl, HttpMethod.POST, createHeader(request), TxInfoDto.class);
+			
+			tx.setStatus(dto.getBody().getStatus());
+			userTxRepository.save(tx);
+			
+			return new ResponseEntity<>(dto.getBody(), HttpStatus.OK);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+	}
+	
 	private HttpEntity<?> createHeader (Object body){
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("external", "true");
