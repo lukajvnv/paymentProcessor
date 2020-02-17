@@ -57,13 +57,15 @@ public class PayPalController {
 	}
 	
 	@GetMapping("/approvedPayment")
-	public void getApprovedPayment(@RequestParam String paymentId, @RequestParam String token, @RequestParam String PayerID, HttpServletResponse response) {
+	public ResponseEntity<?> getApprovedPayment(@RequestParam String paymentId, @RequestParam String token, @RequestParam String PayerID, HttpServletResponse response) {
 		String redirectUrl = _ppservice.executeTransaction(paymentId, token, PayerID);
 
         try {
             response.sendRedirect(redirectUrl);
+    		return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).header("Location", redirectUrl).build();
         } catch (IOException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 	}
 	

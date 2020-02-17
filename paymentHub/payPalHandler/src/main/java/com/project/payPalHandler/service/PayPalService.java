@@ -118,17 +118,21 @@ public class PayPalService {
 		    // Handle errors
 		}
 		
+		savedTransaction.setRedirectUrl("https://localhost:4200/success");
+		long generatedPaymentId = generateMerchantOrderId();
+		savedTransaction.setPayId(generatedPaymentId);
+		
 		savedTransaction.setAmount(request.getAmount().toString());
 		savedTransaction.setCurrency(amount.getCurrency());
 		savedTransaction.setSeller(seller);
 		savedTransaction.setPaymentId(createdPayment.getId());
 		savedTransaction.setPaymentStatus(PaymentStatus.IN_PROGRESS);
-//		savedTransaction.setPayId(generateMerchantOrderId());
 		savedTransaction = _transactionRepository.save(savedTransaction);
 			
 		
 		PaymentResponseDTO response = new PaymentResponseDTO();
-		response.setPaymentId(savedTransaction.getId());
+		//response.setPaymentId(savedTransaction.getId());
+		response.setPaymentId(generatedPaymentId);
 		response.setPaymentUrl(createdPayment.getLinks().get(1).getHref());
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -181,7 +185,8 @@ public class PayPalService {
         RestTemplate restTemplate = new RestTemplate();
 
 		TxInfoDto txInfo = new TxInfoDto();
-		txInfo.setPaymentId(dbTransaction.getId());
+		//txInfo.setPaymentId(dbTransaction.getId());
+		txInfo.setPaymentId(dbTransaction.getPayId());
 		txInfo.setStatus(TxStatus.SUCCESS);
 		txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
 		
@@ -281,6 +286,9 @@ public class PayPalService {
         
         Subscription subscription = new Subscription();
         
+        long payId = generateMerchantOrderId();
+        subscription.setPayId(payId);
+        
         subscription.setAmount(request.getAmount());
         subscription.setCycles(request.getCycles());
         subscription.setFrequency(request.getFrequency());
@@ -300,8 +308,9 @@ public class PayPalService {
         subscription = _subscriptionRepository.save(subscription);
         
         PaymentResponseDTO response = new PaymentResponseDTO();
-		response.setPaymentId(subscription.getId());
-		response.setPaymentUrl(String.valueOf(url));
+		//response.setPaymentId(subscription.getId());
+		response.setPaymentId(payId);
+        response.setPaymentUrl(String.valueOf(url));
 		
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -338,7 +347,8 @@ public class PayPalService {
 			RestTemplate restTemplate = new RestTemplate();
 
 	        TxInfoDto txInfo = new TxInfoDto();
-			txInfo.setPaymentId(subscription.getId());
+			//txInfo.setPaymentId(subscription.getId());
+	        txInfo.setPaymentId(subscription.getPayId());
 			txInfo.setStatus(TxStatus.SUCCESS);
 			txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
 			

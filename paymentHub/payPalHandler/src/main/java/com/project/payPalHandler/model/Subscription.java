@@ -35,6 +35,8 @@ public class Subscription {
     private String redirectUrl;
     
     private PaymentStatus paymentStatus;
+    
+    private Long payId;
 
 	public PaymentStatus getPaymentStatus() {
 		return paymentStatus;
@@ -157,6 +159,14 @@ public class Subscription {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public Long getPayId() {
+		return payId;
+	}
+
+	public void setPayId(Long payId) {
+		this.payId = payId;
 	}
     
     
