@@ -36,7 +36,7 @@ public class DataLoader implements ApplicationRunner {
 		
 		webshopClientRepository.save(webshopClient1Demo);
 		webshopClientRepository.save(webshopClient2Luka);
-		webshopClientRepository.save(webshopClient3Viktor);
+//		webshopClientRepository.save(webshopClient3Viktor);
 //		webshopClientRepository.save(webshopClient4Srdjan);
 
 	}

@@ -127,7 +127,11 @@ public class ValidationService {
 	}
 	
 	public Tx getTx(Long paymentId, Long merchantOrderId) {
-		return unityOfWork.getTxRepository().findByMerchantOrderIdAndPaymentId(merchantOrderId, paymentId);
+		List<Tx> tx = unityOfWork.getTxRepository().findByMerchantOrderIdAndPaymentId(merchantOrderId, paymentId);
+		if(tx.size() == 0) {
+			return null;
+		}
+		return tx.get(0);
 	}
 	
 	

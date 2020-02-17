@@ -93,7 +93,7 @@ public class DataLoader implements ApplicationRunner {
 		paymentTypeRepository.save(paymentType1);
 		paymentTypeRepository.save(paymentType2);
 		paymentTypeRepository.save(paymentType3);
-		paymentTypeRepository.save(paymentType4);
+		//paymentTypeRepository.save(paymentType4);
 
 	}
 	

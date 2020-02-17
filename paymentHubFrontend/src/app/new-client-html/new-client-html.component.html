@@ -65,6 +65,7 @@
                     </th>
                     <td width="33%">
                       <input type="text" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'text'" required>
+                      <input type="password" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'password'" required>
                       <input type="checkbox" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'boolean'" required>
                       <input type="number" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'number'" required>
                       <input type="file" name={{field.fieldName}} [(ngModel)]="field.fieldValue"  *ngIf="field.fieldTypeFront == 'file'" (change)="onFileUpload($event, field.fieldName)" required>

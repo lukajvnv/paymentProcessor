@@ -185,7 +185,12 @@ public class CardService {
 		TxInfoDto request = new TxInfoDto(tx.getPaymentId(), tx.getStatus(), "https://localhost:8763/card");
 		logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", tx.getPaymentId(), tx.getMerchantOrderId());
 
-		ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		try {
+			ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		}
 		
 		logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", tx.getPaymentId(), tx.getMerchantOrderId());
 	}

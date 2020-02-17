@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.cardPaymentService.dto.PaymentCardRequestDTO;
@@ -225,7 +226,13 @@ public class TransactionService {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		logger.info("Send tx to kp");
-		ResponseEntity<Tx> response =  restTemplate.postForEntity("https://localhost:8763/card/saveTx", tx, Tx.class);
+		ResponseEntity<Tx> response;
+		try {
+			response = restTemplate.postForEntity("https://localhost:8763/card/saveTx", tx, Tx.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			return new Tx();
+		}
 	
 		return response.getBody();
 	}

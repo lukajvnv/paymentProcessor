@@ -237,7 +237,7 @@ public class RequestController {
 		
 		paymentTypeService.saveNewPaymentType(newPaymentType);
 		
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(request, HttpStatus.CREATED);
 	}
 	
 //	@GetMapping(path = "/test")

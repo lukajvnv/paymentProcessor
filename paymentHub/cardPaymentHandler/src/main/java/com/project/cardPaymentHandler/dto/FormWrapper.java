@@ -2,6 +2,8 @@ package com.project.cardPaymentHandler.dto;
 
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
+
 public class FormWrapper {
 
 	@NotEmpty
@@ -13,7 +15,8 @@ public class FormWrapper {
 	@NotEmpty
 	private String sellerUsername;
 	
-	@NotEmpty
+	@NotEmpty	
+	@Length(min = 3, max = 7)
 	private String sellerPassword;
 	
 	@NotEmpty

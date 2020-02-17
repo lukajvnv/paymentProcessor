@@ -40,6 +40,7 @@ public class DataLoader implements ApplicationRunner {
 		createSellerInfoAccount();
 		
 		//createTx();
+		createTxTest();
 		
 		createFieldMetadata();
 		
@@ -119,6 +120,18 @@ public class DataLoader implements ApplicationRunner {
 		unityOfWork.getBankInfoRepository().save(bankInfo2);
 	}
 	
+	private void createTxTest() {
+		long paymentId1 = 5223634784l;
+		long merchantOrderId1 = 8667892953l;
+
+		Tx tx1 = new Tx(
+				new Timestamp(System.currentTimeMillis()), TxStatus.UNKNOWN, 50f, "txDescription", paymentId1, 
+				"senderName", "senderAccountNum", "recieverName", "recieverAccountNum", new Timestamp(System.currentTimeMillis()), 
+				merchantOrderId1, new Timestamp(System.currentTimeMillis()), merchantOrderId1);
+		
+		unityOfWork.getTxRepository().save(tx1);
+	}
+	
 	private void createTx() {
 		@SuppressWarnings("deprecation")
 		Timestamp timestamp1 = new Timestamp(120, 11, 19, 1, 20, 8, 1);
@@ -156,7 +169,7 @@ public class DataLoader implements ApplicationRunner {
 		FieldMetadata field1 = new FieldMetadata("sellerBankAccountNumber", "String", "text");
 		FieldMetadata field2 = new FieldMetadata("sellerClientName", "String", "text");
 		FieldMetadata field3 = new FieldMetadata("sellerUsername", "String", "text");
-		FieldMetadata field4 = new FieldMetadata("sellerPassword", "String", "text");
+		FieldMetadata field4 = new FieldMetadata("sellerPassword", "String", "password");
 		FieldMetadata field5 = new FieldMetadata("txSuccessUrl", "String", "text");
 		FieldMetadata field6 = new FieldMetadata("txFailedUrl", "String", "text");
 		FieldMetadata field7 = new FieldMetadata("txErrorUrl", "String", "text");

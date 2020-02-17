@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.cardPaymentHandler.dto.PaymentRequestDTO;
@@ -68,7 +69,12 @@ public class CardController {
 			txInfo.setPaymentId(response.getPaymentId());
 			txInfo.setStatus(response.getTxStatus());
 			
-			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
+			try {
+				ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
+			}
 			
 			return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 		} catch (IOException e) {
@@ -108,7 +114,13 @@ public class CardController {
 		
 		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8763/card");
 		
-		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
+		try {
+			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			return new ResponseEntity<>(new Tx(), HttpStatus.OK);
+		}
 	
 		return new ResponseEntity<>(new Tx(), HttpStatus.OK);
 	}

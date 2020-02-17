@@ -104,7 +104,7 @@ public class CustomController {
 	public ResponseEntity<Tx> saveTx(Tx request) {
 		logger.info("Payment finished Tx init");
 
-		logger.info("Tx ended sucessfull, amount:  {} , clientSeller : {} has started", request.getAmountOfMoney(), request.getRecieverName());
+		logger.info("Tx ended sucessfully, amount:  {} , clientSeller : {} has started", request.getAmountOfMoney(), request.getRecieverName());
 
 		//callback to NC
 		try {

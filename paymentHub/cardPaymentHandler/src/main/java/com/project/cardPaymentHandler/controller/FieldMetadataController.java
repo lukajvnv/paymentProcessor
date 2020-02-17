@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,10 +34,11 @@ public class FieldMetadataController {
 	
 	@PostMapping("/submit")
     public ResponseEntity<?> multiUploadFileModel(@Valid @ModelAttribute FormWrapper model, BindingResult bindingResult) {
+		
 		if(bindingResult.hasErrors()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
+				
         try {
         	fieldMetadataService.addNewSeller(model);
         } catch (Exception e) {
@@ -44,4 +46,14 @@ public class FieldMetadataController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+	
+
+	
+//	private boolean sensitiveDataValid(String input) {
+//		if(input.contains("[a-zA-Z0-9]+")) {
+//			return true;
+//		}
+//		
+//		return true;
+//	}
 }

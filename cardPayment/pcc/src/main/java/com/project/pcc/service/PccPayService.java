@@ -41,28 +41,28 @@ public class PccPayService {
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<PccResponseDTO> pccResponse = null;
 			
-			logger.info("invokation of issuer bank {} with bankPan: {} has started", bankInfo.getBankName(), bankInfo.getBankPanNumber());
-			logger.info("invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount());
+			logger.info("invokation of issuer bank [IIB] {} with bankPan: {} has started", bankInfo.getBankName(), bankInfo.getBankPanNumber());
+			logger.info("[IIB] with request acquiererOrderId {}, timestamp {} amount {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount());
 
 			
 			pccResponse = restTemplate.postForEntity(bankInfo.getBankUrl(), request, PccResponseDTO.class);
 			response = pccResponse.getBody();
 
 			logger.info("invokation of issuer bank has finished");
-			logger.info("Tx invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.SUCCESS);
+			logger.info("Tx [IIB] bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.SUCCESS);
 
 
 			return response;
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
 			logger.error("error occured while invoking issuer's bank");
-			logger.error("Tx invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
+			logger.error("Tx [IIB] with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
 			response.setStatus(TxStatus.ERROR);
 			return response;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("unexpected error occured");
-			logger.error("Tx invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
+			logger.error("Tx [IIB] with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
 			response.setStatus(TxStatus.ERROR);
 			return response;
 		}
