@@ -69,6 +69,11 @@ public class BitCoinController {
 	@Autowired
 	private TxRepository txRepo;
 	
+	@RequestMapping(path="/test", method = RequestMethod.GET)
+	public ResponseEntity<String> testt() {
+		return new ResponseEntity<String>("Test",HttpStatus.OK); 
+	}
+	
 	@RequestMapping(path="/initPaymentGet", method = RequestMethod.GET)//, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> test() { //umesto test bice zahtev za placanje
 		logger.info("Init payment");
@@ -425,8 +430,98 @@ public class BitCoinController {
 	@PostMapping(path="/checkTx")
 	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
 		//to be implemented
-		request.setStatus(TxStatusReqHandler.SUCCESS);
+		
+		//https://localhost:8764/bitCoin
+		
+		Tx tx = txRepo.findByusername(request.getPaymentId());
+		
+		if(tx == null) {
+			//ako je npr kreirana na coingate-u a nije uspelo da se upise u bazu na handler-u, obracamo se servisu
+			request = checkService(request, tx);
+		
+		} else {
+			//proveravamo u pazi u kom statusu je transakcija			
+			request = checkDatabase(request,tx);
+			
+		}
+		
+		
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
+	
+	
+	private TxInfoDto checkService(TxInfoDto request,Tx tx) {
+		
+		
+		String auth = "Bearer " + tx.getSbi().getBitcoinAddress();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", auth);
+		
+		Integer orderId = tx.getorder_id();
+		
+		GetOrderResponseDTO getOrderDTO = new GetOrderResponseDTO();
+		
+		ResponseEntity<Object> responseEntity = new RestTemplate().exchange("https://api-sandbox.coingate.com/v2/orders/" +
+				orderId, HttpMethod.GET,
+				new HttpEntity<Object>(getOrderDTO, headers), Object.class);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		GetOrderResponseDTO gorResponse = new GetOrderResponseDTO();
+
+		gorResponse = mapper.convertValue(responseEntity.getBody(), GetOrderResponseDTO.class);
+		
+		System.out.println("Order status: " + gorResponse.getStatus());
+	
+	    	
+    	if(gorResponse.getStatus().equals("paid")) {
+    		request.setStatus(TxStatusReqHandler.SUCCESS);
+    			
+    	} else if(gorResponse.getStatus().equals("invalid")) {
+    		
+    		request.setStatus(TxStatusReqHandler.FAILED);
+    	} else if(gorResponse.getStatus().equals("expired")){
+
+    		request.setStatus(TxStatusReqHandler.FAILED);
+    	} else if(gorResponse.getStatus().equals("new")){
+
+    		request.setStatus(TxStatusReqHandler.SUCCESS);
+    	} else if(gorResponse.getStatus().equals("pending")){
+    		request.setStatus(TxStatusReqHandler.SUCCESS);
+    	} else {
+    		request.setStatus(TxStatusReqHandler.ERROR);
+    	}
+    	
+    	return request;
+    	
+	}
+	
+	private TxInfoDto checkDatabase(TxInfoDto request,Tx tx) {
+		
+		if(tx.getStatus().equals(TxStatus.PAID)) {
+			
+			request.setStatus(TxStatusReqHandler.SUCCESS);
+			
+		} else if(tx.getStatus().equals(TxStatus.EXPIRED)) {
+			
+			request.setStatus(TxStatusReqHandler.FAILED);
+			
+		} else if(tx.getStatus().equals(TxStatus.FAILED)) {
+			
+			request.setStatus(TxStatusReqHandler.FAILED);
+			
+		} else if(tx.getStatus().equals(TxStatus.CANCELED)) {
+			
+			request.setStatus(TxStatusReqHandler.ERROR);
+		} else if(tx.getStatus().equals(TxStatus.PENDING) || tx.getStatus().equals(TxStatus.NEW)) {
+			
+			request.setStatus(TxStatusReqHandler.UNKNOWN);
+		} else {
+			request.setStatus(TxStatusReqHandler.UNKNOWN);
+		}
+		
+		return request;
+	}
+	
 	
 }
