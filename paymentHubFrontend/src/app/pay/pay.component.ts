@@ -104,6 +104,7 @@ export class PayComponent implements OnInit {
     this.subscriptionRequest.sellerId = this.paymentTypeResponse.sellerInfoDbId;
     this.subscriptionRequest.amount = this.price;
     this.subscriptionRequest.redirectUrl = this.selectedPaymentType.paymentTypeHandlerUrl + "/subscription";
+    this.subscriptionRequest.orderId = +this.cartId;
     console.log(this.subscriptionRequest);
     this.payService.subscribe(this.subscriptionRequest).subscribe(data => {
       console.log(data);

@@ -34,6 +34,17 @@ public class DbTransaction {
     
     @Column
     private PaymentStatus paymentStatus;
+    
+    @Column
+    private Long payId;
+
+	public Long getPayId() {
+		return payId;
+	}
+
+	public void setPayId(Long payId) {
+		this.payId = payId;
+	}
 
 	public Long getId() {
 		return id;
@@ -92,7 +103,7 @@ public class DbTransaction {
 	}
 
 	public DbTransaction(Long id, String paymentId, Seller seller, String amount, String redirectUrl, String currency,
-			PaymentStatus paymentStatus) {
+			PaymentStatus paymentStatus, Long payId) {
 		super();
 		this.id = id;
 		this.paymentId = paymentId;
@@ -101,6 +112,7 @@ public class DbTransaction {
 		this.redirectUrl = redirectUrl;
 		this.currency = currency;
 		this.paymentStatus = paymentStatus;
+		this.payId = payId;
 	}
 
 	public DbTransaction() {

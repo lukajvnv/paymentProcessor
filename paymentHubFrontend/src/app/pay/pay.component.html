@@ -12,7 +12,7 @@
 <br>
 <br>
 
-<div>
+<div *ngIf="selectedPaymentType.paymentTypeName === 'PAYPAL'">
   <label>Subscribe</label>
   <input type="checkbox" (click)="subscribe()">  
 </div>
