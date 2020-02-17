@@ -14,5 +14,6 @@ export class SubscriptionRequest {
 
     cycles: number;
 
+    orderId: number;
 
 }

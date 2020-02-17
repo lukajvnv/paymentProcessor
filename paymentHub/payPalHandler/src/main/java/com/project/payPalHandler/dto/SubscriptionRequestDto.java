@@ -15,6 +15,8 @@ public class SubscriptionRequestDto {
     private String interval;
 
     private Integer cycles;
+    
+    private Long orderId;
 
 
 
@@ -89,6 +91,14 @@ public class SubscriptionRequestDto {
 	public SubscriptionRequestDto() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
     
     

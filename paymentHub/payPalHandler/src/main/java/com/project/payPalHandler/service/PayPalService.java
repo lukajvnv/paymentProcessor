@@ -12,8 +12,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.paypal.api.payments.Agreement;
 import com.paypal.api.payments.Amount;
@@ -39,6 +42,8 @@ import com.project.payPalHandler.dto.CreatePaymentResponseDTO;
 import com.project.payPalHandler.dto.PaymentRequestDTO;
 import com.project.payPalHandler.dto.PaymentResponseDTO;
 import com.project.payPalHandler.dto.SubscriptionRequestDto;
+import com.project.payPalHandler.dto.TxInfoDto;
+import com.project.payPalHandler.dto.TxStatus;
 import com.project.payPalHandler.model.DbTransaction;
 import com.project.payPalHandler.model.Seller;
 import com.project.payPalHandler.model.Subscription;
@@ -118,11 +123,24 @@ public class PayPalService {
 		savedTransaction.setSeller(seller);
 		savedTransaction.setPaymentId(createdPayment.getId());
 		savedTransaction.setPaymentStatus(PaymentStatus.IN_PROGRESS);
+//		savedTransaction.setPayId(generateMerchantOrderId());
 		savedTransaction = _transactionRepository.save(savedTransaction);
 			
+		
 		PaymentResponseDTO response = new PaymentResponseDTO();
 		response.setPaymentId(savedTransaction.getId());
 		response.setPaymentUrl(createdPayment.getLinks().get(1).getHref());
+		
+		RestTemplate restTemplate = new RestTemplate();
+
+		TxInfoDto txInfo = new TxInfoDto();
+		txInfo.setOrderId(request.getOrderId());
+		txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
+		txInfo.setPaymentId(response.getPaymentId());
+		
+		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
+
+		
 		return response;
 	}
 	
@@ -159,6 +177,15 @@ public class PayPalService {
         } catch (PayPalRESTException e) {
             e.printStackTrace();
         }
+        
+        RestTemplate restTemplate = new RestTemplate();
+
+		TxInfoDto txInfo = new TxInfoDto();
+		txInfo.setPaymentId(dbTransaction.getId());
+		txInfo.setStatus(TxStatus.SUCCESS);
+		txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
+		
+		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
 
         return dbTransaction.getRedirectUrl();
 	}
@@ -170,6 +197,15 @@ public class PayPalService {
 
         return dbTransaction.getRedirectUrl();
     }
+
+	public String cancelledSubscription(Long id) {
+		Subscription dbSubscription = _subscriptionRepository.getOne(id);
+		dbSubscription.setPaymentStatus(PaymentStatus.CANCELED);
+		_subscriptionRepository.save(dbSubscription);
+		
+		return dbSubscription.getRedirectUrl();
+    }
+	
 	
 	public PaymentResponseDTO startSubscription (SubscriptionRequestDto request) throws PayPalRESTException, MalformedURLException, UnsupportedEncodingException {
 		Plan plan = new Plan("Magazin","Template creation.", "fixed");
@@ -253,6 +289,7 @@ public class PayPalService {
         subscription.setRedirectUrl(request.getRedirectUrl());
 //        subscription.setSubject(request.getSubject());
         subscription.setSeller(seller);
+        subscription.setPaymentStatus(PaymentStatus.IN_PROGRESS);
         
         URL url = getApprovalUrl(createdAgreement.getLinks());
         
@@ -265,6 +302,16 @@ public class PayPalService {
         PaymentResponseDTO response = new PaymentResponseDTO();
 		response.setPaymentId(subscription.getId());
 		response.setPaymentUrl(String.valueOf(url));
+		
+		RestTemplate restTemplate = new RestTemplate();
+
+		TxInfoDto txInfo = new TxInfoDto();
+		txInfo.setOrderId(request.getOrderId());
+
+		txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
+		txInfo.setPaymentId(response.getPaymentId());
+		
+		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
         
 		return response;
 	}
@@ -283,11 +330,39 @@ public class PayPalService {
 	        Subscription subscription = _subscriptionRepository.findByToken(token);
 	        _subscriptionRepository.save(subscription);
 	        APIContext apiContext = new APIContext(clientID, clientSecret, "sandbox");
+	        subscription.setPaymentStatus(PaymentStatus.COMPLETED);
 
 
 	        Agreement activatedAgreement = Agreement.execute(apiContext, token);
+	        
+			RestTemplate restTemplate = new RestTemplate();
+
+	        TxInfoDto txInfo = new TxInfoDto();
+			txInfo.setPaymentId(subscription.getId());
+			txInfo.setStatus(TxStatus.SUCCESS);
+			txInfo.setServiceWhoHandlePayment("https://localhost:8765/payPal");
+			
+			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
+
 
 	 }
+	
+	public void checkPaymentStatus() throws PayPalRESTException {
+		List<DbTransaction> notCompletedTransactions = _transactionRepository.findAllByPaymentStatus(PaymentStatus.IN_PROGRESS);
+//		APIContext apiContext = new APIContext(clientID, clientSecret, "sandbox");
+		
+		for(DbTransaction transactions : notCompletedTransactions) {
+			transactions.setPaymentStatus(PaymentStatus.CANCELED);
+		}
+	}
+	
+	public void checkSubscriptionStatus() throws PayPalRESTException {
+		List<Subscription> notCompletedSubscrtiption = _subscriptionRepository.findAllByPaymentStatus(PaymentStatus.IN_PROGRESS);
+		
+		for(Subscription subscription : notCompletedSubscrtiption) {
+			subscription.setPaymentStatus(PaymentStatus.CANCELED);
+		}
+	}
 	
 	public static URL getApprovalUrl(List<Links> links) throws MalformedURLException {
         URL url = null;
@@ -314,5 +389,12 @@ public class PayPalService {
 
         return retVal;
     }
+	
+	private long generateMerchantOrderId() {
+		Random random = new Random(System.nanoTime());
+		long number = random.nextLong();
+	
+		return number;
+	}
 }
 

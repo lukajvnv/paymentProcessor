@@ -11,6 +11,8 @@ public class PaymentRequestDTO {
 	
 	private String url;
 	
+	private Long orderId;
+	
 	
 
 	public PaymentRequestDTO(Long sellerId, Float amount) {
@@ -63,6 +65,18 @@ public class PaymentRequestDTO {
 		this.sellerId = sellerId;
 		this.amount = amount;
 		this.url = url;
+	}
+
+
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 	
 	

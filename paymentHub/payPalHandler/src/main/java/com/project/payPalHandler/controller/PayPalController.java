@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,8 @@ public class PayPalController {
 
 	
 	private final PayPalService _ppservice;
+	
+	private static final String EVERY_10_MINUTES = "* 0/10 * * * ?";
 	
 	@Autowired
 	public PayPalController(PayPalService ppService) {
@@ -70,6 +73,12 @@ public class PayPalController {
         response.sendRedirect(redirectUrl);
     }
 	
+	@GetMapping("/cancelledSubscritpion/{id}")
+	public void getCancelledSubscription(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        String redirectUrl = _ppservice.cancelledSubscription(id);
+        response.sendRedirect(redirectUrl);
+    }
+	
 	@PostMapping("/subscription")
     public PaymentResponseDTO subscription(@RequestBody SubscriptionRequestDto subscriptionRequest) throws MalformedURLException, UnsupportedEncodingException, PayPalRESTException {
         return _ppservice.startSubscription(subscriptionRequest);
@@ -84,5 +93,15 @@ public class PayPalController {
 	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
 		request.setStatus(TxStatus.SUCCESS);
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
+	}
+	
+	@Scheduled(cron = EVERY_10_MINUTES)
+	public void changeStatusPayment() throws PayPalRESTException {
+		_ppservice.checkPaymentStatus();
+	}
+	
+	@Scheduled(cron = EVERY_10_MINUTES)
+	public void changeSubscriptionStatus() throws PayPalRESTException {
+		_ppservice.checkSubscriptionStatus();
 	}
 }

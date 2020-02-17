@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.project.payPalHandler.util.PaymentStatus;
+
 @Entity
 public class Subscription {
 
@@ -31,6 +33,31 @@ public class Subscription {
     private Integer cycles;
 
     private String redirectUrl;
+    
+    private PaymentStatus paymentStatus;
+
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public Subscription(Long id, String planId, Seller seller, String token, Float amount, String frequency,
+			String frequencyInterval, Integer cycles, String redirectUrl, PaymentStatus paymentStatus) {
+		super();
+		this.id = id;
+		this.planId = planId;
+		this.seller = seller;
+		this.token = token;
+		this.amount = amount;
+		this.frequency = frequency;
+		this.frequencyInterval = frequencyInterval;
+		this.cycles = cycles;
+		this.redirectUrl = redirectUrl;
+		this.paymentStatus = paymentStatus;
+	}
 
 	public Long getId() {
 		return id;
