@@ -330,17 +330,17 @@ public class BitCoinController {
 			    	if(gorResponse.getStatus().equals("paid")) {
 			    		
 			    		tx.setStatus(TxStatus.PAID);
-			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.SUCCESS, "https://localhost:8764");
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.SUCCESS, "https://localhost:8764/bitCoin");
 			    			
 			    	} else if(gorResponse.getStatus().equals("invalid")) {
 			    		tx.setStatus(TxStatus.FAILED);
-			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764");
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764/bitCoin");
 			    	} else if(gorResponse.getStatus().equals("expired")){
 			    		tx.setStatus(TxStatus.EXPIRED);
-			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764");
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.FAILED, "https://localhost:8764/bitCoin");
 			    	} else {
 			    		tx.setStatus(TxStatus.CANCELED);
-			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.ERROR, "https://localhost:8764");
+			    		txInfo = new TxInfoDto(tx.getorder_id(), TxStatusReqHandler.ERROR, "https://localhost:8764/bitCoin");
 			    	}
 			    	
 			    	txRepo.save(tx);

@@ -44,8 +44,6 @@ import com.project.cardPaymentService.service.ValidationService;
 @RequestMapping("/card")
 public class CardController {
 	
-	@Autowired
-	 TemplateEngine htmlTemplateEngine;
 	
 	@Autowired
 	ValidationService validationService;
@@ -54,38 +52,7 @@ public class CardController {
 	TransactionService transactionService;
 	
 	private Logger logger = LoggerFactory.getLogger(CardController.class);
-	
-//	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<String> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
-//			PaymentValidationResponseDTO response;
-//			logger.info("PaymentRequest initialized");
-//			try {
-//				if (result.hasErrors()) {
-//					logger.error("PaymentRequest failed: invalid input");
-//					  return new ResponseEntity<String>("error", HttpStatus.INTERNAL_SERVER_ERROR);
-//					}
-//				response = validationService.validateRequest(request);
-//				
-//				 final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
-//				 ctx.setVariable("paymentId", response.getPaymentId());
-//				 ctx.setVariable("merchantId", request.getMerchantId());
-//				 // Rendered template in String, You can now return in a JSON property
-//				 String htmlContent = this.htmlTemplateEngine.process("html/card_info_form.html", ctx);
-//
-//				 logger.info("PaymentRequest finished successfully");
-//				 return new ResponseEntity<String>(htmlContent, HttpStatus.OK);
-//			} catch (ValidationException e) {
-//				logger.error("PaymentRequest failed due to invalid input data", e);
-//				
-//			} catch (AuthentificationException e) {
-//				 logger.error("PaymentRequest failed due to unsucessful authentification", e);
-//			} catch (Exception e) {
-//				 logger.error("PaymentRequest failed due to unknown error", e);
-//			}
-//		
-//			return new ResponseEntity<String>("Greska",HttpStatus.INTERNAL_SERVER_ERROR);
-//	}
-	
+		
 	@RequestMapping(path="/initPayment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PaymentValidationResponseDTO> testPost(@Valid @RequestBody PaymentValidationRequestDTO request, BindingResult result) {
 			PaymentValidationResponseDTO response;
@@ -119,45 +86,7 @@ public class CardController {
 			return new ResponseEntity<PaymentValidationResponseDTO>(response, HttpStatus.OK);
 		
 	}
-	
-	/*
-	 * @RequestMapping(path="/initPayment", method = RequestMethod.GET) public
-	 * String testPost() {
-	 * 
-	 * PaymentValidationRequestDTO request = new PaymentValidationRequestDTO();
-	 * PaymentValidationResponseDTO response = new PaymentValidationResponseDTO();
-	 * request.setMerchantId("flak"); response.setPaymentId(5l); final
-	 * org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
-	 * ctx.setVariable("paymentId", response.getPaymentId());
-	 * ctx.setVariable("merchantId", request.getMerchantId());
-	 * 
-	 * // Rendered template in String, You can now return in a JSON property String
-	 * htmlContent = this.htmlTemplateEngine.process("html/card_info_form.html",
-	 * ctx);
-	 * 
-	 * return htmlContent;
-	 * 
-	 * }
-	 */
-	
-	@RequestMapping(path="/initPayment", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-	public ResponseEntity<String> initPayment() {
-			
-				PaymentValidationRequestDTO request = new PaymentValidationRequestDTO();
-				PaymentValidationResponseDTO response = new PaymentValidationResponseDTO();
-				request.setMerchantId("flak");
-				response.setPaymentId(5l);
-				final org.thymeleaf.context.Context ctx = new org.thymeleaf.context.Context();
-				 ctx.setVariable("paymentId", response.getPaymentId());
-				 ctx.setVariable("merchantId", request.getMerchantId());
-
-				 // Rendered template in String, You can now return in a JSON property
-				 String htmlContent = this.htmlTemplateEngine.process("html/card_info_form.html", ctx);
-
-				 return new ResponseEntity<String>(htmlContent, HttpStatus.OK);
-			
-	}
-	
+		
 	
 	@PostMapping("/pay")
 	  public ResponseEntity<PaymentCardResponseDTO> pay(@Valid @RequestBody PaymentCardRequestDTO request, BindingResult bindingResult) {
@@ -165,15 +94,22 @@ public class CardController {
 		try {
 			paymentReq = validationService.getPaymentRequest(request);
 			
+			if(paymentReq.isSubmitted()) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
 			if(paymentReq.getRequestStatus() == TxStatus.ERROR) {
 				logger.error("Time is up! You cannot longer pay your transaction");
 				PaymentCardResponseDTO res = new PaymentCardResponseDTO();
 				res.setRedirectUrl(paymentReq.getErrorUrl());
 				return new ResponseEntity<PaymentCardResponseDTO>(res, HttpStatus.REQUEST_TIMEOUT);
 			}
+			
+			
 		} catch (PaymentRequestException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			// e1.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		PaymentCardResponseDTO response = new PaymentCardResponseDTO(paymentReq.getMerchantOrderId(), paymentReq.getPaymentId());
 	    try {
@@ -183,6 +119,10 @@ public class CardController {
 			  logger.error("Payment action failed due to invalid input");
 			  throw new Exception(bindingResult.getAllErrors().get(0).getDefaultMessage());
 			}
+			
+			paymentReq.setSubmitted(true);
+			validationService.savePaymentRequest(paymentReq);
+			
 			
 			response = transactionService.tX(request, paymentReq, response);
 			paymentReq.setRequestStatus(response.getOutcome());
@@ -235,6 +175,7 @@ public class CardController {
 	
 	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";
 	private static final String CRON_EXP_EVERY_FIVE_MINUTE = "0 */5 * ? * *";
+	private static final long DELAY_EXP_EVERY_30_S = 30000;
 	private static final long DELAY_EXP_EVERY_ONE_MINUTE = 60000;
 	private static final long DELAY_EXP_EVERY_FIVE_MINUTE = 300000;
 	

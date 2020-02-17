@@ -1,16 +1,26 @@
 package com.project.customPaymentHandler.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.lang.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FormWrapper {
 
+		@NotNull
 		private MultipartFile image;
 	    
+		@NotEmpty
 		private String txSuccessUrl;
+		
+		@NotEmpty
 	    private String txFailedUrl;
+		
+		@NotEmpty
 	    private String txErrorUrl;
 
-	    
+	    @NotNull
 	    private String sellerFk;
 	    
 		public FormWrapper() {

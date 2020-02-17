@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 import com.project.paymentRequestHandler.model.TxStatus;
 
@@ -14,7 +15,7 @@ public class TxInfoDto {
 	
 	private Long txInfoId;
 	
-	
+	@NotNull
 	private Long orderId;
 	
 	

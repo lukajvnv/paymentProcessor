@@ -1,10 +1,13 @@
 package com.project.pcc.controller;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.pcc.dto.PccRequestDTO;
 import com.project.pcc.dto.PccResponseDTO;
-import com.project.pcc.dto.Proba;
 import com.project.pcc.service.PccPayService;
 
 @RestController
@@ -25,7 +27,11 @@ public class PccPayController {
 	private Logger logger = LoggerFactory.getLogger(PccPayController.class);
 
 	@PostMapping
-	public ResponseEntity<PccResponseDTO> pay(@RequestBody PccRequestDTO request){
+	public ResponseEntity<PccResponseDTO> pay(@Valid @RequestBody PccRequestDTO request, BindingResult bindingResult){
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
 		PccResponseDTO response = new PccResponseDTO();
 		response.setAcquirerOrderId(request.getAcquirerOrderId());
 		response.setAcquirerTimestamp(request.getAcquirerTimestamp());

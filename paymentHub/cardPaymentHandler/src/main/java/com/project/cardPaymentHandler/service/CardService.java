@@ -52,6 +52,9 @@ public class CardService {
 		PaymentValidationRequestDTO newRequest = createServiceRequest(request, account);
 		//cuvanje inicijalnog tx
 		Tx tx = createTx(TxStatus.UNKNOWN, newRequest.getAmount(), account.getSellerClientName(), account.getSellerBankAccountNumber(), 0L, DateConverter.decodeT(newRequest.getMerchantTimeStamp()), newRequest.getMerchantOrderId(), DateConverter.decodeT(newRequest.getMerchantTimeStamp()), -1l);
+		tx.setOrderId(request.getOrderId());
+		tx.setSellerId(request.getSellerId());
+		tx.setPaymentId(generateMerchantOrderId());
 		saveTx(tx);
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -63,7 +66,6 @@ public class CardService {
 			switch (responseObject.getTxStatus()) {
 				case SUCCESS:
 					logger.info("pay init service ended successfully");
-					//cuvanje sa error statusom
 					Tx txS = unityOfWork.getTxRepository().findByMerchantOrderId(newRequest.getMerchantOrderId());
 					txS.setPaymentId(responseObject.getPaymentId());
 					saveTx(txS);
@@ -76,6 +78,7 @@ public class CardService {
 					saveTx(txSErr);
 					responseObject.setPaymentUrl(newRequest.getErrorUrl());
 					responseObject.setTxStatus(TxStatus.ERROR);
+					responseObject.setPaymentId(tx.getPaymentId());
 					break;
 				default:
 					throw new RestClientException("");
@@ -87,8 +90,8 @@ public class CardService {
 
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			PaymentValidationResponseDTO errorResponse = new PaymentValidationResponseDTO(newRequest.getErrorUrl(), 0, TxStatus.ERROR);
+			//e.printStackTrace();
+			PaymentValidationResponseDTO errorResponse = new PaymentValidationResponseDTO(newRequest.getErrorUrl(), tx.getPaymentId(), TxStatus.ERROR);
 			//cuvanje sa sve payment id-jem
 			Tx txSErr = unityOfWork.getTxRepository().findByMerchantOrderId(newRequest.getMerchantOrderId());
 			txSErr.setStatus(TxStatus.ERROR);
@@ -100,7 +103,7 @@ public class CardService {
 
 	}
 	
-	public Tx checkTx(long paymentId, long merchantOrderId) {
+	public Tx checkTx(long paymentId, long merchantOrderId, boolean shouldSent) {
 		Tx tx = getTx(merchantOrderId, paymentId);
 		
 		RestTemplate restTemplate = new RestTemplate();
@@ -126,15 +129,19 @@ public class CardService {
 			
 			logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", paymentId, merchantOrderId);
 
-			sendToSC(tx);
+			if(shouldSent) {
+				sendToSC(tx);
+			}
 			
 			return tx;
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 			tx.setStatus(TxStatus.ERROR);
 			saveTx(tx);
-			sendToSC(tx);
+			if(shouldSent) {
+				sendToSC(tx);
+			}
 			return tx;
 		}
 		
@@ -145,7 +152,7 @@ public class CardService {
 		List<Tx> unknownStatusTxs = unityOfWork.getTxRepository().findByStatus(TxStatus.UNKNOWN);
 		logger.info("Unknown txs are retrieved");
 		for(Tx unknownTx: unknownStatusTxs) {
-			checkTx(unknownTx.getPaymentId(), unknownTx.getMerchantOrderId());
+			checkTx(unknownTx.getPaymentId(), unknownTx.getMerchantOrderId(), true);
 		}
 		logger.info("Checking txs is finished");
 
@@ -156,8 +163,14 @@ public class CardService {
 		Tx tx = unityOfWork.getTxRepository().findByPaymentId(paymentId);
 		logger.info("Unknown txs are retrieved");
 		
+		if(tx == null) {
+			Tx txNull = new Tx();
+			txNull.setStatus(TxStatus.ERROR);
+			return txNull;
+		}
+		
 		if(tx.getStatus().equals(TxStatus.UNKNOWN)) {
-			Tx txs = checkTx(tx.getPaymentId(), tx.getMerchantOrderId());
+			Tx txs = checkTx(tx.getPaymentId(), tx.getMerchantOrderId(), false);
 			//ako je unknown...
 			return txs;
 		}
@@ -169,12 +182,12 @@ public class CardService {
 	
 	public void sendToSC(Tx tx) {
 		RestTemplate restTemplate = new RestTemplate();
-		TxInfoDto request = new TxInfoDto(tx.getPaymentId(), tx.getStatus(), "https://localhost:8763/");
+		TxInfoDto request = new TxInfoDto(tx.getPaymentId(), tx.getStatus(), "https://localhost:8763/card");
 		logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", tx.getPaymentId(), tx.getMerchantOrderId());
 
-		// ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8111/pay/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		ResponseEntity<TxInfoDto> response = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", request, TxInfoDto.class);
+		
 		logger.info("Saved request with payment Id: {}, and merchantId: {} to the bank card handler ", tx.getPaymentId(), tx.getMerchantOrderId());
-
 	}
 	
 	public Tx saveTx(Tx tx) {
@@ -190,6 +203,10 @@ public class CardService {
 	
 	public Tx getTx(Long merchantOrderId, Long paymentId) {
 		return unityOfWork.getTxRepository().findByMerchantOrderIdAndPaymentId(merchantOrderId, paymentId);
+	}
+	
+	public Tx getTxByOrderId(Long orderId) {
+		return unityOfWork.getTxRepository().findByOrderId(orderId);
 	}
 	
 	public SellerBankInfo getAccount(long id) {

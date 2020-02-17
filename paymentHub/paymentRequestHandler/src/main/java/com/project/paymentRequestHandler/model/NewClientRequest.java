@@ -31,6 +31,9 @@ public class NewClientRequest {
 	@Column
 	private String clientApplication;
 	
+	@Column
+	private boolean completed;
+	
 	
 	public Long getSellerIdentifier() {
 		return sellerIdentifier;
@@ -74,6 +77,14 @@ public class NewClientRequest {
 
 	public void setNewClientId(Long newClientId) {
 		this.newClientId = newClientId;
+	}
+
+	public boolean isCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
 	
 	

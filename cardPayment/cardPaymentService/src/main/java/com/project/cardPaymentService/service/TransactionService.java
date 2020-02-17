@@ -2,13 +2,13 @@ package com.project.cardPaymentService.service;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +32,9 @@ public class TransactionService {
 	
 	@Autowired
 	private UnityOfWork unityOfWork;
+	
+	@Autowired
+	private AuthorizationService authService;
 	
 	@Value("${bankPanNum}")
 	private String bankPanNum;
@@ -80,7 +83,14 @@ public class TransactionService {
 	
 	public PccResponseDTO handleSendMoneyTx(PccRequestDTO request, PccResponseDTO response) throws NotEnoughMoney{
 		BankAccount buyerAccount = getBankAccountByCard(request.getPaymentCardRequest().getPan(), request.getPaymentCardRequest().getSecurityCode(), request.getPaymentCardRequest().getCardHolderName(), DateConverter.decode(request.getPaymentCardRequest().getValidUntil()));
-
+		if(buyerAccount == null) {
+			logger.error("Tx at buyer's account failed: not enough money at the account");
+			Tx failedTx = saveTxLog(TxStatus.ERROR, request.getAmount(), "Not enough money at the account", null, null, request.getClientName(), request.getClientBankAccount(), response.getIssuerOrderId()
+					, null, null, response.getAcquirerTimestamp(), response.getAcquirerOrderId());
+			response.setStatus(TxStatus.ERROR);
+			return response;
+		}
+		
 		logger.info("handleSendMoneyTx: Tx at buyer's account started");
 		boolean canReserve = canReserveMoney(buyerAccount, request.getAmount());
 		
@@ -126,6 +136,10 @@ public class TransactionService {
 				response.setAcquirerTimestamp(new Timestamp(System.currentTimeMillis()));
 				response.setAcquirerOrderId(generateUnique10Digit());
 				BankAccount buyerAccount = getBankAccountByCard(request.getPan(), request.getSecurityCode(), request.getCardHolderName(), DateConverter.decode(request.getValidUntil()));
+				if(buyerAccount == null) {
+					throw new Exception();
+				}
+				
 				response = handleTx(sellerAccount, buyerAccount, req, response);
 				
 				return response;
@@ -208,6 +222,7 @@ public class TransactionService {
 	}
 	
 	public Tx sendTxToKp(Tx tx) {
+		
 		RestTemplate restTemplate = new RestTemplate();
 		logger.info("Send tx to kp");
 		ResponseEntity<Tx> response =  restTemplate.postForEntity("https://localhost:8763/card/saveTx", tx, Tx.class);
@@ -215,12 +230,39 @@ public class TransactionService {
 		return response.getBody();
 	}
 	
+	@Async
+	public Tx testAsync(Tx tx) throws InterruptedException {
+		Thread.sleep(10000);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		logger.info("Send tx to kp");
+		ResponseEntity<String> response =  restTemplate.getForEntity("https://localhost:8763/test", String.class);
+		
+		return new Tx();
+	}
+	
+	public Tx testSync(Tx tx) throws InterruptedException {
+		Thread.sleep(10000);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		logger.info("Send tx to kp");
+		ResponseEntity<String> response =  restTemplate.getForEntity("https://localhost:8763/test", String.class);
+		
+		return new Tx();
+	}
+	
 	private BankAccount saveAccount(BankAccount account) {
 		return unityOfWork.getBankAccountRepository().save(account);
 	}
 	
 	private BankAccount getBankAccountByCard(String pan, String securityCode, String cardHolderName, Date until) {
-		CardAccount account = unityOfWork.getCardAccountRepository().findByPanAndSecurityCodeAndCardHolderNameAndValidUntil(pan, securityCode, cardHolderName, until);
+		//CardAccount account = unityOfWork.getCardAccountRepository().findByPanAndSecurityCodeAndCardHolderNameAndValidUntil(pan, securityCode, cardHolderName, until);
+		CardAccount account = unityOfWork.getCardAccountRepository().findBySecurityCodeAndCardHolderNameAndValidUntil(securityCode, cardHolderName, until);
+		
+		if(!authService.authenticate(pan, account.getPan(), account.getSalt())) {
+			return null;
+		}
+		
 		return account.getBankAccount();
 	}
 	

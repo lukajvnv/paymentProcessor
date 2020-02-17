@@ -36,6 +36,8 @@ export class PayComponent implements OnInit {
 
   cartId: string;
 
+  hostScF: string;
+
   constructor(private router: Router, private payService: PayServiceService,
     private route: ActivatedRoute) { }
 
@@ -60,6 +62,9 @@ export class PayComponent implements OnInit {
     // })
 
     this.route.paramMap.subscribe(data => {
+      this.hostScF = this.route.snapshot.queryParams.host; 
+      console.log(this.hostScF);
+
       const cartId = data.get('id');
       this.cartId = cartId;
 
@@ -103,6 +108,11 @@ export class PayComponent implements OnInit {
     this.payService.subscribe(this.subscriptionRequest).subscribe(data => {
       console.log(data);
       this.router.navigate(['/externalRedirect', { externalUrl: data.paymentUrl }], {
+        skipLocationChange: true,
+      });
+    }, err => {
+      console.log(err);
+      this.router.navigate(['/externalRedirect', { externalUrl: this.genErrorUrl() }], {
         skipLocationChange: true,
       });
     })
@@ -151,7 +161,17 @@ export class PayComponent implements OnInit {
           skipLocationChange: true,
         });
       }
-    }, error => console.log(error));
+    }, error => {
+      console.log(error);
+      this.router.navigate(['/externalRedirect', { externalUrl: this.genErrorUrl() }], {
+        skipLocationChange: true,
+      });
+    } );
+  }
+
+  genErrorUrl(){
+    const pattern = "https://localhost:PORT/error";
+    return pattern.replace("PORT", this.hostScF);
   }
 
   startSubscription() {

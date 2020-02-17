@@ -93,9 +93,16 @@ export class PayComponent implements OnInit {
       this.cardPaymentResponse = data;
       this.router.navigate(['/externalRedirect', { externalUrl: this.cardPaymentResponse.redirectUrl }], {
       skipLocationChange: true,
-    });
-    }, (error: Response) => {
-      console.log(error.json);
+      });
+    }, err => {
+      console.log(err);
+      let redirectErrorUrl = err.error.redirectUrl;
+      if(redirectErrorUrl){
+        this.router.navigate(['/externalRedirect', { externalUrl: redirectErrorUrl }], {
+          skipLocationChange: true,
+          });
+      }
+      
     });
   }
 

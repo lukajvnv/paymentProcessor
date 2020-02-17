@@ -9,9 +9,10 @@ public class PccRequestDTO {
 	@NotNull
 	private Long acquirerOrderId;
 	
-	
+	@NotNull
 	private Timestamp acquirerTimestamp;
 	
+	@NotNull
 	private Float amount;
 	
 	private String clientName;

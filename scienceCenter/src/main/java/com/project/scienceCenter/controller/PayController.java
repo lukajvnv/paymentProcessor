@@ -64,6 +64,9 @@ public class PayController {
 		//String url = cart.getUrl();
 //		String url = "https://localhost:8111/request/save";
 		String url = "https://localhost:8762/requestHandler/request/save";
+		
+		//nginx api gateway
+		//String url = "https://localhost:443/requestHandler/request/save";
 
 		
 		ShoppingCartRequestKpDto kpRequest = new ShoppingCartRequestKpDto(cart.getkPIdentifier(), cart.getTotalAmount());
@@ -162,6 +165,7 @@ public class PayController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("external", "true");
 		headers.add("hostsc", "localhost:" + webShopClientport);
+		headers.add("hostscf", "4200");
 		
 		HttpEntity<?> entity;
 		if(body != null) {

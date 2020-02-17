@@ -25,7 +25,9 @@ public class SecurityConfig {
 	private static final String TRUSTSTOREFILEPATH = "src/main/resources/kps_card_handler_truststore.jks";
 	
 	private static final String CRYPTOFILEPATH = "src/main/resources/cardHandler.jks";
-	private static final String PROPERTIESPATH = "src/main/resources/application.properties";
+//	private static final String PROPERTIESPATH = "src/main/resources/application.properties";
+	private static final String CUSTOM_PROPERTIESPATH = "src/main/resources/custom.properties";
+
 	
 	@Bean 
 	public DiscoveryClientOptionalArgs discoveryClientOptionalArgs() throws NoSuchAlgorithmException {
@@ -52,7 +54,7 @@ public class SecurityConfig {
 		PrivateKey key = helper.readPrivateKey("sepstore", "cardhandler", "sepstore");
 		
 		Properties p = new Properties();
-		p.load(new FileInputStream(PROPERTIESPATH));
+		p.load(new FileInputStream(CUSTOM_PROPERTIESPATH));
 		String encodedEncryptedKey = p.getProperty("symKey");
 		byte[] decodedEncryptedKey = Base64Utility.decode(encodedEncryptedKey);
 		

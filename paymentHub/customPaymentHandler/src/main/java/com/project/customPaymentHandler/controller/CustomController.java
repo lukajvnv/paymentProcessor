@@ -1,17 +1,20 @@
 package com.project.customPaymentHandler.controller;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.customPaymentHandler.dto.PaymentRequestDTO;
@@ -44,7 +47,12 @@ public class CustomController {
 	}
 	
 	@RequestMapping(path="/pay",  method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> payPost(@RequestBody PaymentRequestDTO request) {
+	public ResponseEntity<?> payPost(@Valid @RequestBody PaymentRequestDTO request, BindingResult bindingResult) {
+		
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
 		logger.info("Pay initialized");
 		PaymentValidationResponseDTO response = new PaymentValidationResponseDTO();
 		
@@ -65,7 +73,7 @@ public class CustomController {
 			
 			TxInfoDto txInfo = new TxInfoDto();
 			txInfo.setOrderId(request.getOrderId());
-			txInfo.setServiceWhoHandlePayment("https://localhost:8766");
+			txInfo.setServiceWhoHandlePayment("https://localhost:8766/custom");
 			txInfo.setPaymentId(paymentId);
 			
 			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
@@ -86,30 +94,38 @@ public class CustomController {
 			
 		}  catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		logger.error("Pay initialized ended with errors");
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(path="/saveTx",  method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Tx> saveTx(@RequestBody Tx request) {
-		logger.info("Payment init");
+	public ResponseEntity<Tx> saveTx(Tx request) {
+		logger.info("Payment finished Tx init");
 
 		logger.info("Tx ended sucessfull, amount:  {} , clientSeller : {} has started", request.getAmountOfMoney(), request.getRecieverName());
 
 		//callback to NC
-		RestTemplate restTemplate = new RestTemplate();
-		
-		TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8766/custom");
-		
-		ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
-	
-		logger.info("Pay initialized ended");
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			
+			TxInfoDto txInfo = new TxInfoDto(request.getPaymentId(), request.getStatus(), "https://localhost:8766/custom");
+			
+			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentIsFinished", txInfo, TxInfoDto.class);
 
-		
-		return new ResponseEntity<>(new Tx(), HttpStatus.OK);
+			logger.info("Payment finishid succcefully");
+
+			
+			return new ResponseEntity<>(new Tx(), HttpStatus.OK);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			logger.info("Payment finishid with errors");
+
+			
+			return new ResponseEntity<>(new Tx(), HttpStatus.OK);
+		}
 	}
 	
 	

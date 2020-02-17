@@ -2,9 +2,12 @@ package com.project.cardPaymentHandler.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +32,11 @@ public class FieldMetadataController {
 	
 	
 	@PostMapping("/submit")
-    public ResponseEntity<?> multiUploadFileModel(@ModelAttribute FormWrapper model) {
+    public ResponseEntity<?> multiUploadFileModel(@Valid @ModelAttribute FormWrapper model, BindingResult bindingResult) {
+		if(bindingResult.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
         try {
         	fieldMetadataService.addNewSeller(model);
         } catch (Exception e) {

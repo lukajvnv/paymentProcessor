@@ -17,7 +17,7 @@ import com.project.cardPaymentHandler.Proba;
 public class TestController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> test() {
+	public ResponseEntity<String> test() {
 		
 		
 		return new ResponseEntity<>(new String("Okej cardHandler get radi"), HttpStatus.OK);

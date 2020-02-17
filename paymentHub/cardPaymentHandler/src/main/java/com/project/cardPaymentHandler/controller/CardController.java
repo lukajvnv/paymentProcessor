@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +41,19 @@ public class CardController {
 	}
 	
 	@RequestMapping(path="/pay",  method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PaymentValidationResponseDTO> payPost(@RequestBody PaymentRequestDTO request) {
+	public ResponseEntity<PaymentValidationResponseDTO> payPost(@RequestBody PaymentRequestDTO request, BindingResult bindingResult) {
+		if(bindingResult.hasErrors()) {
+			logger.info("Pay initialized stop -> invalid input");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		
+		Tx txWithThisOrderIdAlreadyInit = cardService.getTxByOrderId(request.getOrderId());
+		if(txWithThisOrderIdAlreadyInit != null) {
+			logger.error("Tx already initialized with this orderId");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
 		logger.info("Pay initialized");
 		PaymentValidationResponseDTO response = new PaymentValidationResponseDTO();
 		try {
@@ -53,6 +66,7 @@ public class CardController {
 			txInfo.setOrderId(request.getOrderId());
 			txInfo.setServiceWhoHandlePayment("https://localhost:8763/card");
 			txInfo.setPaymentId(response.getPaymentId());
+			txInfo.setStatus(response.getTxStatus());
 			
 			ResponseEntity<TxInfoDto> r = restTemplate.postForEntity("https://localhost:8111/request/updateTxAfterPaymentInit", txInfo, TxInfoDto.class);
 			
@@ -75,6 +89,10 @@ public class CardController {
 		//update postojeceg inicijalnog tx
 		//cuvanje sa sve payment id-jem
 		Tx txS = cardService.getTx(request.getMerchantOrderId(), request.getPaymentId());
+		if(txS == null) {
+			return new ResponseEntity<>(new Tx(), HttpStatus.OK); 
+		}
+		
 		txS.setStatus(request.getStatus());
 		txS.setTxDescription(request.getTxDescription());
 		txS.setAcquirerOrderId(request.getAcquirerOrderId());
@@ -96,14 +114,14 @@ public class CardController {
 	}
 	
 	
-	@GetMapping(path="/checkTx")
-	public void checkTx() {
-		long paymentId = 1234567896l;
-		long merchantOrderId = 4561230258l;
-		
-		cardService.checkTx(paymentId, merchantOrderId);
-		
-	}
+//	@GetMapping(path="/checkTx")
+//	public void checkTx() {
+//		long paymentId = 1234567896l;
+//		long merchantOrderId = 4561230258l;
+//		
+//		cardService.checkTx(paymentId, merchantOrderId);
+//		
+//	}
 	
 	@PostMapping(path="/checkTx")
 	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request ) {
@@ -114,10 +132,13 @@ public class CardController {
 	
 	private static final String CRON_EXP_EVERY_ONE_MINUTE = "0 */1 * ? * *";
 	private static final String CRON_EXP_EVERY_FIVE_MINUTE = "0 */5 * ? * *";
+	private static final String CRON_EXP_EVERY_SIX_MINUTE = "0 */6 * ? * *";
+	private static final long DELAY_EXP_EVERY_30_S = 30000;
 	private static final long DELAY_EXP_EVERY_ONE_MINUTE = 60000;
 	private static final long DELAY_EXP_EVERY_FIVE_MINUTE = 300000;
 	
-	@Scheduled(cron = CRON_EXP_EVERY_FIVE_MINUTE)
+	@Scheduled(cron = CRON_EXP_EVERY_SIX_MINUTE)
+//	@Scheduled(fixedDelay = DELAY_EXP_EVERY_30_S)
 	@GetMapping(path="/checkTxs")
 	public void checkTxs() {
 		cardService.checkTxs();

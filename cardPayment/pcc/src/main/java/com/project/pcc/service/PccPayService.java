@@ -55,14 +55,12 @@ public class PccPayService {
 			return response;
 		} catch (RestClientException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			logger.error("error occured while invoking issuer's bank");
 			logger.error("Tx invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
 			response.setStatus(TxStatus.ERROR);
 			return response;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			logger.error("unexpected error occured");
 			logger.error("Tx invokation of issuer bank with request acquiererOrderId {}, timestamp {} amount {}, OUTCOME: {}", request.getAcquirerOrderId(), request.getAcquirerTimestamp(), request.getAmount(), TxStatus.ERROR);
 			response.setStatus(TxStatus.ERROR);

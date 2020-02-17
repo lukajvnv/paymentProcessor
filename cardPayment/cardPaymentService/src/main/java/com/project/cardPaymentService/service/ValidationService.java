@@ -40,7 +40,9 @@ public class ValidationService {
 	
 	private final Logger logger = LoggerFactory.getLogger(ValidationService.class);
 	
-	private final long TIME_OFFSET_IN_MILLISECONDS = 300000l;
+	private final long TIME_OFFSET_IN_MILLISECONDS_5_MIN = 300000l;
+	private final long TIME_OFFSET_IN_MILLISECONDS_30S = 30000l;
+
 	
 	public BankAccount getAccount(String username) {
 		return unityOfWork.getBankAccountRepository().findByBankAccountUsername(username);
@@ -116,21 +118,10 @@ public class ValidationService {
 		return null;
 	}
 	
-
-	public void checkPaymentRequest() {
-//		List<PaymentRequest> nonPaidList = retrieveNonPaidRequest();
-//		for (PaymentRequest request: nonPaidList) {
-//			request.setRequestStatus(TxStatus.ERROR);
-//			unityOfWork.getPaymentRequestRepository().save(request);
-//			Tx sellerTx = saveTxLog(TxStatus.SUCCESS, req.getAmount(), "Money added to the seler account", pccResponseBody.getClientName(),pccResponseBody.getClientBankAccount(), sellerAccount.getBankAccountName(), sellerAccount.getBankAccountNumber());
-//			logger.info("Money added to the seler account");
-//			sendTxToKp(sellerTx);
-//		}
-	}
 	
 	public List<PaymentRequest> retrieveNonPaidRequest(){
 		long now = System.currentTimeMillis();
-		List<PaymentRequest> list = unityOfWork.getPaymentRequestRepository().findByRequestStatus(TxStatus.UNKNOWN).stream().filter(r -> now - r.getCreated().getTime() > TIME_OFFSET_IN_MILLISECONDS).collect(Collectors.toList());
+		List<PaymentRequest> list = unityOfWork.getPaymentRequestRepository().findByRequestStatus(TxStatus.UNKNOWN).stream().filter(r -> now - r.getCreated().getTime() > TIME_OFFSET_IN_MILLISECONDS_5_MIN).collect(Collectors.toList());
 
 		return list;
 	}

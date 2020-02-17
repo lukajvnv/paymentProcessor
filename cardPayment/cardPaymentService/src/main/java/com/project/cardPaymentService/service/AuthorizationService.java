@@ -81,7 +81,9 @@ public class AuthorizationService {
 	
 	public void generateSensitiveData() {
 		//String[] passs = new String[] {"casopisA", "casopisB", "casopisC", "casopisD", "kupacA"};
-		String[] passs = new String[] {"kupacB", "kupacC", "kupacD"};
+		// String[] passs = new String[] {"kupacB", "kupacC", "kupacD"};
+		String[] passs = new String[] {"5512365555555", "5512365444555", "4512365653214568", 
+				"4864236653214568", "5864236444555", "5864236555555"};
 
 		for(String pass: passs) {
 			String salt = generateSalt();

@@ -8,4 +8,7 @@ import com.project.cardPaymentService.model.CardAccount;
 
 public interface CardAccountRepository extends JpaRepository<CardAccount, Long> {
 	CardAccount findByPanAndSecurityCodeAndCardHolderNameAndValidUntil(String pan, String securityCode, String cardholderName, Date validUntil);
+
+	CardAccount findBySecurityCodeAndCardHolderNameAndValidUntil(String securityCode, String cardholderName, Date validUntil);
+
 }

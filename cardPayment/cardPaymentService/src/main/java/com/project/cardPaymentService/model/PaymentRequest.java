@@ -59,6 +59,9 @@ public class PaymentRequest {
 	@Column
 	private Long paymentId;
 	
+	@Column
+	private boolean submitted;
+	
 	public PaymentRequest() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -188,6 +191,14 @@ public class PaymentRequest {
 
 	public void setCreated(Timestamp created) {
 		this.created = created;
+	}
+
+	public boolean isSubmitted() {
+		return submitted;
+	}
+
+	public void setSubmitted(boolean submitted) {
+		this.submitted = submitted;
 	}
 	
 	

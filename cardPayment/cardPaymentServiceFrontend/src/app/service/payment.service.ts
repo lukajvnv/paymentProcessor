@@ -25,8 +25,8 @@ export class PaymentService {
   }
 
   initPayment(cardPaymentRequest: CardRequest): Observable<any> {
-    return this.http.post(this.CARD_SERVICE_API + 'pay', cardPaymentRequest)
-    .pipe(retry(1), catchError(this.handlerError));
+    return this.http.post(this.CARD_SERVICE_API + 'pay', cardPaymentRequest);
+    //.pipe(retry(1), catchError(this.handlerError));
   }
 
   testRedirect(): Observable<any> {

@@ -13,6 +13,9 @@ public interface TxRepository extends JpaRepository<Tx, Long> {
 	Tx findByPaymentId(Long paymentId);
 	Tx findByMerchantOrderIdAndPaymentId(Long orderId, Long paymentId);
 	
+	Tx findByOrderId(Long orderId);
+
+	
 	List<Tx> findByStatus(TxStatus status);
 
 }

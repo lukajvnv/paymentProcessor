@@ -38,6 +38,7 @@ import com.project.paymentRequestHandler.model.PaymentType;
 import com.project.paymentRequestHandler.model.SellerInfo;
 import com.project.paymentRequestHandler.model.ShoppingCart;
 import com.project.paymentRequestHandler.model.TxInfo;
+import com.project.paymentRequestHandler.model.TxStatus;
 import com.project.paymentRequestHandler.service.ClientService;
 import com.project.paymentRequestHandler.service.PaymentTypeService;
 import com.project.paymentRequestHandler.service.RequestService;
@@ -87,6 +88,8 @@ public class RequestController {
 	public ResponseEntity<OrderIdDTO> savePost(@RequestBody ShoppingCartDTO request, @RequestHeader MultiValueMap<String, String> headers) {	
 		//prosao authentifikaciju
 		String hostSc = headers.get("hostsc").get(0);
+		String hostScF = headers.get("hostscf").get(0);
+
 		
 		ShoppingCart s = new ShoppingCart(request.getTotalAmount().doubleValue(), request.getkPClientIdentifier());
 		
@@ -94,7 +97,8 @@ public class RequestController {
 		
 		OrderIdDTO dto = new OrderIdDTO(orderId);
 		
-		dto.setKpUrl("https://localhost:4666/pay/" + orderId);
+		// dto.setKpUrl("https://localhost:4666/pay/" + orderId);
+		dto.setKpUrl("https://localhost:4666/pay/" + orderId + "?host=" + hostScF);
 		
 		//cuvanje inicijalnog tx-a
 		TxInfo txInfo = new TxInfo(orderId, -1l, hostSc);
@@ -118,7 +122,6 @@ public class RequestController {
 	
 	@RequestMapping(path = "/getPaymentAndOrderData/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PaymentOrderDataDto> cardHandlerPost(@PathVariable long id) {
-		System.out.println("Usao, nece debug da radi nesto");
 		
 		if(id == 0) {
 			return new ResponseEntity<PaymentOrderDataDto>(HttpStatus.OK);
@@ -137,12 +140,21 @@ public class RequestController {
 	public ResponseEntity<TxInfoDto> updateTxInitial(@RequestBody TxInfoDto request) {		
 		
 		TxInfo txInfo = requestService.getTxInfoByOrderId(request.getOrderId());
+		
+		if(txInfo == null) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		
 		txInfo.setServiceWhoHandlePayment(request.getServiceWhoHandlePayment());
 		txInfo.setPaymentId(request.getPaymentId());
 		
 		requestService.saveNewTxInfo(txInfo);
 		
-		
+		TxStatus status = request.getStatus();
+		if(status != null && status.equals(TxStatus.ERROR)) {
+			updateTxInTheEnd(request);
+		}
+			
 		return new ResponseEntity<TxInfoDto>(request, HttpStatus.OK);
 	}
 	
@@ -150,6 +162,10 @@ public class RequestController {
 	public ResponseEntity<TxInfoDto> updateTxInTheEnd(@RequestBody TxInfoDto request) {		
 		
 		TxInfo txInfo = requestService.getTxInfoByPaymentIdAndServiceWhoHandle(request.getPaymentId(), request.getServiceWhoHandlePayment());
+		if(txInfo == null) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		
 		request.setOrderId(txInfo.getOrderId());
 			
 		//callback to Nc
@@ -163,7 +179,6 @@ public class RequestController {
 		System.out.println("paymentId: " + request.getPaymentId());
 		System.out.println("paymentId: " + request.getStatus());
 
-		//privremeno zeza callback...
 		ResponseEntity<?> response = restTemplate.postForEntity(url.replace("HOST", host), request, TxInfoDto.class);
 		
 		
@@ -171,11 +186,32 @@ public class RequestController {
 	}
 	
 	@RequestMapping(path = "/checkTx", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<TxInfoDto> checkTx(@RequestBody TxInfoDto request) {		
+	public ResponseEntity<TxInfoDto> checkTx(@Valid @RequestBody TxInfoDto request, BindingResult result) {	
+		
+		if(result.hasErrors()) {
+			TxInfoDto errorDto = new TxInfoDto();
+			errorDto.setStatus(TxStatus.ERROR);
+			return new ResponseEntity<TxInfoDto>(errorDto, HttpStatus.OK);
+		}
 		
 		TxInfo txInfo = requestService.getTxInfoByOrderId(request.getOrderId());
+		
+		//ne postoji ta tx
+		if(txInfo == null) {
+			TxInfoDto errorDto = new TxInfoDto();
+			errorDto.setStatus(TxStatus.ERROR);
+			return new ResponseEntity<TxInfoDto>(errorDto, HttpStatus.OK);
+		}
+		
 		String service = txInfo.getServiceWhoHandlePayment();
 		// txInfo.getPaymentId();
+		
+		//nijedan nije ishendlovao tx
+		if(service == null) {
+			TxInfoDto errorDto = new TxInfoDto();
+			errorDto.setStatus(TxStatus.ERROR);
+			return new ResponseEntity<TxInfoDto>(errorDto, HttpStatus.OK);
+		}
 		
 		RestTemplate restTemplate = new RestTemplate();
 				

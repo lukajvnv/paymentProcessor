@@ -37,6 +37,12 @@ public class DataLoader implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		// TODO Auto-generated method stub
+		
+		//ako zelimo da ostanu isti pod
+//		if(true) {
+//			return;
+//		}
+		
 		createPaymentTypes();
 		createSellerInfoAccount();
 		

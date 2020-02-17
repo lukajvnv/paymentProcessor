@@ -1,8 +1,0 @@
-Pcc service | 2020-02-11 16:32:18.624 | PccApplication | No active profile set, falling back to default profiles: default
-Pcc service | 2020-02-11 16:32:30.891 | PccApplication | Started PccApplication in 16.12 seconds (JVM running for 16.677)
-Pcc service | 2020-02-11 16:32:30.893 | DataLoader | fa com.project.pcc.util.DataLoader
-Pcc service | 2020-02-11 16:32:30.982 | PccApplication | start info test
-Pcc service | 2020-02-11 16:44:46.821 | PccApplication | No active profile set, falling back to default profiles: default
-Pcc service | 2020-02-11 16:44:59.585 | PccApplication | Started PccApplication in 16.683 seconds (JVM running for 17.263)
-Pcc service | 2020-02-11 16:44:59.587 | DataLoader | fa com.project.pcc.util.DataLoader
-Pcc service | 2020-02-11 16:44:59.736 | PccApplication | start info test

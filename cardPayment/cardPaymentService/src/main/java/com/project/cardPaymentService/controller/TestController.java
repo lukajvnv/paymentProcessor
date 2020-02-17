@@ -34,17 +34,37 @@ import com.project.cardPaymentService.Proba;
 import com.project.cardPaymentService.dto.PaymentCardRequestDTO;
 import com.project.cardPaymentService.dto.PccRequestDTO;
 import com.project.cardPaymentService.dto.PccResponseDTO;
+import com.project.cardPaymentService.model.Tx;
+import com.project.cardPaymentService.service.TransactionService;
 import com.project.cardPaymentService.service.ValidationService;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {
 	
+	@Autowired
+	private TransactionService txService;
+	
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> test() {
 		
 		
 		return new ResponseEntity<>(new String("Okej cardService get radi"), HttpStatus.OK);
+	}
+	
+	@RequestMapping(path= "/testAsync", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> testAsync() throws InterruptedException {
+		txService.testAsync(new Tx());
+		
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@RequestMapping(path= "/testSync", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> testSync() throws InterruptedException {
+		txService.testSync(new Tx());
+
+		
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
 	@RequestMapping(path= "/locationRedirect", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

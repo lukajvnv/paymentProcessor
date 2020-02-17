@@ -23,6 +23,9 @@ public class CardAccount {
 	private String pan;
 	
 	@Column
+	private String salt;
+	
+	@Column
 	private String securityCode;
 	
 	@Column
@@ -51,8 +54,17 @@ public class CardAccount {
 		this.validUntil = validUntil;
 		this.bankAccount = bankAccount;
 	}
-
-
+	
+	public CardAccount(String pan, String salt, String securityCode, String cardHolderName, Date validUntil,
+			BankAccount bankAccount) {
+		super();
+		this.pan = pan;
+		this.salt = salt;
+		this.securityCode = securityCode;
+		this.cardHolderName = cardHolderName;
+		this.validUntil = validUntil;
+		this.bankAccount = bankAccount;
+	}
 
 	public Long getCardAccountId() {
 		return cardAccountId;
@@ -100,6 +112,18 @@ public class CardAccount {
 
 	public void setBankAccount(BankAccount bankAccount) {
 		this.bankAccount = bankAccount;
+	}
+
+
+
+	public String getSalt() {
+		return salt;
+	}
+
+
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 	
 	

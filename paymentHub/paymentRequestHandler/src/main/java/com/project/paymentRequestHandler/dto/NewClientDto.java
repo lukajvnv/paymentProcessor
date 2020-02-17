@@ -3,8 +3,11 @@ package com.project.paymentRequestHandler.dto;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 public class NewClientDto {
 	
+	@NotNull
 	private long newClientId;
 	private Map<Long, PaymentTypeFormDto> forms;
 	private List<PaymentTypeDTO> paymentTypes;

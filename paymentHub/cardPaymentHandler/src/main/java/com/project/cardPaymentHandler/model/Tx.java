@@ -60,7 +60,12 @@ public class Tx {
 	@Column
 	private Long acquirerOrderId;
 	
-	//casopis?
+	//sprecava multi post placanja
+	@Column
+	private Long orderId;
+	
+	@Column
+	private Long sellerId; //info o casopisu fk ka paymentRequestu SellerInfo
 
 	public Tx() {
 		super();
@@ -226,5 +231,25 @@ public class Tx {
 		this.merchantOrderId = merchantOrderId;
 		this.acquirerTimestamp = acquirerTimestamp;
 		this.acquirerOrderId = acquirerOrderId;
+	}
+
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+
+	public Long getSellerId() {
+		return sellerId;
+	}
+
+
+	public void setSellerId(Long sellerId) {
+		this.sellerId = sellerId;
 	}
 }

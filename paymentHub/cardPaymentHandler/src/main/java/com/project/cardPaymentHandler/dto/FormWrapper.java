@@ -1,14 +1,31 @@
 package com.project.cardPaymentHandler.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 public class FormWrapper {
 
+	@NotEmpty
 	private String sellerBankAccountNumber;	
+	
+	@NotEmpty
 	private String sellerClientName;
+	
+	@NotEmpty
 	private String sellerUsername;
+	
+	@NotEmpty
 	private String sellerPassword;
+	
+	@NotEmpty
 	private String txSuccessUrl;
+	
+	@NotEmpty
 	private String txFailedUrl;
+	
+	@NotEmpty
 	private String txErrorUrl;
+	
+	@NotEmpty
 	private String sellerFk;
 	    
 		public FormWrapper() {

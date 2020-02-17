@@ -87,15 +87,18 @@ public class DataLoader implements ApplicationRunner {
 
 		
 		@SuppressWarnings("deprecation")
-		CardAccount acc1 = new CardAccount("4512365653214568", "123", "Casopis A", new Date(122, 11, 3), bank1);
+//		CardAccount acc1 = new CardAccount("4512365653214568", "123", "Casopis A", new Date(122, 11, 3), bank1);
+		CardAccount acc1 = new CardAccount("8yK+EsfQKDnmw6y8dm02gu0uSmgz6CfwwTo706WTwdM=", "WCPGGE/2O3/LjjCpbyy/cA==", "123", "Casopis A", new Date(122, 11, 3), bank1);
 		unityOfWork.getCardAccountRepository().save(acc1);
 		
 		@SuppressWarnings("deprecation")
-		CardAccount acc2 = new CardAccount("5512365555555", "4444", "Casopis B", new Date(121, 11, 19), bank2);
+//		CardAccount acc2 = new CardAccount("5512365555555", "4444", "Casopis B", new Date(121, 11, 19), bank2);
+		CardAccount acc2 = new CardAccount("2G0N7xdURclaU7v48QlryWyaFCImlYENYtejYeZxBuU=", "Nse2fiAnu2j7heNHF2IKEA==", "4444", "Casopis B", new Date(121, 11, 19), bank2);
 		unityOfWork.getCardAccountRepository().save(acc2);
 		
 		@SuppressWarnings("deprecation")
-		CardAccount acc3 = new CardAccount("5512365444555", "3333", "kupac A", new Date(121, 11, 19), bank4);
+		//CardAccount acc3 = new CardAccount("5512365444555", "3333", "kupac A", new Date(121, 11, 19), bank4);
+		CardAccount acc3 = new CardAccount("SSvXF+7xd42mUKzCFnP6DfgEe1Nuq7JfI1dlkJF30I0=", "SjypG09D96JxurUvF6Bn3Q==", "3333", "kupac A", new Date(121, 11, 19), bank4);
 		unityOfWork.getCardAccountRepository().save(acc3);
 		
 		
@@ -114,16 +117,20 @@ public class DataLoader implements ApplicationRunner {
 //
 //		
 //		@SuppressWarnings("deprecation")
-//		CardAccount acc4 = new CardAccount("4864236653214568", "888", "Kupac B", new Date(122, 11, 3), bank5);
+//		//CardAccount acc4 = new CardAccount("4864236653214568", "888", "Kupac B", new Date(122, 11, 3), bank5);
+//		CardAccount acc4 = new CardAccount("XNq8w8Fl0AZyMguEhjTOi6IXG3R21ZRa7K6CwfKFGcE=", "TIsBkdQiDD6OWNxP9Y4Ngg==", "888", "Kupac B", new Date(122, 11, 3), bank5);
 //		unityOfWork.getCardAccountRepository().save(acc4);
 //		
 //		@SuppressWarnings("deprecation")
-//		CardAccount acc5 = new CardAccount("5864236555555", "777", "Kupac C", new Date(123, 5, 5), bank6);
+//		//CardAccount acc5 = new CardAccount("5864236555555", "777", "Kupac C", new Date(123, 5, 5), bank6);
+//		CardAccount acc5 = new CardAccount("lMEynNzNVHtZTu2VJUzShveIJ5OWFY/25AcNYCSn3Vc=", "AyuhtZvk+gpzk+DAiYYvZA==", "777", "Kupac C", new Date(123, 5, 5), bank6);
 //		unityOfWork.getCardAccountRepository().save(acc5);
 //		
 //		@SuppressWarnings("deprecation")
-//		CardAccount acc6 = new CardAccount("5864236444555", "9996", "Kupac D", new Date(121, 11, 19), bank7);
+//		//CardAccount acc6 = new CardAccount("5864236444555", "9996", "Kupac D", new Date(121, 11, 19), bank7);
+//		CardAccount acc6 = new CardAccount("e3q++Xd/8XvYgV4EChl8aEXN4kuwE3wUZKqIf7IQCbI=", "WWNVKghwc0keEcE8R+TD6g==", "9996", "Kupac D", new Date(121, 11, 19), bank7);
 //		unityOfWork.getCardAccountRepository().save(acc6);
+		
 	}
 	
 	private void createTx() {

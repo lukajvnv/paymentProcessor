@@ -3,10 +3,13 @@ package com.project.paymentRequestHandler.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,12 +99,18 @@ public class NewKpClientController {
 		NewClientRequest request = requestService.getNewClientRequest(sellerInfoDto.getNewClientRequestId());
 		
 		if(request == null) {
-			
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		if(request.isCompleted()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 		SellerInfo persistedSellerInfo = clientService.saveSellerInfo(new SellerInfo(request.getSellerIdentifier(), sellerInfoDto.getSellerName(), sellerInfoDto.getSellerPib()));
+		request.setCompleted(true);
+		requestService.saveNewRequest(request);
 		
-		NewMagazineConfirmationDto newMagazineConfirmationDtoRequest = new NewMagazineConfirmationDto(request.getSellerIdentifier(),  persistedSellerInfo.getSellerIdentifier());
+		NewMagazineConfirmationDto newMagazineConfirmationDtoRequest = new NewMagazineConfirmationDto(request.getSellerIdentifier(),  persistedSellerInfo.getSellerDBId());
 		//callback to Nc
 		RestTemplate restTemplate = new RestTemplate();
 		
@@ -120,12 +129,13 @@ public class NewKpClientController {
 	}
 	
 	@PostMapping(path = "/newClientPaymentTypesSubmit")
-	public ResponseEntity<?> newClientPaymentTypesSubmit(@RequestBody NewClientDto request){
+	public ResponseEntity<?> newClientPaymentTypesSubmit(@Valid @RequestBody NewClientDto request, BindingResult result){
+		if(result.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		
 		clientService.submitNewClientPaymentTypes(request.getPaymentTypes(), request.getNewClientId());
-		
-//		List<String> htmlContent = clientService.prepareFields(request.getPaymentTypes(), request.getNewClientId());
-		
+				
 		Map<Long, PaymentTypeFormDto> forms = clientService.prepareFields(request.getPaymentTypes(), request.getNewClientId());
 		
 		NewClientDto newClientRequest = new NewClientDto(request.getNewClientId(), forms);
